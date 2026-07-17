@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Serve o B.I e regenera sozinho às 08:00 e 12:30 (America/Sao_Paulo)."""
-import os, threading, traceback
+import os, json, threading, traceback
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from flask import Flask, Response
@@ -31,6 +31,17 @@ def health():
 def atualizar():
     regenerar()
     return "Atualizado.", 200
+
+@app.route("/tiny-debug")
+def tiny_debug():
+    """Inspeção do formato do Tiny (uso interno, temporário)."""
+    try:
+        import tiny
+        return Response(json.dumps(tiny.amostra(), ensure_ascii=False, indent=2),
+                        mimetype="application/json")
+    except Exception as e:
+        import traceback
+        return Response("ERRO: "+str(e)+"\n\n"+traceback.format_exc(), mimetype="text/plain"), 500
 
 # agenda 08:00 e 12:30 no horário de São Paulo
 tz = ZoneInfo("America/Sao_Paulo")
