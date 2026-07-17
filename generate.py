@@ -194,36 +194,22 @@ def build_tiny():
     def val(p):
         try: return float(p.get("valor") or 0)
         except: return 0.0
-    def cancelado(p): return "cancel" in norm(p.get("situacao"))
-    # canon de cliente (case/acento)
-    freq=Counter((p.get("nome") or "").strip() for p in pedidos); grp=defaultdict(list)
-    for nome in freq:
-        if nome: grp[norm(nome)].append(nome)
-    def sc(v): return (1 if (any(c.islower() for c in v) and any(c.isupper() for c in v)) else 0,
-                       1 if any(ord(c)>127 for c in v) else 0, freq[v])
-    canon={k:max(vs,key=sc) for k,vs in grp.items()}
-    validos=[p for p in pedidos if not cancelado(p)]
-    valor_total=sum(val(p) for p in validos)
-    nval=sum(1 for p in validos if val(p)>0)
-    mes=defaultdict(float); cli=defaultdict(lambda:[0,0.0]); sit=defaultdict(lambda:[0,0.0]); ven=defaultdict(lambda:[0,0.0])
+    # pedidos em formato filtrável no front (SEM juntar clientes — cada cadastro fica separado)
+    peds=[]
     for p in pedidos:
-        s=(p.get("situacao") or "—").strip(); sit[s][0]+=1; sit[s][1]+=val(p)
-    for p in validos:
         d=p.get("data_pedido","")  # DD/MM/AAAA
-        if len(d)==10: mes[d[6:10]+"-"+d[3:5]]+=val(p)
-        nm=canon.get(norm(p.get("nome")), (p.get("nome") or "").strip() or "— sem cliente")
-        cli[nm][0]+=1; cli[nm][1]+=val(p)
-        vd=(p.get("nome_vendedor") or "").strip() or "— sem vendedor"
-        ven[vd][0]+=1; ven[vd][1]+=val(p)
-    return {
-        "desde":desde,"ate":ate,
-        "kpi":{"pedidos":len(pedidos),"validos":len(validos),"cancelados":len(pedidos)-len(validos),
-               "valor":round(valor_total,2),"ticket":round(valor_total/nval,2) if nval else 0},
-        "mes":{k:round(v,2) for k,v in mes.items()},
-        "clientes":sorted([{"nome":k,"n":v[0],"valor":round(v[1],2)} for k,v in cli.items()],key=lambda x:-x["valor"])[:25],
-        "situacao":sorted([{"nome":k,"n":v[0],"valor":round(v[1],2)} for k,v in sit.items()],key=lambda x:-x["n"]),
-        "vendedor":sorted([{"nome":k,"n":v[0],"valor":round(v[1],2)} for k,v in ven.items()],key=lambda x:-x["valor"]),
-    }
+        peds.append({
+            "cli":(p.get("nome") or "").strip() or "— sem cliente",
+            "v":round(val(p),2),
+            "st":(p.get("situacao") or "—").strip(),
+            "vd":(p.get("nome_vendedor") or "").strip() or "— sem vendedor",
+            "ym": d[6:10]+"-"+d[3:5] if len(d)==10 else "",
+            "canc": 1 if "cancel" in norm(p.get("situacao")) else 0,
+            # região preenchida na Etapa B (detalhe do pedido)
+            "uf_fat":"", "uf_ent":"",
+        })
+    vends=sorted({p["vd"] for p in peds})
+    return {"desde":desde,"ate":ate,"peds":peds,"vendedores":vends}
 
 def run():
     if not B: raise SystemExit("Falta a variável de ambiente BI_WEBHOOK")

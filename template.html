@@ -210,18 +210,42 @@
   /* ===== ícone no filtro ===== */
   .dd>button .fic{width:15px;height:15px;margin-right:2px;vertical-align:-3px;opacity:.7}
   .fllbl,.drlbl{color:var(--brand)}
+  /* ===== seletor de view Bitrix|Tiny ===== */
+  .sb-mode{position:relative;width:48px;height:44px;border-radius:12px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:2px;color:rgba(255,255,255,.72);cursor:pointer;transition:.15s}
+  .sb-mode svg{width:19px;height:19px}
+  .sb-mode span{font-size:9px;font-weight:800;letter-spacing:.02em}
+  .sb-mode:hover{background:rgba(255,255,255,.12);color:#fff}
+  .sb-mode.active{background:#fff;color:var(--brand)}
+  .sb-div{width:28px;height:1px;background:rgba(255,255,255,.18);margin:8px 0}
+  /* tooltip também nos modos */
+  .sb-mode::after{content:attr(data-tip);position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%) translateX(-4px);background:#0d1524;color:#fff;padding:6px 10px;border-radius:8px;font-size:12.5px;font-weight:600;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s,transform .12s;z-index:60;box-shadow:0 6px 18px rgba(0,0,0,.28)}
+  .sb-mode:hover::after{opacity:1;transform:translateY(-50%) translateX(0)}
+  /* ===== filtros da aba Tiny ===== */
+  .tiny-select{font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--panel);
+    border:1px solid var(--line);border-radius:9px;padding:7px 12px;cursor:pointer}
+  .tiny-select:focus{outline:none;border-color:var(--brand)}
+  .cli-search{font:inherit;font-size:13px;color:var(--ink);background:var(--panel);border:1px solid var(--line);
+    border-radius:9px;padding:7px 12px 7px 32px;min-width:210px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%235c6b85' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cline x1='15' y1='15' x2='11' y2='11'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:10px center}
+  .cli-search:focus{outline:none;border-color:var(--brand)}
 </style>
 
 <div class="app">
   <aside class="sidebar">
     <div class="sb-logo"><svg viewBox="885 -25 2005 575"><path fill="#2853a1" d="M897.83,377.97s108.87-30.81,285.53-92.44c161.82-56.45,276.21,7.84,336.89,28.76,59.57,20.54,142.07,99.52,199.26-61.63,45.19-127.36,110.93-88.33,110.93-88.33,0,0,35.23,12.66,133.52,119.14,98.6,106.82,138.88,74.54,138.88,74.54,0,0,40.45,5.62,278.23-208.67L2546.76,0h327.19l-505.33,449.87s-63.68,69.84-174.61,71.9c-51.51.95-102.71-20.54-152.01-61.63-53.61-44.67-129.41-110.93-184.88-164.33-23.11-22.26-39.42-25.61-51.35-24.65-40.99,3.28-36.98,57.52-61.63,96.55-17.99,28.49-31.12,82.17-106.82,82.17s-97.81-36.29-154.06-67.79c-51.35-28.76-94.54-85.42-221.85-80.11-98.6,4.11-105.4,14.79-199.26,36.98-113.6,26.85-164.33,39.03-164.33,39.03Z"/></svg></div>
-    <div class="sb-ic active" data-tip="Início"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-    <div class="sb-ic" data-tip="Funis de venda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></div>
-    <div class="sb-ic" data-tip="Performance por vendedor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-    <div class="sb-ic" data-tip="Origem dos negócios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
-    <div class="sb-ic" data-tip="Tipo de cliente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
-    <div class="sb-ic" data-tip="Clientes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-    <div class="sb-ic" data-tip="Tiny (vendas)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+    <div class="sb-mode active" data-view="bitrix" data-tip="B.I Bitrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="12"/><line x1="10" y1="20" x2="10" y2="4"/><line x1="16" y1="20" x2="16" y2="9"/><line x1="21" y1="20" x2="3" y2="20"/></svg><span>Bitrix</span></div>
+    <div class="sb-mode" data-view="tiny" data-tip="B.I Tiny"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span>Tiny</span></div>
+    <div class="sb-div"></div>
+    <div class="sb-secnav">
+      <div class="sb-ic active" data-tip="Início"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="sb-ic" data-tip="Funis de venda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></div>
+      <div class="sb-ic" data-tip="Performance por vendedor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="sb-ic" data-tip="Origem dos negócios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+      <div class="sb-ic" data-tip="Tipo de cliente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+      <div class="sb-ic" data-tip="Clientes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+    </div>
     <div class="sb-sp"></div>
     <div class="sb-ic" data-tip="Sair"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
   </aside>
@@ -234,6 +258,7 @@
     </div>
   </header>
 
+  <div id="view-bitrix">
   <div class="filterbar" id="filterbar">
     <span class="fllbl">Filtros</span>
     <!-- dropdowns injetados -->
@@ -296,18 +321,32 @@
     </div>
   </div>
 
-  <div class="eyebrow" id="sec-tiny">Tiny · vendas (pedidos)</div>
-  <div id="tiny-wrap">
-    <div class="kpis" id="tiny-kpis" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px"></div>
-    <div class="grid2">
-      <div class="card"><div class="cardh">Situação dos pedidos</div><div id="tiny-sit"></div></div>
-      <div class="card"><div class="cardh">Top clientes (Tiny)</div><div id="tiny-cli"></div></div>
+  </div><!-- /view-bitrix -->
+
+  <div id="view-tiny" style="display:none">
+    <div class="filterbar">
+      <span class="fllbl">Filtros</span>
+      <select id="tiny-vd" class="tiny-select"></select>
+      <input id="tiny-search" class="cli-search" type="text" placeholder="Buscar cliente (ex.: Leroy)…">
+      <button class="reset" id="tiny-reset">limpar</button>
     </div>
-    <div class="eyebrow" style="margin-top:22px">Vendas por mês (Tiny)</div>
-    <div class="card"><div class="months" id="tiny-mes"></div></div>
-    <div class="eyebrow" style="margin-top:22px">Por vendedor (Tiny)</div>
-    <div class="card"><div id="tiny-ven"></div></div>
-  </div>
+    <div class="fcount" id="tiny-fcount"></div>
+    <div id="tiny-wrap">
+      <div class="kpis" id="tiny-kpis" style="grid-template-columns:repeat(4,1fr);margin:6px 0 14px"></div>
+      <div class="grid2">
+        <div class="card"><div class="cardh">Situação dos pedidos</div><div id="tiny-sit"></div></div>
+        <div class="card"><div class="cardh">Top clientes (Tiny)</div><div id="tiny-cli"></div></div>
+      </div>
+      <div class="eyebrow" style="margin-top:22px">Vendas por mês</div>
+      <div class="card"><div class="months" id="tiny-mes"></div></div>
+      <div class="grid2" style="margin-top:14px">
+        <div class="card"><div class="cardh">Por vendedor</div><div id="tiny-ven"></div></div>
+        <div class="card" style="overflow-x:auto"><div class="cardh">Pedidos por cliente</div>
+          <table id="tiny-tbl"><thead><tr><th>Cliente</th><th class="r">Pedidos</th><th class="r">Valor</th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div><!-- /view-tiny -->
 
   <footer>Fontes: Bitrix24 (Negócios) + Tiny (pedidos/vendas). Valores em BRL. Tiny complementa os negócios que passam só pela emissão de proposta/pedido.</footer>
 </div>
@@ -635,45 +674,82 @@ function refresh(){
   renderBars(document.getElementById("chart-tipo-ganho"),
     tipos.map(([k,p])=>({label:k,n:p.won,extra:brlK(p.wonv)})).filter(d=>d.n>0).sort((a,b)=>b.n-a.n), "var(--good)");
 }
-// ---- navegação da sidebar ----
-const NAV={"Início":"__top","Funis de venda":"sec-funil","Performance por vendedor":"sec-vendedor","Tiny (vendas)":"sec-tiny",
+// ---- navegação de seções (só do Bitrix) ----
+const NAV={"Início":"__top","Funis de venda":"sec-funil","Performance por vendedor":"sec-vendedor",
   "Clientes":"sec-clientes","Origem dos negócios":"sec-graficos","Tipo de cliente":"sec-tipo"};
-document.querySelectorAll(".sb-ic").forEach(el=>{
+document.querySelectorAll(".sb-secnav .sb-ic").forEach(el=>{
   el.onclick=()=>{
     const tgt=NAV[el.getAttribute("data-tip")];
-    if(tgt==="__top"||!tgt){window.scrollTo({top:0,behavior:"smooth"});}  // Início / Sair -> topo
+    if(tgt==="__top"||!tgt){window.scrollTo({top:0,behavior:"smooth"});}
     else{const node=document.getElementById(tgt); if(node)node.scrollIntoView({behavior:"smooth",block:"start"});}
-    document.querySelectorAll(".sb-ic").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll(".sb-secnav .sb-ic").forEach(x=>x.classList.remove("active"));
     el.classList.add("active");
   };
 });
-// ---- aba Tiny (não depende dos filtros do Bitrix) ----
+// botão Sair -> topo
+document.querySelectorAll('.sidebar > .sb-ic[data-tip="Sair"]').forEach(el=>el.onclick=()=>window.scrollTo({top:0,behavior:"smooth"}));
+// ---- troca de view Bitrix | Tiny ----
+document.querySelectorAll(".sb-mode").forEach(m=>{
+  m.onclick=()=>{
+    const v=m.dataset.view;
+    document.querySelectorAll(".sb-mode").forEach(x=>x.classList.toggle("active",x===m));
+    document.getElementById("view-bitrix").style.display=(v==="bitrix")?"":"none";
+    document.getElementById("view-tiny").style.display=(v==="tiny")?"":"none";
+    document.querySelector(".sb-secnav").style.display=(v==="bitrix")?"":"none";
+    document.querySelector(".ph-right .sub").innerHTML=(v==="tiny")
+      ? '<span class="dot"></span>Dados do Tiny · pedidos/vendas · gerado em __GENDATE__'
+      : '<span class="dot"></span>Dados ao vivo do Bitrix24 · Negócios · gerado em __GENDATE__';
+    if(v==="tiny") renderTiny();
+    window.scrollTo({top:0});
+  };
+});
+// ---- aba Tiny (filtros próprios: vendedor + busca de cliente) ----
+const TINYF={vd:"",q:""};
 function renderTiny(){
   const T=D.tiny;
-  const wrap=document.getElementById("tiny-wrap");
-  if(!T){ wrap.innerHTML='<div class="card"><div class="empty">Sem dados do Tiny ainda. Configure a variável <b>TINY_TOKEN</b> no servidor.</div></div>'; return; }
+  if(!T){ document.getElementById("tiny-wrap").innerHTML='<div class="card"><div class="empty">Sem dados do Tiny ainda. Configure a variável <b>TINY_TOKEN</b> no servidor.</div></div>'; document.getElementById("tiny-fcount").textContent=""; return; }
+  const sel=document.getElementById("tiny-vd");
+  if(!sel.dataset.filled){ sel.innerHTML='<option value="">Todos os vendedores</option>'+T.vendedores.map(v=>`<option>${v}</option>`).join(""); sel.dataset.filled="1"; }
+  const q=nrm(TINYF.q);
+  const rows=T.peds.filter(p=>(!TINYF.vd||p.vd===TINYF.vd)&&(!q||nrm(p.cli).includes(q)));
+  let canc=0,valor=0,nval=0; const sit={},cli={},ven={},mes={};
+  for(const p of rows){
+    sit[p.st]=(sit[p.st]||0)+1;
+    if(p.canc){canc++;continue;}
+    valor+=p.v; if(p.v>0)nval++;
+    if(p.ym)mes[p.ym]=(mes[p.ym]||0)+p.v;
+    cli[p.cli]=cli[p.cli]||[0,0]; cli[p.cli][0]++; cli[p.cli][1]+=p.v;
+    ven[p.vd]=ven[p.vd]||[0,0]; ven[p.vd][0]++; ven[p.vd][1]+=p.v;
+  }
+  const ticket=nval?valor/nval:0, nf=(TINYF.vd?1:0)+(TINYF.q?1:0);
+  document.getElementById("tiny-fcount").innerHTML=`<b>${int(rows.length)}</b> pedidos no recorte`+(nf?` · ${nf} filtro(s)`:``)+` · período ${T.desde} → ${T.ate}`;
   const kc=k=>`<div class="kpi"><div class="kico ${k.tint}">${svgico(KIC[k.ic])}</div><div class="kbody"><div class="lbl">${k.l}</div><div class="big tnum">${k.v}</div><div class="foot">${k.f}</div></div></div>`;
   document.getElementById("tiny-kpis").innerHTML=[
-    {l:"Pedidos",v:int(T.kpi.pedidos),f:`${int(T.kpi.cancelados)} cancelados`,ic:"brief",tint:"ico-blue"},
-    {l:"Valor total",v:brlK(T.kpi.valor),f:"pedidos válidos",ic:"dollar",tint:"ico-solid"},
-    {l:"Ticket médio",v:brlK(T.kpi.ticket),f:"por pedido",ic:"tag",tint:"ico-green"},
-    {l:"Período",v:T.desde.slice(6),f:`desde ${T.desde}`,ic:"clock",tint:"ico-amber"},
+    {l:"Pedidos",v:int(rows.length),f:`${int(canc)} cancelados`,ic:"brief",tint:"ico-blue"},
+    {l:"Valor total",v:brlK(valor),f:"pedidos válidos",ic:"dollar",tint:"ico-solid"},
+    {l:"Ticket médio",v:nval?brlK(ticket):"—",f:"por pedido",ic:"tag",tint:"ico-green"},
+    {l:"Clientes",v:int(Object.keys(cli).length),f:"distintos no recorte",ic:"trophy",tint:"ico-amber"},
   ].map(kc).join("");
-  // situação (donut top 6)
   const PAL=["var(--brand)","#f5c518","var(--good)","#d2691e","var(--bad)","#8b5cf6"];
-  const sit=T.situacao.slice(0,6).map((s,i)=>({label:s.nome,value:s.n,color:PAL[i%PAL.length]}));
-  const totP=T.situacao.reduce((a,s)=>a+s.n,0);
-  document.getElementById("tiny-sit").innerHTML=makeDonut(sit,int(totP),"pedidos");
+  const sitArr=Object.entries(sit).sort((a,b)=>b[1]-a[1]);
+  document.getElementById("tiny-sit").innerHTML=makeDonut(
+    sitArr.slice(0,6).map((s,i)=>({label:s[0],value:s[1],color:PAL[i%PAL.length]})), int(rows.length), "pedidos");
   renderBars(document.getElementById("tiny-cli"),
-    T.clientes.slice(0,12).map(c=>({label:c.nome,n:Math.round(c.valor),disp:brlK(c.valor)})), "var(--brand)");
-  // vendas por mês
-  const yms=Object.keys(T.mes).sort(); const maxV=Math.max(...yms.map(y=>T.mes[y]),1);
+    Object.entries(cli).map(([k,v])=>({label:k,n:Math.round(v[1]),disp:brlK(v[1])})).sort((a,b)=>b.n-a.n).slice(0,12), "var(--brand)");
+  const yms=Object.keys(mes).sort(); const maxV=Math.max(...yms.map(y=>mes[y]),1);
   document.getElementById("tiny-mes").innerHTML= yms.length? yms.map(y=>
-    `<div class="mcol"><div class="bars"><div class="gn" style="width:60%;height:${T.mes[y]/maxV*100}%" title="${brl0(T.mes[y])}"></div></div><div class="ml">${ymLabel(y)}</div></div>`).join("")
-    :'<div class="empty" style="width:100%;align-self:center">Sem vendas no período.</div>';
+    `<div class="mcol"><div class="bars"><div class="gn" style="width:60%;height:${mes[y]/maxV*100}%" title="${brl0(mes[y])}"></div></div><div class="ml">${ymLabel(y)}</div></div>`).join("")
+    :'<div class="empty" style="width:100%;align-self:center">Sem vendas no recorte.</div>';
   renderBars(document.getElementById("tiny-ven"),
-    T.vendedor.slice(0,10).map(v=>({label:v.nome,n:Math.round(v.valor),disp:brlK(v.valor)})), "var(--open)");
+    Object.entries(ven).map(([k,v])=>({label:k,n:Math.round(v[1]),disp:brlK(v[1])})).sort((a,b)=>b.n-a.n).slice(0,10), "var(--open)");
+  const rank=Object.entries(cli).map(([k,v])=>({nm:k,n:v[0],val:v[1]})).sort((a,b)=>b.val-a.val).slice(0,30);
+  document.querySelector("#tiny-tbl tbody").innerHTML= rank.length? rank.map(c=>
+    `<tr><td><b>${c.nm}</b></td><td class="r tnum">${int(c.n)}</td><td class="r tnum">${brl0(c.val)}</td></tr>`).join("")
+    :`<tr><td colspan="3" class="empty">Nenhum pedido no recorte.</td></tr>`;
 }
+document.getElementById("tiny-vd").onchange=e=>{TINYF.vd=e.target.value;renderTiny();};
+document.getElementById("tiny-search").oninput=e=>{TINYF.q=e.target.value.trim();renderTiny();};
+document.getElementById("tiny-reset").onclick=()=>{TINYF.vd="";TINYF.q="";document.getElementById("tiny-vd").value="";document.getElementById("tiny-search").value="";renderTiny();};
 renderTiny();
 refresh();
 </script>
