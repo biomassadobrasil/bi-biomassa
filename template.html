@@ -170,8 +170,19 @@
   .sidebar{flex:0 0 68px;background:linear-gradient(180deg,#2853a1,#1a3c7d);
     display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 0;
     position:sticky;top:0;height:100vh;z-index:40}
-  .sb-logo{width:40px;height:40px;border-radius:11px;background:#fff;display:grid;place-items:center;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+  .sb-logo{position:relative;width:52px;border-radius:12px;background:#fff;display:flex;flex-direction:column;
+    align-items:center;gap:2px;padding:8px 4px 6px;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,.18);cursor:pointer}
   .sb-logo svg{width:30px;height:auto}
+  .bi-cur{font-size:9.5px;font-weight:800;color:var(--brand);letter-spacing:.02em;white-space:nowrap}
+  .bi-menu{position:absolute;left:calc(100% + 12px);top:0;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.22);padding:6px;display:none;z-index:70;min-width:170px}
+  .sb-logo.open .bi-menu{display:block}
+  .bi-opt{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;cursor:pointer;
+    font-size:13.5px;font-weight:650;color:var(--ink);white-space:nowrap}
+  .bi-opt svg{width:18px;height:18px;color:var(--muted);flex:0 0 auto}
+  .bi-opt:hover{background:var(--line2)}
+  .bi-opt.active{background:var(--brand-soft);color:var(--brand)}
+  .bi-opt.active svg{color:var(--brand)}
   .sb-ic{position:relative;width:42px;height:42px;border-radius:11px;display:grid;place-items:center;color:rgba(255,255,255,.62);cursor:pointer;transition:.15s}
   .sb-ic:hover{background:rgba(255,255,255,.12);color:#fff}
   .sb-ic.active{background:rgba(255,255,255,.16);color:#fff}
@@ -234,9 +245,14 @@
 
 <div class="app">
   <aside class="sidebar">
-    <div class="sb-logo"><svg viewBox="885 -25 2005 575"><path fill="#2853a1" d="M897.83,377.97s108.87-30.81,285.53-92.44c161.82-56.45,276.21,7.84,336.89,28.76,59.57,20.54,142.07,99.52,199.26-61.63,45.19-127.36,110.93-88.33,110.93-88.33,0,0,35.23,12.66,133.52,119.14,98.6,106.82,138.88,74.54,138.88,74.54,0,0,40.45,5.62,278.23-208.67L2546.76,0h327.19l-505.33,449.87s-63.68,69.84-174.61,71.9c-51.51.95-102.71-20.54-152.01-61.63-53.61-44.67-129.41-110.93-184.88-164.33-23.11-22.26-39.42-25.61-51.35-24.65-40.99,3.28-36.98,57.52-61.63,96.55-17.99,28.49-31.12,82.17-106.82,82.17s-97.81-36.29-154.06-67.79c-51.35-28.76-94.54-85.42-221.85-80.11-98.6,4.11-105.4,14.79-199.26,36.98-113.6,26.85-164.33,39.03-164.33,39.03Z"/></svg></div>
-    <div class="sb-mode active" data-view="bitrix" data-tip="B.I Bitrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="12"/><line x1="10" y1="20" x2="10" y2="4"/><line x1="16" y1="20" x2="16" y2="9"/><line x1="21" y1="20" x2="3" y2="20"/></svg><span>Bitrix</span></div>
-    <div class="sb-mode" data-view="tiny" data-tip="B.I Tiny"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span>Tiny</span></div>
+    <div class="sb-logo" id="bi-switch" title="Trocar B.I">
+      <svg viewBox="885 -25 2005 575"><path fill="#2853a1" d="M897.83,377.97s108.87-30.81,285.53-92.44c161.82-56.45,276.21,7.84,336.89,28.76,59.57,20.54,142.07,99.52,199.26-61.63,45.19-127.36,110.93-88.33,110.93-88.33,0,0,35.23,12.66,133.52,119.14,98.6,106.82,138.88,74.54,138.88,74.54,0,0,40.45,5.62,278.23-208.67L2546.76,0h327.19l-505.33,449.87s-63.68,69.84-174.61,71.9c-51.51.95-102.71-20.54-152.01-61.63-53.61-44.67-129.41-110.93-184.88-164.33-23.11-22.26-39.42-25.61-51.35-24.65-40.99,3.28-36.98,57.52-61.63,96.55-17.99,28.49-31.12,82.17-106.82,82.17s-97.81-36.29-154.06-67.79c-51.35-28.76-94.54-85.42-221.85-80.11-98.6,4.11-105.4,14.79-199.26,36.98-113.6,26.85-164.33,39.03-164.33,39.03Z"/></svg>
+      <span class="bi-cur" id="bi-cur">Bitrix ▾</span>
+      <div class="bi-menu" id="bi-menu">
+        <div class="bi-opt active" data-view="bitrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="12"/><line x1="10" y1="20" x2="10" y2="4"/><line x1="16" y1="20" x2="16" y2="9"/><line x1="21" y1="20" x2="3" y2="20"/></svg><span>B.I Bitrix</span></div>
+        <div class="bi-opt" data-view="tiny"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span>B.I Tiny</span></div>
+      </div>
+    </div>
     <div class="sb-div"></div>
     <div class="sb-secnav">
       <div class="sb-ic active" data-tip="Início"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
@@ -688,21 +704,23 @@ document.querySelectorAll(".sb-secnav .sb-ic").forEach(el=>{
 });
 // botão Sair -> topo
 document.querySelectorAll('.sidebar > .sb-ic[data-tip="Sair"]').forEach(el=>el.onclick=()=>window.scrollTo({top:0,behavior:"smooth"}));
-// ---- troca de view Bitrix | Tiny ----
-document.querySelectorAll(".sb-mode").forEach(m=>{
-  m.onclick=()=>{
-    const v=m.dataset.view;
-    document.querySelectorAll(".sb-mode").forEach(x=>x.classList.toggle("active",x===m));
-    document.getElementById("view-bitrix").style.display=(v==="bitrix")?"":"none";
-    document.getElementById("view-tiny").style.display=(v==="tiny")?"":"none";
-    document.querySelector(".sb-secnav").style.display=(v==="bitrix")?"":"none";
-    document.querySelector(".ph-right .sub").innerHTML=(v==="tiny")
-      ? '<span class="dot"></span>Dados do Tiny · pedidos/vendas · gerado em __GENDATE__'
-      : '<span class="dot"></span>Dados ao vivo do Bitrix24 · Negócios · gerado em __GENDATE__';
-    if(v==="tiny") renderTiny();
-    window.scrollTo({top:0});
-  };
-});
+// ---- seletor de B.I no logo (onda) ----
+function setView(v){
+  document.getElementById("view-bitrix").style.display=(v==="bitrix")?"":"none";
+  document.getElementById("view-tiny").style.display=(v==="tiny")?"":"none";
+  document.querySelector(".sb-secnav").style.display=(v==="bitrix")?"":"none";
+  document.querySelectorAll(".bi-opt").forEach(o=>o.classList.toggle("active",o.dataset.view===v));
+  document.getElementById("bi-cur").textContent=(v==="tiny"?"Tiny":"Bitrix")+" ▾";
+  document.querySelector(".ph-right .sub").innerHTML=(v==="tiny")
+    ? '<span class="dot"></span>Dados do Tiny · pedidos/vendas · gerado em __GENDATE__'
+    : '<span class="dot"></span>Dados ao vivo do Bitrix24 · Negócios · gerado em __GENDATE__';
+  if(v==="tiny") renderTiny();
+  window.scrollTo({top:0});
+}
+const biSwitch=document.getElementById("bi-switch");
+biSwitch.onclick=e=>{e.stopPropagation();biSwitch.classList.toggle("open");};
+document.querySelectorAll(".bi-opt").forEach(o=>o.onclick=e=>{e.stopPropagation();setView(o.dataset.view);biSwitch.classList.remove("open");});
+document.addEventListener("click",()=>biSwitch.classList.remove("open"));
 // ---- aba Tiny (filtros próprios: vendedor + busca de cliente) ----
 const TINYF={vd:"",q:""};
 function renderTiny(){
