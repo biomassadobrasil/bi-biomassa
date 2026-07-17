@@ -221,6 +221,7 @@
     <div class="sb-ic" data-tip="Origem dos negócios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
     <div class="sb-ic" data-tip="Tipo de cliente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
     <div class="sb-ic" data-tip="Clientes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+    <div class="sb-ic" data-tip="Tiny (vendas)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
     <div class="sb-sp"></div>
     <div class="sb-ic" data-tip="Sair"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
   </aside>
@@ -295,7 +296,20 @@
     </div>
   </div>
 
-  <footer>Fonte: Bitrix24 (CRM · Negócios). Ganho/Perdido/Aberto pela semântica de etapa. Valores em BRL. Leads numa 2ª fase.</footer>
+  <div class="eyebrow" id="sec-tiny">Tiny · vendas (pedidos)</div>
+  <div id="tiny-wrap">
+    <div class="kpis" id="tiny-kpis" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px"></div>
+    <div class="grid2">
+      <div class="card"><div class="cardh">Situação dos pedidos</div><div id="tiny-sit"></div></div>
+      <div class="card"><div class="cardh">Top clientes (Tiny)</div><div id="tiny-cli"></div></div>
+    </div>
+    <div class="eyebrow" style="margin-top:22px">Vendas por mês (Tiny)</div>
+    <div class="card"><div class="months" id="tiny-mes"></div></div>
+    <div class="eyebrow" style="margin-top:22px">Por vendedor (Tiny)</div>
+    <div class="card"><div id="tiny-ven"></div></div>
+  </div>
+
+  <footer>Fontes: Bitrix24 (Negócios) + Tiny (pedidos/vendas). Valores em BRL. Tiny complementa os negócios que passam só pela emissão de proposta/pedido.</footer>
 </div>
 </div>
 
@@ -622,7 +636,7 @@ function refresh(){
     tipos.map(([k,p])=>({label:k,n:p.won,extra:brlK(p.wonv)})).filter(d=>d.n>0).sort((a,b)=>b.n-a.n), "var(--good)");
 }
 // ---- navegação da sidebar ----
-const NAV={"Início":"__top","Funis de venda":"sec-funil","Performance por vendedor":"sec-vendedor",
+const NAV={"Início":"__top","Funis de venda":"sec-funil","Performance por vendedor":"sec-vendedor","Tiny (vendas)":"sec-tiny",
   "Clientes":"sec-clientes","Origem dos negócios":"sec-graficos","Tipo de cliente":"sec-tipo"};
 document.querySelectorAll(".sb-ic").forEach(el=>{
   el.onclick=()=>{
@@ -633,5 +647,33 @@ document.querySelectorAll(".sb-ic").forEach(el=>{
     el.classList.add("active");
   };
 });
+// ---- aba Tiny (não depende dos filtros do Bitrix) ----
+function renderTiny(){
+  const T=D.tiny;
+  const wrap=document.getElementById("tiny-wrap");
+  if(!T){ wrap.innerHTML='<div class="card"><div class="empty">Sem dados do Tiny ainda. Configure a variável <b>TINY_TOKEN</b> no servidor.</div></div>'; return; }
+  const kc=k=>`<div class="kpi"><div class="kico ${k.tint}">${svgico(KIC[k.ic])}</div><div class="kbody"><div class="lbl">${k.l}</div><div class="big tnum">${k.v}</div><div class="foot">${k.f}</div></div></div>`;
+  document.getElementById("tiny-kpis").innerHTML=[
+    {l:"Pedidos",v:int(T.kpi.pedidos),f:`${int(T.kpi.cancelados)} cancelados`,ic:"brief",tint:"ico-blue"},
+    {l:"Valor total",v:brlK(T.kpi.valor),f:"pedidos válidos",ic:"dollar",tint:"ico-solid"},
+    {l:"Ticket médio",v:brlK(T.kpi.ticket),f:"por pedido",ic:"tag",tint:"ico-green"},
+    {l:"Período",v:T.desde.slice(6),f:`desde ${T.desde}`,ic:"clock",tint:"ico-amber"},
+  ].map(kc).join("");
+  // situação (donut top 6)
+  const PAL=["var(--brand)","#f5c518","var(--good)","#d2691e","var(--bad)","#8b5cf6"];
+  const sit=T.situacao.slice(0,6).map((s,i)=>({label:s.nome,value:s.n,color:PAL[i%PAL.length]}));
+  const totP=T.situacao.reduce((a,s)=>a+s.n,0);
+  document.getElementById("tiny-sit").innerHTML=makeDonut(sit,int(totP),"pedidos");
+  renderBars(document.getElementById("tiny-cli"),
+    T.clientes.slice(0,12).map(c=>({label:c.nome,n:Math.round(c.valor),disp:brlK(c.valor)})), "var(--brand)");
+  // vendas por mês
+  const yms=Object.keys(T.mes).sort(); const maxV=Math.max(...yms.map(y=>T.mes[y]),1);
+  document.getElementById("tiny-mes").innerHTML= yms.length? yms.map(y=>
+    `<div class="mcol"><div class="bars"><div class="gn" style="width:60%;height:${T.mes[y]/maxV*100}%" title="${brl0(T.mes[y])}"></div></div><div class="ml">${ymLabel(y)}</div></div>`).join("")
+    :'<div class="empty" style="width:100%;align-self:center">Sem vendas no período.</div>';
+  renderBars(document.getElementById("tiny-ven"),
+    T.vendedor.slice(0,10).map(v=>({label:v.nome,n:Math.round(v.valor),disp:brlK(v.valor)})), "var(--open)");
+}
+renderTiny();
 refresh();
 </script>

@@ -176,10 +176,63 @@ def build(stages, sources, enum_by_uf, deals):
         "opt":{"src":opts("src"),"vd":opts("vd"),"pr":opts("pr"),"tp":opts("tp"),"st":stg_global},
         "dmin":datas[0] if datas else "","dmax":datas[-1] if datas else ""}
 
+def build_tiny():
+    """Puxa pedidos do Tiny (v2) e agrega. Retorna None se não houver TINY_TOKEN/erro."""
+    if not os.environ.get("TINY_TOKEN"): return None
+    import tiny
+    desde=os.environ.get("TINY_DESDE","01/01/2026")
+    ate=datetime.datetime.now().strftime("%d/%m/%Y")
+    pedidos=[]; pagina=1
+    while True:
+        res=tiny.pesquisa_pedidos(pagina=pagina, data_inicial=desde, data_final=ate)
+        ret=res.get("retorno",{})
+        if ret.get("status")!="OK": break
+        for p in ret.get("pedidos",[]): pedidos.append(p["pedido"])
+        npag=int(ret.get("numero_paginas") or 1)
+        if pagina>=npag or pagina>=300: break
+        pagina+=1
+    def val(p):
+        try: return float(p.get("valor") or 0)
+        except: return 0.0
+    def cancelado(p): return "cancel" in norm(p.get("situacao"))
+    # canon de cliente (case/acento)
+    freq=Counter((p.get("nome") or "").strip() for p in pedidos); grp=defaultdict(list)
+    for nome in freq:
+        if nome: grp[norm(nome)].append(nome)
+    def sc(v): return (1 if (any(c.islower() for c in v) and any(c.isupper() for c in v)) else 0,
+                       1 if any(ord(c)>127 for c in v) else 0, freq[v])
+    canon={k:max(vs,key=sc) for k,vs in grp.items()}
+    validos=[p for p in pedidos if not cancelado(p)]
+    valor_total=sum(val(p) for p in validos)
+    nval=sum(1 for p in validos if val(p)>0)
+    mes=defaultdict(float); cli=defaultdict(lambda:[0,0.0]); sit=defaultdict(lambda:[0,0.0]); ven=defaultdict(lambda:[0,0.0])
+    for p in pedidos:
+        s=(p.get("situacao") or "—").strip(); sit[s][0]+=1; sit[s][1]+=val(p)
+    for p in validos:
+        d=p.get("data_pedido","")  # DD/MM/AAAA
+        if len(d)==10: mes[d[6:10]+"-"+d[3:5]]+=val(p)
+        nm=canon.get(norm(p.get("nome")), (p.get("nome") or "").strip() or "— sem cliente")
+        cli[nm][0]+=1; cli[nm][1]+=val(p)
+        vd=(p.get("nome_vendedor") or "").strip() or "— sem vendedor"
+        ven[vd][0]+=1; ven[vd][1]+=val(p)
+    return {
+        "desde":desde,"ate":ate,
+        "kpi":{"pedidos":len(pedidos),"validos":len(validos),"cancelados":len(pedidos)-len(validos),
+               "valor":round(valor_total,2),"ticket":round(valor_total/nval,2) if nval else 0},
+        "mes":{k:round(v,2) for k,v in mes.items()},
+        "clientes":sorted([{"nome":k,"n":v[0],"valor":round(v[1],2)} for k,v in cli.items()],key=lambda x:-x["valor"])[:25],
+        "situacao":sorted([{"nome":k,"n":v[0],"valor":round(v[1],2)} for k,v in sit.items()],key=lambda x:-x["n"]),
+        "vendedor":sorted([{"nome":k,"n":v[0],"valor":round(v[1],2)} for k,v in ven.items()],key=lambda x:-x["valor"]),
+    }
+
 def run():
     if not B: raise SystemExit("Falta a variável de ambiente BI_WEBHOOK")
     stages,sources,enum_by_uf,deals=fetch_all()
     payload=build(stages,sources,enum_by_uf,deals)
+    try:
+        payload["tiny"]=build_tiny()
+    except Exception as e:
+        import traceback; print("[BI] Tiny falhou (segue sem):\n"+traceback.format_exc()); payload["tiny"]=None
     tpl=open(os.path.join(HERE,"template.html"),encoding="utf-8").read()
     hoje=datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
     html=tpl.replace("__DATA__", json.dumps(payload,ensure_ascii=False)).replace("__GENDATE__", hoje)
