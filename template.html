@@ -344,6 +344,10 @@
       <span class="fllbl">Filtros</span>
       <select id="tiny-vd" class="tiny-select"></select>
       <input id="tiny-search" class="cli-search" type="text" placeholder="Buscar cliente (ex.: Leroy)…">
+      <span class="drlbl">Período</span>
+      <input type="date" id="tiny-from" class="tiny-select" style="color-scheme:light dark">
+      <span class="drsep">até</span>
+      <input type="date" id="tiny-to" class="tiny-select" style="color-scheme:light dark">
       <button class="reset" id="tiny-reset">limpar</button>
     </div>
     <div class="fcount" id="tiny-fcount"></div>
@@ -722,14 +726,20 @@ biSwitch.onclick=e=>{e.stopPropagation();biSwitch.classList.toggle("open");};
 document.querySelectorAll(".bi-opt").forEach(o=>o.onclick=e=>{e.stopPropagation();setView(o.dataset.view);biSwitch.classList.remove("open");});
 document.addEventListener("click",()=>biSwitch.classList.remove("open"));
 // ---- aba Tiny (filtros próprios: vendedor + busca de cliente) ----
-const TINYF={vd:"",q:""};
+const TINYF={vd:"",q:"",from:"",to:""};
 function renderTiny(){
   const T=D.tiny;
   if(!T){ document.getElementById("tiny-wrap").innerHTML='<div class="card"><div class="empty">Sem dados do Tiny ainda. Configure a variável <b>TINY_TOKEN</b> no servidor.</div></div>'; document.getElementById("tiny-fcount").textContent=""; return; }
   const sel=document.getElementById("tiny-vd");
-  if(!sel.dataset.filled){ sel.innerHTML='<option value="">Todos os vendedores</option>'+T.vendedores.map(v=>`<option>${v}</option>`).join(""); sel.dataset.filled="1"; }
+  if(!sel.dataset.filled){
+    sel.innerHTML='<option value="">Todos os vendedores</option>'+T.vendedores.map(v=>`<option>${v}</option>`).join("");
+    const df=document.getElementById("tiny-from"), dto=document.getElementById("tiny-to");
+    df.min=dto.min=T.dmin; df.max=dto.max=T.dmax;
+    sel.dataset.filled="1";
+  }
   const q=nrm(TINYF.q);
-  const rows=T.peds.filter(p=>(!TINYF.vd||p.vd===TINYF.vd)&&(!q||nrm(p.cli).includes(q)));
+  const rows=T.peds.filter(p=>(!TINYF.vd||p.vd===TINYF.vd)&&(!q||nrm(p.cli).includes(q))
+    &&(!TINYF.from||(p.dt&&p.dt>=TINYF.from))&&(!TINYF.to||(p.dt&&p.dt<=TINYF.to)));
   let canc=0,valor=0,nval=0; const sit={},cli={},ven={},mes={};
   for(const p of rows){
     sit[p.st]=(sit[p.st]||0)+1;
@@ -739,8 +749,10 @@ function renderTiny(){
     cli[p.cli]=cli[p.cli]||[0,0]; cli[p.cli][0]++; cli[p.cli][1]+=p.v;
     ven[p.vd]=ven[p.vd]||[0,0]; ven[p.vd][0]++; ven[p.vd][1]+=p.v;
   }
-  const ticket=nval?valor/nval:0, nf=(TINYF.vd?1:0)+(TINYF.q?1:0);
-  document.getElementById("tiny-fcount").innerHTML=`<b>${int(rows.length)}</b> pedidos no recorte`+(nf?` · ${nf} filtro(s)`:``)+` · período ${T.desde} → ${T.ate}`;
+  const ticket=nval?valor/nval:0, nf=(TINYF.vd?1:0)+(TINYF.q?1:0)+((TINYF.from||TINYF.to)?1:0);
+  const br=d=>d?d.split("-").reverse().join("/"):"";
+  const per=(TINYF.from||TINYF.to)?`${br(TINYF.from)||"início"} → ${br(TINYF.to)||"hoje"}`:`${br(T.dmin)} → ${br(T.dmax)} (tudo)`;
+  document.getElementById("tiny-fcount").innerHTML=`<b>${int(rows.length)}</b> pedidos no recorte`+(nf?` · ${nf} filtro(s)`:``)+` · período ${per}`;
   const kc=k=>`<div class="kpi"><div class="kico ${k.tint}">${svgico(KIC[k.ic])}</div><div class="kbody"><div class="lbl">${k.l}</div><div class="big tnum">${k.v}</div><div class="foot">${k.f}</div></div></div>`;
   document.getElementById("tiny-kpis").innerHTML=[
     {l:"Pedidos",v:int(rows.length),f:`${int(canc)} cancelados`,ic:"brief",tint:"ico-blue"},
@@ -754,7 +766,8 @@ function renderTiny(){
     sitArr.slice(0,6).map((s,i)=>({label:s[0],value:s[1],color:PAL[i%PAL.length]})), int(rows.length), "pedidos");
   renderBars(document.getElementById("tiny-cli"),
     Object.entries(cli).map(([k,v])=>({label:k,n:Math.round(v[1]),disp:brlK(v[1])})).sort((a,b)=>b.n-a.n).slice(0,12), "var(--brand)");
-  const yms=Object.keys(mes).sort(); const maxV=Math.max(...yms.map(y=>mes[y]),1);
+  let yms=Object.keys(mes).sort(); if(yms.length>24) yms=yms.slice(-24);
+  const maxV=Math.max(...yms.map(y=>mes[y]),1);
   document.getElementById("tiny-mes").innerHTML= yms.length? yms.map(y=>
     `<div class="mcol"><div class="bars"><div class="gn" style="width:60%;height:${mes[y]/maxV*100}%" title="${brl0(mes[y])}"></div></div><div class="ml">${ymLabel(y)}</div></div>`).join("")
     :'<div class="empty" style="width:100%;align-self:center">Sem vendas no recorte.</div>';
@@ -767,7 +780,11 @@ function renderTiny(){
 }
 document.getElementById("tiny-vd").onchange=e=>{TINYF.vd=e.target.value;renderTiny();};
 document.getElementById("tiny-search").oninput=e=>{TINYF.q=e.target.value.trim();renderTiny();};
-document.getElementById("tiny-reset").onclick=()=>{TINYF.vd="";TINYF.q="";document.getElementById("tiny-vd").value="";document.getElementById("tiny-search").value="";renderTiny();};
+document.getElementById("tiny-from").onchange=e=>{TINYF.from=e.target.value;renderTiny();};
+document.getElementById("tiny-to").onchange=e=>{TINYF.to=e.target.value;renderTiny();};
+document.getElementById("tiny-reset").onclick=()=>{TINYF.vd="";TINYF.q="";TINYF.from="";TINYF.to="";
+  document.getElementById("tiny-vd").value="";document.getElementById("tiny-search").value="";
+  document.getElementById("tiny-from").value="";document.getElementById("tiny-to").value="";renderTiny();};
 renderTiny();
 refresh();
 </script>

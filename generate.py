@@ -180,7 +180,7 @@ def build_tiny():
     """Puxa pedidos do Tiny (v2) e agrega. Retorna None se não houver TINY_TOKEN/erro."""
     if not os.environ.get("TINY_TOKEN"): return None
     import tiny
-    desde=os.environ.get("TINY_DESDE","01/01/2026")
+    desde=os.environ.get("TINY_DESDE","01/01/2015")   # histórico amplo (filtro de intervalo é no painel)
     ate=datetime.datetime.now().strftime("%d/%m/%Y")
     pedidos=[]; pagina=1
     while True:
@@ -198,18 +198,22 @@ def build_tiny():
     peds=[]
     for p in pedidos:
         d=p.get("data_pedido","")  # DD/MM/AAAA
+        dt = d[6:10]+"-"+d[3:5]+"-"+d[0:2] if len(d)==10 else ""
         peds.append({
             "cli":(p.get("nome") or "").strip() or "— sem cliente",
             "v":round(val(p),2),
             "st":(p.get("situacao") or "—").strip(),
             "vd":(p.get("nome_vendedor") or "").strip() or "— sem vendedor",
-            "ym": d[6:10]+"-"+d[3:5] if len(d)==10 else "",
+            "dt": dt,                       # data completa YYYY-MM-DD (p/ intervalo)
+            "ym": dt[:7],                   # ano-mês
             "canc": 1 if "cancel" in norm(p.get("situacao")) else 0,
             # região preenchida na Etapa B (detalhe do pedido)
             "uf_fat":"", "uf_ent":"",
         })
     vends=sorted({p["vd"] for p in peds})
-    return {"desde":desde,"ate":ate,"peds":peds,"vendedores":vends}
+    datas=sorted(p["dt"] for p in peds if p["dt"])
+    return {"dmin":datas[0] if datas else "","dmax":datas[-1] if datas else "",
+            "peds":peds,"vendedores":vends}
 
 def run():
     if not B: raise SystemExit("Falta a variável de ambiente BI_WEBHOOK")
