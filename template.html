@@ -265,6 +265,7 @@
       <div class="sb-ic" data-tip="Performance por vendedor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
       <div class="sb-ic" data-tip="Origem dos negócios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
       <div class="sb-ic" data-tip="Tipo de cliente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+      <div class="sb-ic" data-tip="Produto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22" x2="12" y2="12"/></svg></div>
       <div class="sb-ic" data-tip="Clientes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
     </div>
     <div class="sb-sp"></div>
@@ -331,6 +332,12 @@
   <div class="grid2">
     <div class="card"><div class="cardh">Quantidade de negócios</div><div id="chart-tipo-qtd"></div></div>
     <div class="card"><div class="cardh">Vendas (ganhos)</div><div id="chart-tipo-ganho"></div></div>
+  </div>
+
+  <div class="eyebrow" id="sec-produto">Produto</div>
+  <div class="grid2">
+    <div class="card"><div class="cardh">Quantidade de negócios por produto</div><div id="chart-prod-qtd"></div></div>
+    <div class="card"><div class="cardh">Vendas ganhas por produto</div><div id="chart-prod-ganho"></div></div>
   </div>
 
   <div class="eyebrow" id="sec-clientes">Clientes · quem mais compra</div>
@@ -512,13 +519,15 @@ resetBtn.onclick=()=>{for(const k in FIL)FIL[k].clear();DATE.from="";DATE.to="";
 function compute(rows){
   const g={total:rows.length,won:0,lost:0,open:0,pipe:0,wonv:0,wonvn:0,negV:0,sumDays:0,nDays:0};
   const perCat={}; const criados={},ganhos={},ganhosV={};   // keyed por "YYYY-MM"
-  const src={}; const perVend={}; const perTipo={}; const perCli={};
+  const src={}; const perVend={}; const perTipo={}; const perCli={}; const perProd={};
   for(const r of rows){
     if(r.w==="open" && nrm(r.st).includes("negocia")) g.negV+=r.o;
     if(r.cli){if(!perCli[r.cli])perCli[r.cli]={total:0,won:0,wonv:0};
       perCli[r.cli].total++; if(r.w==="won"){perCli[r.cli].won++;perCli[r.cli].wonv+=r.o;}}
     if(!perTipo[r.tp])perTipo[r.tp]={total:0,won:0,wonv:0};
     perTipo[r.tp].total++; if(r.w==="won"){perTipo[r.tp].won++;perTipo[r.tp].wonv+=r.o;}
+    if(!perProd[r.pr])perProd[r.pr]={total:0,won:0,wonv:0};
+    perProd[r.pr].total++; if(r.w==="won"){perProd[r.pr].won++;perProd[r.pr].wonv+=r.o;}
     if(!perVend[r.vd])perVend[r.vd]={total:0,won:0,lost:0,wonv:0,pipe:0};
     const pv=perVend[r.vd]; pv.total++;
     if(r.w==="won"){pv.won++;pv.wonv+=r.o;} else if(r.w==="lost"){pv.lost++;} else {pv.pipe+=r.o;}
@@ -536,7 +545,7 @@ function compute(rows){
   g.conv=g.total?g.won/g.total*100:0;   // ganhos ÷ total (inclui em aberto)
   g.ticket=g.wonvn?g.wonv/g.wonvn:0;
   g.tempoMedio=g.nDays?g.sumDays/g.nDays:0;
-  return {g,perCat,criados,ganhos,ganhosV,src,perVend,perTipo,perCli};
+  return {g,perCat,criados,ganhos,ganhosV,src,perVend,perTipo,perCli,perProd};
 }
 // donut SVG a partir de [{label,value,color}]
 function makeDonut(data, centerTop, centerBot){
@@ -704,10 +713,17 @@ function refresh(){
     tipos.map(([k,p])=>({label:k,n:p.total})).sort((a,b)=>b.n-a.n), "var(--brand)");
   renderBars(document.getElementById("chart-tipo-ganho"),
     tipos.map(([k,p])=>({label:k,n:p.won,extra:brlK(p.wonv)})).filter(d=>d.n>0).sort((a,b)=>b.n-a.n), "var(--good)");
+
+  // produto (inclui "— não informado")
+  const prods=Object.entries(A.perProd);
+  renderBars(document.getElementById("chart-prod-qtd"),
+    prods.map(([k,p])=>({label:k,n:p.total})).sort((a,b)=>b.n-a.n), "var(--brand)");
+  renderBars(document.getElementById("chart-prod-ganho"),
+    prods.map(([k,p])=>({label:k,n:p.won,extra:brlK(p.wonv)})).filter(d=>d.n>0).sort((a,b)=>b.n-a.n), "var(--good)");
 }
 // ---- navegação de seções (só do Bitrix) ----
 const NAV={"Início":"__top","Funis de venda":"sec-funil","Performance por vendedor":"sec-vendedor",
-  "Clientes":"sec-clientes","Origem dos negócios":"sec-graficos","Tipo de cliente":"sec-tipo"};
+  "Clientes":"sec-clientes","Origem dos negócios":"sec-graficos","Tipo de cliente":"sec-tipo","Produto":"sec-produto"};
 document.querySelectorAll(".sb-secnav .sb-ic").forEach(el=>{
   el.onclick=()=>{
     const tgt=NAV[el.getAttribute("data-tip")];
