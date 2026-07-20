@@ -241,6 +241,11 @@
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%235c6b85' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cline x1='15' y1='15' x2='11' y2='11'/%3E%3C/svg%3E");
     background-repeat:no-repeat;background-position:10px center}
   .cli-search:focus{outline:none;border-color:var(--brand)}
+  .tiny-alert{display:flex;gap:12px;align-items:flex-start;background:#fff6d6;
+    border:1px solid #e6c34d;border-radius:12px;padding:13px 15px;margin-bottom:16px;font-size:13.5px;color:#5c4a10}
+  .tiny-alert svg{flex:0 0 auto;margin-top:1px}
+  @media (prefers-color-scheme:dark){.tiny-alert{background:#2a2110;border-color:#5a4a1a;color:#e8d9a8}}
+  :root[data-theme="dark"] .tiny-alert{background:#2a2110;border-color:#5a4a1a;color:#e8d9a8}
 </style>
 
 <div class="app">
@@ -340,6 +345,10 @@
   </div><!-- /view-bitrix -->
 
   <div id="view-tiny" style="display:none">
+    <div class="tiny-alert">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2.2"><path d="M12 9v4m0 4h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+      <div><b>Aba em construção.</b> Os dados do Tiny ainda estão sendo validados e podem estar <b>desatualizados ou incorretos</b>. Em breve: filtro de produtos, curva ABC e regiões (faturamento/entrega).</div>
+    </div>
     <div class="filterbar">
       <span class="fllbl">Filtros</span>
       <select id="tiny-vd" class="tiny-select"></select>
@@ -357,8 +366,10 @@
         <div class="card"><div class="cardh">Situação dos pedidos</div><div id="tiny-sit"></div></div>
         <div class="card"><div class="cardh">Top clientes (Tiny)</div><div id="tiny-cli"></div></div>
       </div>
-      <div class="eyebrow" style="margin-top:22px">Vendas por mês</div>
-      <div class="card"><div class="months" id="tiny-mes"></div></div>
+      <div class="grid2" style="margin-top:22px">
+        <div class="card"><div class="cardh">Vendas por mês (R$)</div><div class="months" id="tiny-mes"></div></div>
+        <div class="card"><div class="cardh">Vendas por ano (R$)</div><div class="months" id="tiny-ano"></div></div>
+      </div>
       <div class="grid2" style="margin-top:14px">
         <div class="card"><div class="cardh">Por vendedor</div><div id="tiny-ven"></div></div>
         <div class="card" style="overflow-x:auto"><div class="cardh">Pedidos por cliente</div>
@@ -740,12 +751,13 @@ function renderTiny(){
   const q=nrm(TINYF.q);
   const rows=T.peds.filter(p=>(!TINYF.vd||p.vd===TINYF.vd)&&(!q||nrm(p.cli).includes(q))
     &&(!TINYF.from||(p.dt&&p.dt>=TINYF.from))&&(!TINYF.to||(p.dt&&p.dt<=TINYF.to)));
-  let canc=0,valor=0,nval=0; const sit={},cli={},ven={},mes={};
+  let canc=0,valor=0,nval=0; const sit={},cli={},ven={},mes={},ano={};
   for(const p of rows){
     sit[p.st]=(sit[p.st]||0)+1;
     if(p.canc){canc++;continue;}
     valor+=p.v; if(p.v>0)nval++;
     if(p.ym)mes[p.ym]=(mes[p.ym]||0)+p.v;
+    if(p.dt)ano[p.dt.slice(0,4)]=(ano[p.dt.slice(0,4)]||0)+p.v;
     cli[p.cli]=cli[p.cli]||[0,0]; cli[p.cli][0]++; cli[p.cli][1]+=p.v;
     ven[p.vd]=ven[p.vd]||[0,0]; ven[p.vd][0]++; ven[p.vd][1]+=p.v;
   }
@@ -770,6 +782,10 @@ function renderTiny(){
   const maxV=Math.max(...yms.map(y=>mes[y]),1);
   document.getElementById("tiny-mes").innerHTML= yms.length? yms.map(y=>
     `<div class="mcol"><div class="bars"><div class="gn" style="width:60%;height:${mes[y]/maxV*100}%" title="${brl0(mes[y])}"></div></div><div class="ml">${ymLabel(y)}</div></div>`).join("")
+    :'<div class="empty" style="width:100%;align-self:center">Sem vendas no recorte.</div>';
+  const anos=Object.keys(ano).sort(); const maxA=Math.max(...anos.map(y=>ano[y]),1);
+  document.getElementById("tiny-ano").innerHTML= anos.length? anos.map(y=>
+    `<div class="mcol"><div class="bars"><div class="cr" style="width:66%;height:${ano[y]/maxA*100}%;background:var(--brand)" title="${brl0(ano[y])}"></div></div><div class="ml">${y}</div></div>`).join("")
     :'<div class="empty" style="width:100%;align-self:center">Sem vendas no recorte.</div>';
   renderBars(document.getElementById("tiny-ven"),
     Object.entries(ven).map(([k,v])=>({label:k,n:Math.round(v[1]),disp:brlK(v[1])})).sort((a,b)=>b.n-a.n).slice(0,10), "var(--open)");
