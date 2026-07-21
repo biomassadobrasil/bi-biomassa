@@ -21,6 +21,23 @@ def pesquisa_pedidos(pagina=1, data_inicial=None, data_final=None, extra=None):
     if extra: params.update(extra)
     return _get("pedidos.pesquisa.php", params)
 
+def pedido_obter(pedido_id):
+    """pedido.obter.php — detalhe do pedido, com itens/produtos."""
+    return _get("pedido.obter.php", {"id": pedido_id})
+
+def amostra_item():
+    """Pega 1 pedido e mostra os campos dos itens (p/ montar produtos/ABC)."""
+    res = pesquisa_pedidos(pagina=1)
+    peds = res.get("retorno",{}).get("pedidos",[])
+    if not peds: return {"erro":"sem pedidos"}
+    pid = peds[0]["pedido"]["id"]
+    det = pedido_obter(pid).get("retorno",{})
+    ped = det.get("pedido",{})
+    itens = ped.get("itens",[])
+    campos = sorted(itens[0]["item"].keys()) if itens else []
+    return {"status":det.get("status"),"pedido_id":pid,"qtd_itens":len(itens),
+            "campos_item":campos,"exemplos":[i.get("item") for i in itens[:3]]}
+
 def amostra():
     """Retorna a 1ª página + os nomes dos campos de um pedido (p/ inspeção)."""
     res = pesquisa_pedidos(pagina=1)
