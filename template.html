@@ -383,6 +383,18 @@
           <table id="tiny-tbl"><thead><tr><th>Cliente</th><th class="r">Pedidos</th><th class="r">Valor</th></tr></thead><tbody></tbody></table>
         </div>
       </div>
+
+      <div class="eyebrow" id="sec-tiny-prod" style="margin-top:22px">Produtos · curva ABC <span id="prod-nota" style="text-transform:none;letter-spacing:0;font-weight:500"></span></div>
+      <div class="filterbar" style="margin-bottom:14px">
+        <span class="fllbl">Produto</span>
+        <input id="prod-search" class="cli-search" type="text" placeholder="Buscar produto (ex.: argamassa)…">
+      </div>
+      <div class="grid2">
+        <div class="card"><div class="cardh">Produtos mais vendidos (R$)</div><div id="chart-prod-tiny"></div></div>
+        <div class="card" style="overflow-x:auto"><div class="cardh">Curva ABC</div>
+          <table id="abc-tbl"><thead><tr><th>Produto</th><th class="r">Qtd</th><th class="r">Valor</th><th class="r">% acum.</th><th class="r">Classe</th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
     </div>
   </div><!-- /view-tiny -->
 
@@ -809,7 +821,26 @@ function renderTiny(){
   document.querySelector("#tiny-tbl tbody").innerHTML= rank.length? rank.map(c=>
     `<tr><td><b>${c.nm}</b></td><td class="r tnum">${int(c.n)}</td><td class="r tnum">${brl0(c.val)}</td></tr>`).join("")
     :`<tr><td colspan="3" class="empty">Nenhum pedido no recorte.</td></tr>`;
+  renderProdutos();
 }
+let PRODQ="";
+function renderProdutos(){
+  const T=D.tiny; const nota=document.getElementById("prod-nota");
+  const all=(T&&T.produtos)||[];
+  if(nota) nota.textContent = (T&&!T.prod_ativo) ? "(inativo — configure REDIS_URL no servidor)"
+    : all.length?`(desde ${T.prod_desde.split("-").reverse().join("/")} · ${int(T.prod_pedidos)} pedidos)`:"(coletando na próxima atualização…)";
+  const q=nrm(PRODQ);
+  const list=q?all.filter(p=>nrm(p.nome).includes(q)):all;
+  renderBars(document.getElementById("chart-prod-tiny"),
+    list.slice(0,15).map(p=>({label:p.nome,n:Math.round(p.valor),disp:brlK(p.valor)})), "var(--good)");
+  const tot=list.reduce((a,p)=>a+p.valor,0)||1; let acc=0;
+  document.querySelector("#abc-tbl tbody").innerHTML= list.length? list.slice(0,40).map(p=>{
+    acc+=p.valor; const pct=acc/tot*100; const cls=pct<=80?"A":pct<=95?"B":"C";
+    const cor=cls==="A"?"var(--good)":cls==="B"?"#c98a00":"var(--bad)";
+    return `<tr><td>${p.nome}</td><td class="r tnum">${int(Math.round(p.qtd))}</td><td class="r tnum">${brl0(p.valor)}</td><td class="r tnum">${pct.toFixed(1).replace(".",",")}%</td><td class="r"><b style="color:${cor}">${cls}</b></td></tr>`;
+  }).join("") : `<tr><td colspan="5" class="empty">Sem produtos coletados ainda (janela em construção).</td></tr>`;
+}
+const ps=document.getElementById("prod-search"); if(ps) ps.oninput=e=>{PRODQ=e.target.value.trim();renderProdutos();};
 document.getElementById("tiny-vd").onchange=e=>{TINYF.vd=e.target.value;renderTiny();};
 document.getElementById("tiny-search").oninput=e=>{TINYF.q=e.target.value.trim();renderTiny();};
 document.getElementById("tiny-from").onchange=e=>{TINYF.from=e.target.value;renderTiny();};
