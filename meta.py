@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Conector Meta Marketing API (Graph). Token em env META_TOKEN, conta em META_AD_ACCOUNT."""
-import os, json, urllib.parse, urllib.request
+import os, json, urllib.parse, urllib.request, urllib.error
 
 VER = "v21.0"
 BASE = f"https://graph.facebook.com/{VER}"
@@ -15,8 +15,12 @@ def _get(path, params):
     if not token: raise RuntimeError("Falta META_TOKEN")
     q = {"access_token": token, **params}
     url = f"{BASE}/{path}?{urllib.parse.urlencode(q)}"
-    with urllib.request.urlopen(url, timeout=60) as r:
-        return json.load(r)
+    try:
+        with urllib.request.urlopen(url, timeout=60) as r:
+            return json.load(r)
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", "replace")
+        raise RuntimeError(f"Meta {e.code} em {path}: {body}")
 
 def campanhas():
     """Lista campanhas com status (ACTIVE/PAUSED)."""
