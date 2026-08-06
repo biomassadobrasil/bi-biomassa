@@ -253,29 +253,8 @@ def build_tiny():
     vends=sorted({p["vd"] for p in peds})
     datas=sorted(p["dt"] for p in peds if p["dt"])
 
-    # ---- PRODUTOS (itens dos pedidos) — só com Redis (cache), janela configurável ----
-    prod_desde=os.environ.get("TINY_PROD_DESDE","2026-01-01")  # ISO
-    produtos=[]; janela=[]
-    if _RDS:
-        prod={}
-        for p in pedidos:
-            d=p.get("data_pedido","")
-            dt=d[6:10]+"-"+d[3:5]+"-"+d[0:2] if len(d)==10 else ""
-            if dt>=prod_desde and "cancel" not in norm(p.get("situacao")):
-                janela.append(p.get("id"))
-        for pid in janela:
-            for it in _itens_do_pedido(pid):
-                nome=it["d"] or ("Produto "+it["idp"])
-                vtot=it["q"]*it["vu"]
-                e=prod.setdefault(nome,[0.0,0.0,0]); e[0]+=it["q"]; e[1]+=vtot; e[2]+=1
-        produtos=sorted([{"nome":k,"qtd":round(v[0],2),"valor":round(v[1],2),"pedidos":v[2]}
-                         for k,v in prod.items()], key=lambda x:-x["valor"])
-        print(f"[BI] Tiny produtos: {len(produtos)} de {len(janela)} pedidos (desde {prod_desde})")
-
     return {"dmin":datas[0] if datas else "","dmax":datas[-1] if datas else "",
-            "peds":peds,"vendedores":vends,
-            "produtos":produtos,"prod_desde":prod_desde,"prod_pedidos":len(janela),
-            "prod_ativo":bool(_RDS)}
+            "peds":peds,"vendedores":vends}
 
 def run():
     if not B: raise SystemExit("Falta a variável de ambiente BI_WEBHOOK")
