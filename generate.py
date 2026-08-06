@@ -219,23 +219,22 @@ def build(stages, sources, enum_by_uf, deals):
         if "negocia" in nm or "obra futura" in nm: return "negociacao"
         if "proposta" in nm: return "proposta"
         return "contato"
-    mkt_bitrix={}
+    mkt_vendas=[]   # 1 registro por deal de Vendas vindo de campanha (fonte 1/2), com data
     MKT_CATS=[c for c in CATS if c!="20"]   # exclui Vendas | PF (pessoa física vai p/ outra pipeline)
-    for sid in ("1","2"):
-        ds=[d for d in deals if str(d.get("SOURCE_ID") or "")==sid and str(d["CATEGORY_ID"]) in MKT_CATS]
-        b={k:[0,0.0] for k in ("contato","proposta","negociacao","ganho","perdido")}
-        for d in ds:
-            try: o=float(d.get("OPPORTUNITY") or 0)
-            except: o=0.0
-            k=_bucket(d); b[k][0]+=1; b[k][1]+=o
-        mkt_bitrix[sid]={"cards":len(ds),"buckets":{k:{"n":v[0],"valor":round(v[1],2)} for k,v in b.items()}}
+    for d in deals:
+        sid=str(d.get("SOURCE_ID") or "")
+        if sid not in ("1","2") or str(d["CATEGORY_ID"]) not in MKT_CATS: continue
+        try: o=float(d.get("OPPORTUNITY") or 0)
+        except: o=0.0
+        mkt_vendas.append({"s":sid,"t":"v","seg":_bucket(d),
+                           "dt":(d.get("DATE_CREATE","") or "")[:10],"o":round(o,2)})
 
     return {"catNames":CATS,"order":ORDER,
         "stgOrder":{c:sorted(set(r["st"] for r in recs if r["c"]==c),key=lambda n:stg_sort.get((c,n),999)) for c in ORDER},
         "recs":recs,
         "opt":{"src":opts("src"),"vd":opts("vd"),"pr":opts("pr"),"tp":opts("tp"),"st":stg_global},
         "dmin":datas[0] if datas else "","dmax":datas[-1] if datas else "",
-        "mkt_bitrix":mkt_bitrix}
+        "mkt_vendas":mkt_vendas}
 
 def build_tiny():
     """Puxa pedidos do Tiny (v2) e agrega. Retorna None se não houver TINY_TOKEN/erro."""
@@ -295,15 +294,25 @@ def run():
         payload["tiny"]=build_tiny()
     except Exception as e:
         import traceback; print("[BI] Tiny falhou (segue sem):\n"+traceback.format_exc()); payload["tiny"]=None
-    # marketing: plataforma (Meta hoje; Google depois) + funil do Bitrix por fonte
+    # marketing: pipeline 14 (topo: leads/PF) + funil de Vendas (build já calculou)
     meta_plat=None
     try: meta_plat=build_meta()
     except Exception: import traceback; print("[BI] Meta falhou:\n"+traceback.format_exc())
-    mb=payload.pop("mkt_bitrix",{})
-    payload["marketing"]={
-        "meta":{"plataforma":meta_plat,"bitrix":mb.get("1")},
-        "google":{"plataforma":None,"bitrix":mb.get("2")},
-    }
+    mkt_recs=payload.pop("mkt_vendas",[])       # registros de Vendas (t="v")
+    STG14={"C14:UC_NNZW1X":"pf","C14:UC_YQ0LJX":"antigos","C14:NEW":"novo","C14:UC_KGMM21":"b2b14"}
+    try:
+        start=0
+        while True:
+            res=call("crm.deal.list",{"filter":{"CATEGORY_ID":14},"select":["ID","SOURCE_ID","STAGE_ID","DATE_CREATE"],"start":start,"order":{"ID":"ASC"}})
+            for d in res.get("result",[]):
+                sid=str(d.get("SOURCE_ID") or "")
+                if sid not in ("1","2"): continue
+                mkt_recs.append({"s":sid,"t":"c14","seg":STG14.get(d.get("STAGE_ID"),"fechado14"),
+                                 "dt":(d.get("DATE_CREATE","") or "")[:10],"o":0})
+            if res.get("next") is None: break
+            start=res["next"]
+    except Exception: import traceback; print("[BI] cat14 falhou:\n"+traceback.format_exc())
+    payload["marketing"]={"recs":mkt_recs,"meta_plat":meta_plat,"google_plat":None}
     tpl=open(os.path.join(HERE,"template.html"),encoding="utf-8").read()
     hoje=datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
     html=tpl.replace("__DATA__", json.dumps(payload,ensure_ascii=False)).replace("__GENDATE__", hoje)

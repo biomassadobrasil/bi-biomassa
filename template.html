@@ -256,6 +256,15 @@
   .fnl-foot{margin-top:12px;padding-top:12px;border-top:1px solid var(--line2);font-size:12.5px;color:var(--muted);line-height:1.7}
   .fnl-foot b{color:var(--ink)}
   @media(max-width:640px){.fnl-row{grid-template-columns:120px 1fr}.fnl-val{grid-column:2;text-align:left}}
+  .mkt-presets{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .mkt-presets button{font:inherit;font-size:12.5px;font-weight:650;border:none;background:transparent;
+    color:var(--muted);padding:6px 11px;cursor:pointer;border-right:1px solid var(--line)}
+  .mkt-presets button:last-child{border-right:none}
+  .mkt-presets button:hover{background:var(--line2)}
+  .mkt-presets button.on{background:var(--brand);color:#fff}
+  .mkt-perdas{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line2)}
+  .mkt-chip{font-size:12.5px;font-weight:600;padding:4px 11px;border-radius:20px}
+  .mkt-chip b{font-weight:800}
 </style>
 
 <div class="app">
@@ -402,6 +411,19 @@
     <div class="tiny-alert">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2.2"><path d="M12 9v4m0 4h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
       <div><b>Como ler:</b> o topo (<b>Leads</b>) vem da plataforma (Meta/Google). O restante do funil vem do <b>Bitrix</b> (fonte da campanha). A diferença entre "Leads" e "Viraram card" mostra quanto vaza entre o anúncio e o CRM.</div>
+    </div>
+    <div class="filterbar" style="margin-bottom:16px">
+      <span class="fllbl">Período</span>
+      <span class="mkt-presets">
+        <button data-p="hoje">Hoje</button><button data-p="ontem">Ontem</button>
+        <button data-p="7">7 dias</button><button data-p="30">30 dias</button>
+        <button data-p="tudo" class="on">Tudo</button>
+      </span>
+      <span class="drsep">ou</span>
+      <input type="date" id="mkt-from" class="tiny-select" style="color-scheme:light dark">
+      <span class="drsep">até</span>
+      <input type="date" id="mkt-to" class="tiny-select" style="color-scheme:light dark">
+      <span class="fcount" id="mkt-fcount" style="margin-left:auto"></span>
     </div>
     <div class="eyebrow">Meta Ads · funil de leads</div>
     <div id="mkt-meta"></div>
@@ -842,39 +864,75 @@ document.getElementById("tiny-to").onchange=e=>{TINYF.to=e.target.value;renderTi
 document.getElementById("tiny-reset").onclick=()=>{TINYF.vd="";TINYF.q="";TINYF.from="";TINYF.to="";
   document.getElementById("tiny-vd").value="";document.getElementById("tiny-search").value="";
   document.getElementById("tiny-from").value="";document.getElementById("tiny-to").value="";renderTiny();};
-// ---- B.I Marketing (funil Meta/Google) ----
-function funilMkt(el, plat, bit){
-  if(!bit){ el.innerHTML='<div class="card"><div class="empty">Sem dados no recorte.</div></div>'; return; }
-  const b=bit.buckets, leads=plat?plat.leads:null, max=Math.max(leads||0,bit.cards,1);
-  // "gerou proposta" = chegou na proposta OU além (proposta+negociação+ganho) — cumulativo
-  const propN=b.proposta.n+b.negociacao.n+b.ganho.n, propV=b.proposta.valor+b.negociacao.valor+b.ganho.valor;
+// ---- B.I Marketing (funil Meta/Google com filtro de data) ----
+const MKTF={from:"",to:""};
+function ymd(d){return d.toISOString().slice(0,10);}
+function mktPreset(p){
+  const now=new Date(); const t=ymd(now);
+  if(p==="hoje"){MKTF.from=t;MKTF.to=t;}
+  else if(p==="ontem"){const y=new Date(now);y.setDate(y.getDate()-1);MKTF.from=ymd(y);MKTF.to=ymd(y);}
+  else if(p==="7"||p==="30"){const s=new Date(now);s.setDate(s.getDate()-(+p-1));MKTF.from=ymd(s);MKTF.to=t;}
+  else {MKTF.from="";MKTF.to="";}
+  document.getElementById("mkt-from").value=MKTF.from; document.getElementById("mkt-to").value=MKTF.to;
+  renderMarketing();
+}
+function mktAgg(src){
+  const R=(D.marketing&&D.marketing.recs)||[];
+  const inr=r=>r.s===src && (!MKTF.from||(r.dt&&r.dt>=MKTF.from)) && (!MKTF.to||(r.dt&&r.dt<=MKTF.to));
+  const c14=R.filter(r=>inr(r)&&r.t==="c14"), v=R.filter(r=>inr(r)&&r.t==="v");
+  const seg=s=>c14.filter(r=>r.seg===s).length;
+  const b={contato:{n:0,v:0},proposta:{n:0,v:0},negociacao:{n:0,v:0},ganho:{n:0,v:0},perdido:{n:0,v:0}};
+  v.forEach(r=>{const k=b[r.seg]; if(k){k.n++;k.v+=r.o||0;}});
+  return {total:c14.length+v.length, pf:seg("pf"), antigos:seg("antigos"), b2b:v.length, b};
+}
+function funilMkt(el, plat, a){
+  if(!a || !a.total){ el.innerHTML='<div class="card"><div class="empty">Sem leads no período.</div></div>'; return; }
+  const propN=a.b.proposta.n+a.b.negociacao.n+a.b.ganho.n, propV=a.b.proposta.v+a.b.negociacao.v+a.b.ganho.v;
+  // etapas do FUNIL (decrescente) — PF e Perdido ficam como perdas, fora do afunilamento
   const steps=[
-    {l:"Leads (plataforma)",n:leads,hint:plat?(int(plat.impressoes)+" impressões"):"aguardando API do Google"},
-    {l:"Viraram card (Bitrix)",n:bit.cards,hint:leads?(Math.round(bit.cards/leads*100)+"% dos leads"):""},
-    {l:"Gerou proposta",n:propN,val:propV},
-    {l:"Em negociação",n:b.negociacao.n,val:b.negociacao.valor},
-    {l:"Ganho",n:b.ganho.n,val:b.ganho.valor,cor:"var(--good)"},
-    {l:"Perdido",n:b.perdido.n,val:b.perdido.valor,cor:"var(--bad)"},
+    {l:"Leads recebidos",n:a.total,c:"#2853a1"},
+    {l:"B2B (sem PF)",n:a.b2b,c:"#3f6fd0"},
+    {l:"Gerou proposta",n:propN,c:"#f0b429",val:propV},
+    {l:"Em negociação",n:a.b.negociacao.n,c:"#d2691e",val:a.b.negociacao.v},
+    {l:"Ganho",n:a.b.ganho.n,c:"#1f9d6b",val:a.b.ganho.v},
   ];
-  const rows=steps.map(s=>{
-    const col=s.cor||"var(--brand)";
-    const w=s.n==null?0:Math.max(s.n/max*100,s.n>0?2:0);
-    const sub=s.val?` · <span style="color:var(--muted)">${brlK(s.val)}</span>`:(s.hint?` · <span style="color:var(--muted)">${s.hint}</span>`:"");
-    return `<div class="fnl-row"><div class="fnl-lbl">${s.l}</div>
-      <div class="fnl-track"><div class="fnl-fill" style="width:${w}%;background:${col}"></div></div>
-      <div class="fnl-val tnum">${s.n==null?"—":int(s.n)}${sub}</div></div>`;
-  }).join("");
+  const leads=a.total||1, W=760,cx=W/2,maxW=300,segH=58,gap=7,H=steps.length*(segH+gap)+8;
+  const wv=n=>Math.max(n/leads*maxW,26);
+  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-height:${H}px">`;
+  steps.forEach((s,i)=>{
+    const y=i*(segH+gap)+6, wt=wv(s.n), wb=wv(i<steps.length-1?steps[i+1].n:s.n*0.7);
+    const conv=i>0?` · ${Math.round(s.n/steps[i-1].n*100)}%`:"";
+    svg+=`<polygon points="${cx-wt/2},${y} ${cx+wt/2},${y} ${cx+wb/2},${y+segH} ${cx-wb/2},${y+segH}" fill="${s.c}" rx="4"/>`;
+    svg+=`<text x="${cx}" y="${y+segH/2+6}" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">${int(s.n)}</text>`;
+    svg+=`<text x="${cx-maxW/2-16}" y="${y+segH/2+1}" text-anchor="end" fill="var(--ink)" font-size="13.5" font-weight="700">${s.l}</text>`;
+    svg+=`<text x="${cx-maxW/2-16}" y="${y+segH/2+17}" text-anchor="end" fill="var(--muted)" font-size="11">${conv.replace(" · ","")}</text>`;
+    if(s.val!=null) svg+=`<text x="${cx+maxW/2+16}" y="${y+segH/2+5}" fill="var(--muted)" font-size="12.5" font-weight="600">${brlK(s.val)}</text>`;
+  });
+  svg+=`</svg>`;
+  const perdas=`<div class="mkt-perdas"><span class="mkt-chip" style="background:#fdeccd;color:#8a5a00">Pessoa Física (fora): <b>${int(a.pf)}</b></span>`+
+    (a.antigos?`<span class="mkt-chip" style="background:var(--line2)">Antigos: <b>${int(a.antigos)}</b></span>`:"")+
+    `<span class="mkt-chip" style="background:#fbe6e8;color:#a3242f">Perdido: <b>${int(a.b.perdido.n)}</b></span></div>`;
   let foot="";
   if(plat){const cpl=plat.leads?plat.gasto/plat.leads:0;
-    foot=`<div class="fnl-foot">Investido <b>${brlK(plat.gasto)}</b> · Custo/lead <b>${brlK(cpl)}</b> · `+
+    foot=`<div class="fnl-foot">Meta plataforma: <b>${int(plat.leads)}</b> leads (histórico) · Investido <b>${brlK(plat.gasto)}</b> · Custo/lead <b>${brlK(cpl)}</b><br>`+
       plat.campanhas.map(c=>`${c.nome} <b>(${int(c.leads)})</b>`).join(" · ")+`</div>`;}
-  el.innerHTML=`<div class="card">${rows}${foot}</div>`;
+  else foot=`<div class="fnl-foot">Topo da plataforma (Google Ads): <b>aguardando API</b> — funil abaixo é do Bitrix.</div>`;
+  el.innerHTML=`<div class="card">${svg}${perdas}${foot}</div>`;
 }
 function renderMarketing(){
   const M=(D.marketing||{});
-  funilMkt(document.getElementById("mkt-meta"), M.meta&&M.meta.plataforma, M.meta&&M.meta.bitrix);
-  funilMkt(document.getElementById("mkt-google"), M.google&&M.google.plataforma, M.google&&M.google.bitrix);
+  const nf=(MKTF.from||MKTF.to);
+  const br=d=>d?d.split("-").reverse().join("/"):"";
+  document.getElementById("mkt-fcount").innerHTML= nf?`período ${br(MKTF.from)||"início"} → ${br(MKTF.to)||"hoje"}`:"todo o período";
+  funilMkt(document.getElementById("mkt-meta"), M.meta_plat, mktAgg("1"));
+  funilMkt(document.getElementById("mkt-google"), M.google_plat, mktAgg("2"));
 }
+document.querySelectorAll(".mkt-presets button").forEach(btn=>btn.onclick=()=>{
+  document.querySelectorAll(".mkt-presets button").forEach(b=>b.classList.toggle("on",b===btn));
+  mktPreset(btn.dataset.p);
+});
+document.getElementById("mkt-from").onchange=e=>{MKTF.from=e.target.value;document.querySelectorAll(".mkt-presets button").forEach(b=>b.classList.remove("on"));renderMarketing();};
+document.getElementById("mkt-to").onchange=e=>{MKTF.to=e.target.value;document.querySelectorAll(".mkt-presets button").forEach(b=>b.classList.remove("on"));renderMarketing();};
 renderTiny();
 refresh();
 </script>
