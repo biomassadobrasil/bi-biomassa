@@ -53,6 +53,16 @@ def tiny_item():
         import traceback
         return Response("ERRO: "+str(e)+"\n\n"+traceback.format_exc(), mimetype="text/plain"), 500
 
+@app.route("/meta-debug")
+def meta_debug():
+    try:
+        import meta
+        return Response(json.dumps(meta.amostra(), ensure_ascii=False, indent=2),
+                        mimetype="application/json")
+    except Exception as e:
+        import traceback
+        return Response("ERRO: "+str(e)+"\n\n"+traceback.format_exc(), mimetype="text/plain"), 500
+
 # agenda 08:00 e 12:30 no horário de São Paulo
 tz = ZoneInfo("America/Sao_Paulo")
 sched = BackgroundScheduler(timezone=tz)
