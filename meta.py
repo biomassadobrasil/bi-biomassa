@@ -47,6 +47,27 @@ def insights(date_preset="maximum"):
         if not after or not res.get("data"): break
     return out
 
+def amostra_leads():
+    """Inspeção leads_retrieval: 1 campanha ativa -> ads -> leads com field_data (perfil)."""
+    ativas=[c for c in campanhas() if c.get("effective_status")=="ACTIVE"]
+    if not ativas: return {"erro":"sem campanhas ativas"}
+    cid=ativas[0]["id"]; nome=ativas[0]["name"]
+    ads=_get(f"{cid}/ads", {"fields":"id,name","limit":10}).get("data",[])
+    out={"campanha":nome,"qtd_ads":len(ads)}
+    for a in ads:
+        try:
+            leads=_get(f"{a['id']}/leads", {"fields":"created_time,campaign_name,ad_name,field_data","limit":3})
+            d=leads.get("data",[])
+            if d:
+                out["ad_com_leads"]=a["name"]
+                out["campos_form"]=[f.get("name") for f in d[0].get("field_data",[])]
+                out["exemplos"]=[{fd.get("name"):(fd.get("values") or [None])[0] for fd in x.get("field_data",[])}|{"quando":x.get("created_time"),"campanha":x.get("campaign_name")} for x in d]
+                return out
+        except Exception as e:
+            out.setdefault("erros",[]).append(str(e)[:180])
+    out["obs"]="nenhum ad retornou leads (ou sem permissão)"
+    return out
+
 def resumo_ativas():
     """Campanhas ATIVAS com leads (métrica 'lead'), gasto, impressões, cliques."""
     ids={c["id"]:c["name"] for c in campanhas() if c.get("effective_status")=="ACTIVE"}
