@@ -220,8 +220,9 @@ def build(stages, sources, enum_by_uf, deals):
         if "proposta" in nm: return "proposta"
         return "contato"
     mkt_bitrix={}
+    MKT_CATS=[c for c in CATS if c!="20"]   # exclui Vendas | PF (pessoa física vai p/ outra pipeline)
     for sid in ("1","2"):
-        ds=[d for d in deals if str(d.get("SOURCE_ID") or "")==sid and str(d["CATEGORY_ID"]) in CATS]
+        ds=[d for d in deals if str(d.get("SOURCE_ID") or "")==sid and str(d["CATEGORY_ID"]) in MKT_CATS]
         b={k:[0,0.0] for k in ("contato","proposta","negociacao","ganho","perdido")}
         for d in ds:
             try: o=float(d.get("OPPORTUNITY") or 0)
