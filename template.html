@@ -246,6 +246,16 @@
   .tiny-alert svg{flex:0 0 auto;margin-top:1px}
   @media (prefers-color-scheme:dark){.tiny-alert{background:#2a2110;border-color:#5a4a1a;color:#e8d9a8}}
   :root[data-theme="dark"] .tiny-alert{background:#2a2110;border-color:#5a4a1a;color:#e8d9a8}
+  /* funil marketing */
+  .fnl-row{display:grid;grid-template-columns:160px 1fr 210px;gap:14px;align-items:center;padding:9px 0}
+  .fnl-row+.fnl-row{border-top:1px solid var(--line2)}
+  .fnl-lbl{font-weight:650;font-size:13.5px}
+  .fnl-track{height:14px;border-radius:7px;background:var(--line2);overflow:hidden}
+  .fnl-fill{height:100%;border-radius:7px;min-width:2px}
+  .fnl-val{text-align:right;font-weight:700;font-size:13px;white-space:nowrap}
+  .fnl-foot{margin-top:12px;padding-top:12px;border-top:1px solid var(--line2);font-size:12.5px;color:var(--muted);line-height:1.7}
+  .fnl-foot b{color:var(--ink)}
+  @media(max-width:640px){.fnl-row{grid-template-columns:120px 1fr}.fnl-val{grid-column:2;text-align:left}}
 </style>
 
 <div class="app">
@@ -256,6 +266,7 @@
       <div class="bi-menu" id="bi-menu">
         <div class="bi-opt active" data-view="bitrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="12"/><line x1="10" y1="20" x2="10" y2="4"/><line x1="16" y1="20" x2="16" y2="9"/><line x1="21" y1="20" x2="3" y2="20"/></svg><span>B.I Bitrix</span></div>
         <div class="bi-opt" data-view="tiny"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span>B.I Tiny</span></div>
+        <div class="bi-opt" data-view="marketing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/></svg><span>B.I Marketing</span></div>
       </div>
     </div>
     <div class="sb-div"></div>
@@ -386,6 +397,17 @@
 
     </div>
   </div><!-- /view-tiny -->
+
+  <div id="view-marketing" style="display:none">
+    <div class="tiny-alert">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2.2"><path d="M12 9v4m0 4h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+      <div><b>Como ler:</b> o topo (<b>Leads</b>) vem da plataforma (Meta/Google). O restante do funil vem do <b>Bitrix</b> (fonte da campanha). A diferença entre "Leads" e "Viraram card" mostra quanto vaza entre o anúncio e o CRM.</div>
+    </div>
+    <div class="eyebrow">Meta Ads · funil de leads</div>
+    <div id="mkt-meta"></div>
+    <div class="eyebrow" style="margin-top:24px">Google Ads · funil de leads</div>
+    <div id="mkt-google"></div>
+  </div>
 
   <footer>Fontes: Bitrix24 (Negócios) + Tiny (pedidos/vendas). Valores em BRL. Tiny complementa os negócios que passam só pela emissão de proposta/pedido.</footer>
 </div>
@@ -740,13 +762,15 @@ document.querySelectorAll('.sidebar > .sb-ic[data-tip="Sair"]').forEach(el=>el.o
 function setView(v){
   document.getElementById("view-bitrix").style.display=(v==="bitrix")?"":"none";
   document.getElementById("view-tiny").style.display=(v==="tiny")?"":"none";
+  document.getElementById("view-marketing").style.display=(v==="marketing")?"":"none";
   document.querySelector(".sb-secnav").style.display=(v==="bitrix")?"":"none";
   document.querySelectorAll(".bi-opt").forEach(o=>o.classList.toggle("active",o.dataset.view===v));
-  document.getElementById("bi-cur").textContent=(v==="tiny"?"Tiny":"Bitrix")+" ▾";
-  document.querySelector(".ph-right .sub").innerHTML=(v==="tiny")
-    ? '<span class="dot"></span>Dados do Tiny · pedidos/vendas · gerado em __GENDATE__'
-    : '<span class="dot"></span>Dados ao vivo do Bitrix24 · Negócios · gerado em __GENDATE__';
+  const nome={tiny:"Tiny",marketing:"Marketing"}[v]||"Bitrix";
+  document.getElementById("bi-cur").textContent=nome+" ▾";
+  const subs={tiny:"Dados do Tiny · pedidos/vendas",marketing:"Marketing · leads das campanhas (Meta/Google)",bitrix:"Dados ao vivo do Bitrix24 · Negócios"};
+  document.querySelector(".ph-right .sub").innerHTML='<span class="dot"></span>'+subs[v]+' · gerado em __GENDATE__';
   if(v==="tiny") renderTiny();
+  if(v==="marketing") renderMarketing();
   window.scrollTo({top:0});
 }
 const biSwitch=document.getElementById("bi-switch");
@@ -818,6 +842,37 @@ document.getElementById("tiny-to").onchange=e=>{TINYF.to=e.target.value;renderTi
 document.getElementById("tiny-reset").onclick=()=>{TINYF.vd="";TINYF.q="";TINYF.from="";TINYF.to="";
   document.getElementById("tiny-vd").value="";document.getElementById("tiny-search").value="";
   document.getElementById("tiny-from").value="";document.getElementById("tiny-to").value="";renderTiny();};
+// ---- B.I Marketing (funil Meta/Google) ----
+function funilMkt(el, plat, bit){
+  if(!bit){ el.innerHTML='<div class="card"><div class="empty">Sem dados no recorte.</div></div>'; return; }
+  const b=bit.buckets, leads=plat?plat.leads:null, max=Math.max(leads||0,bit.cards,1);
+  const steps=[
+    {l:"Leads (plataforma)",n:leads,hint:plat?(int(plat.impressoes)+" impressões"):"aguardando API do Google"},
+    {l:"Viraram card (Bitrix)",n:bit.cards,hint:leads?(Math.round(bit.cards/leads*100)+"% dos leads"):""},
+    {l:"Proposta",n:b.proposta.n,val:b.proposta.valor},
+    {l:"Em negociação",n:b.negociacao.n,val:b.negociacao.valor},
+    {l:"Ganho",n:b.ganho.n,val:b.ganho.valor,cor:"var(--good)"},
+    {l:"Perdido",n:b.perdido.n,cor:"var(--bad)"},
+  ];
+  const rows=steps.map(s=>{
+    const col=s.cor||"var(--brand)";
+    const w=s.n==null?0:Math.max(s.n/max*100,s.n>0?2:0);
+    const sub=s.val?` · <span style="color:var(--muted)">${brlK(s.val)}</span>`:(s.hint?` · <span style="color:var(--muted)">${s.hint}</span>`:"");
+    return `<div class="fnl-row"><div class="fnl-lbl">${s.l}</div>
+      <div class="fnl-track"><div class="fnl-fill" style="width:${w}%;background:${col}"></div></div>
+      <div class="fnl-val tnum">${s.n==null?"—":int(s.n)}${sub}</div></div>`;
+  }).join("");
+  let foot="";
+  if(plat){const cpl=plat.leads?plat.gasto/plat.leads:0;
+    foot=`<div class="fnl-foot">Investido <b>${brlK(plat.gasto)}</b> · Custo/lead <b>${brlK(cpl)}</b> · `+
+      plat.campanhas.map(c=>`${c.nome} <b>(${int(c.leads)})</b>`).join(" · ")+`</div>`;}
+  el.innerHTML=`<div class="card">${rows}${foot}</div>`;
+}
+function renderMarketing(){
+  const M=(D.marketing||{});
+  funilMkt(document.getElementById("mkt-meta"), M.meta&&M.meta.plataforma, M.meta&&M.meta.bitrix);
+  funilMkt(document.getElementById("mkt-google"), M.google&&M.google.plataforma, M.google&&M.google.bitrix);
+}
 renderTiny();
 refresh();
 </script>

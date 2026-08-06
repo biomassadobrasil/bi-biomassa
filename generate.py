@@ -210,11 +210,31 @@ def build(stages, sources, enum_by_uf, deals):
         for n in sorted(set(r["st"] for r in recs if r["c"]==c), key=lambda n:stg_sort.get((c,n),999)):
             if n not in stg_global: stg_global.append(n)
     datas=sorted([r["dt"] for r in recs if r["dt"]]+[r["mt"] for r in recs if r["mt"]])
+
+    # ---- funil de marketing pelo Bitrix, por fonte (1=Meta, 2=Google) ----
+    def _bucket(d):
+        st=wlo(d); nm=norm(stage_name(d))
+        if st=="won": return "ganho"
+        if st=="lost": return "perdido"
+        if "negocia" in nm or "obra futura" in nm: return "negociacao"
+        if "proposta" in nm: return "proposta"
+        return "contato"
+    mkt_bitrix={}
+    for sid in ("1","2"):
+        ds=[d for d in deals if str(d.get("SOURCE_ID") or "")==sid and str(d["CATEGORY_ID"]) in CATS]
+        b={k:[0,0.0] for k in ("contato","proposta","negociacao","ganho","perdido")}
+        for d in ds:
+            try: o=float(d.get("OPPORTUNITY") or 0)
+            except: o=0.0
+            k=_bucket(d); b[k][0]+=1; b[k][1]+=o
+        mkt_bitrix[sid]={"cards":len(ds),"buckets":{k:{"n":v[0],"valor":round(v[1],2)} for k,v in b.items()}}
+
     return {"catNames":CATS,"order":ORDER,
         "stgOrder":{c:sorted(set(r["st"] for r in recs if r["c"]==c),key=lambda n:stg_sort.get((c,n),999)) for c in ORDER},
         "recs":recs,
         "opt":{"src":opts("src"),"vd":opts("vd"),"pr":opts("pr"),"tp":opts("tp"),"st":stg_global},
-        "dmin":datas[0] if datas else "","dmax":datas[-1] if datas else ""}
+        "dmin":datas[0] if datas else "","dmax":datas[-1] if datas else "",
+        "mkt_bitrix":mkt_bitrix}
 
 def build_tiny():
     """Puxa pedidos do Tiny (v2) e agrega. Retorna None se não houver TINY_TOKEN/erro."""
@@ -256,6 +276,16 @@ def build_tiny():
     return {"dmin":datas[0] if datas else "","dmax":datas[-1] if datas else "",
             "peds":peds,"vendedores":vends}
 
+def build_meta():
+    """Resumo das campanhas ativas do Meta (leads pela métrica 'lead'). None se sem token."""
+    if not os.environ.get("META_TOKEN"): return None
+    import meta
+    camps=meta.resumo_ativas()
+    return {"leads":sum(c["leads"] for c in camps),
+            "gasto":round(sum(c["gasto"] for c in camps),2),
+            "impressoes":sum(c["impressoes"] for c in camps),
+            "campanhas":camps}
+
 def run():
     if not B: raise SystemExit("Falta a variável de ambiente BI_WEBHOOK")
     stages,sources,enum_by_uf,deals=fetch_all()
@@ -264,6 +294,15 @@ def run():
         payload["tiny"]=build_tiny()
     except Exception as e:
         import traceback; print("[BI] Tiny falhou (segue sem):\n"+traceback.format_exc()); payload["tiny"]=None
+    # marketing: plataforma (Meta hoje; Google depois) + funil do Bitrix por fonte
+    meta_plat=None
+    try: meta_plat=build_meta()
+    except Exception: import traceback; print("[BI] Meta falhou:\n"+traceback.format_exc())
+    mb=payload.pop("mkt_bitrix",{})
+    payload["marketing"]={
+        "meta":{"plataforma":meta_plat,"bitrix":mb.get("1")},
+        "google":{"plataforma":None,"bitrix":mb.get("2")},
+    }
     tpl=open(os.path.join(HERE,"template.html"),encoding="utf-8").read()
     hoje=datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
     html=tpl.replace("__DATA__", json.dumps(payload,ensure_ascii=False)).replace("__GENDATE__", hoje)

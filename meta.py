@@ -47,6 +47,22 @@ def insights(date_preset="maximum"):
         if not after or not res.get("data"): break
     return out
 
+def resumo_ativas():
+    """Campanhas ATIVAS com leads (métrica 'lead'), gasto, impressões, cliques."""
+    ids={c["id"]:c["name"] for c in campanhas() if c.get("effective_status")=="ACTIVE"}
+    ins=insights()
+    out=[]
+    for i in ins:
+        cid=i.get("campaign_id")
+        if cid not in ids: continue
+        acts={a["action_type"]:float(a["value"]) for a in (i.get("actions") or [])}
+        leads=acts.get("lead") or acts.get("onsite_conversion.lead_grouped") or acts.get("offsite_complete_registration_add_meta_leads") or 0
+        out.append({"nome":ids[cid],"leads":int(leads),
+                    "gasto":round(float(i.get("spend") or 0),2),
+                    "impressoes":int(i.get("impressions") or 0),
+                    "cliques":int(i.get("clicks") or 0)})
+    return sorted(out,key=lambda x:-x["leads"])
+
 def amostra():
     """Inspeção: campanhas ativas + suas actions (p/ casar com o nº de leads)."""
     camps=campanhas()
