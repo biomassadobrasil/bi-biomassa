@@ -48,14 +48,16 @@ def insights(date_preset="maximum"):
     return out
 
 def amostra():
-    """Inspeção: campanhas ativas + tipos de 'action' disponíveis (p/ achar o lead)."""
+    """Inspeção: campanhas ativas + suas actions (p/ casar com o nº de leads)."""
     camps=campanhas()
     ativas=[c for c in camps if c.get("effective_status")=="ACTIVE"]
+    ativ_ids={c["id"] for c in ativas}
     ins=insights()
-    # tipos de action que aparecem (p/ identificar o de lead)
-    tipos=set()
-    for i in ins:
-        for a in i.get("actions",[]) or []: tipos.add(a.get("action_type"))
-    return {"conta":_acct(),"total_campanhas":len(camps),"ativas":[{"id":c["id"],"nome":c["name"]} for c in ativas],
-            "action_types_encontrados":sorted(tipos),
-            "exemplo_insight":ins[0] if ins else None}
+    by_id={i.get("campaign_id"):i for i in ins}
+    detalhe=[]
+    for c in ativas:
+        i=by_id.get(c["id"],{})
+        acts={a["action_type"]:a["value"] for a in (i.get("actions") or [])}
+        detalhe.append({"nome":c["name"],"impressoes":i.get("impressions"),"cliques":i.get("clicks"),
+                        "gasto":i.get("spend"),"actions":acts})
+    return {"conta":_acct(),"ativas":detalhe}
