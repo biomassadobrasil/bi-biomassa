@@ -846,13 +846,15 @@ document.getElementById("tiny-reset").onclick=()=>{TINYF.vd="";TINYF.q="";TINYF.
 function funilMkt(el, plat, bit){
   if(!bit){ el.innerHTML='<div class="card"><div class="empty">Sem dados no recorte.</div></div>'; return; }
   const b=bit.buckets, leads=plat?plat.leads:null, max=Math.max(leads||0,bit.cards,1);
+  // "gerou proposta" = chegou na proposta OU além (proposta+negociação+ganho) — cumulativo
+  const propN=b.proposta.n+b.negociacao.n+b.ganho.n, propV=b.proposta.valor+b.negociacao.valor+b.ganho.valor;
   const steps=[
     {l:"Leads (plataforma)",n:leads,hint:plat?(int(plat.impressoes)+" impressões"):"aguardando API do Google"},
     {l:"Viraram card (Bitrix)",n:bit.cards,hint:leads?(Math.round(bit.cards/leads*100)+"% dos leads"):""},
-    {l:"Proposta",n:b.proposta.n,val:b.proposta.valor},
+    {l:"Gerou proposta",n:propN,val:propV},
     {l:"Em negociação",n:b.negociacao.n,val:b.negociacao.valor},
     {l:"Ganho",n:b.ganho.n,val:b.ganho.valor,cor:"var(--good)"},
-    {l:"Perdido",n:b.perdido.n,cor:"var(--bad)"},
+    {l:"Perdido",n:b.perdido.n,val:b.perdido.valor,cor:"var(--bad)"},
   ];
   const rows=steps.map(s=>{
     const col=s.cor||"var(--brand)";
