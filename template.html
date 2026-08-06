@@ -883,20 +883,19 @@ function mktAgg(src){
   const seg=s=>c14.filter(r=>r.seg===s).length;
   const b={contato:{n:0,v:0},proposta:{n:0,v:0},negociacao:{n:0,v:0},ganho:{n:0,v:0},perdido:{n:0,v:0}};
   v.forEach(r=>{const k=b[r.seg]; if(k){k.n++;k.v+=r.o||0;}});
-  return {total:c14.length+v.length, pf:seg("pf"), antigos:seg("antigos"), b2b:v.length, b};
+  return {b2b:v.length+seg("b2b14"), b};   // só B2B (PF ignorado)
 }
 function funilMkt(el, plat, a){
-  if(!a || !a.total){ el.innerHTML='<div class="card"><div class="empty">Sem leads no período.</div></div>'; return; }
+  if(!a || !a.b2b){ el.innerHTML='<div class="card"><div class="empty">Sem leads B2B no período.</div></div>'; return; }
   const propN=a.b.proposta.n+a.b.negociacao.n+a.b.ganho.n, propV=a.b.proposta.v+a.b.negociacao.v+a.b.ganho.v;
-  // etapas do FUNIL (decrescente) — PF e Perdido ficam como perdas, fora do afunilamento
+  // FUNIL B2B (decrescente): Leads B2B -> Proposta -> Negociação -> Ganho. Perdido à parte.
   const steps=[
-    {l:"Leads recebidos",n:a.total,c:"#2853a1"},
-    {l:"B2B (sem PF)",n:a.b2b,c:"#3f6fd0"},
-    {l:"Gerou proposta",n:propN,c:"#f0b429",val:propV},
-    {l:"Em negociação",n:a.b.negociacao.n,c:"#d2691e",val:a.b.negociacao.v},
+    {l:"Leads B2B",n:a.b2b,c:"#2853a1"},
+    {l:"Proposta Comercial",n:propN,c:"#f0b429",val:propV},
+    {l:"Em Negociação",n:a.b.negociacao.n,c:"#d2691e",val:a.b.negociacao.v},
     {l:"Ganho",n:a.b.ganho.n,c:"#1f9d6b",val:a.b.ganho.v},
   ];
-  const leads=a.total||1, W=760,cx=W/2,maxW=300,segH=58,gap=7,H=steps.length*(segH+gap)+8;
+  const leads=a.b2b||1, W=760,cx=W/2,maxW=300,segH=58,gap=7,H=steps.length*(segH+gap)+8;
   const wv=n=>Math.max(n/leads*maxW,26);
   let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-height:${H}px">`;
   steps.forEach((s,i)=>{
@@ -909,9 +908,7 @@ function funilMkt(el, plat, a){
     if(s.val!=null) svg+=`<text x="${cx+maxW/2+16}" y="${y+segH/2+5}" fill="var(--muted)" font-size="12.5" font-weight="600">${brlK(s.val)}</text>`;
   });
   svg+=`</svg>`;
-  const perdas=`<div class="mkt-perdas"><span class="mkt-chip" style="background:#fdeccd;color:#8a5a00">Pessoa Física (fora): <b>${int(a.pf)}</b></span>`+
-    (a.antigos?`<span class="mkt-chip" style="background:var(--line2)">Antigos: <b>${int(a.antigos)}</b></span>`:"")+
-    `<span class="mkt-chip" style="background:#fbe6e8;color:#a3242f">Perdido: <b>${int(a.b.perdido.n)}</b></span></div>`;
+  const perdas=`<div class="mkt-perdas"><span class="mkt-chip" style="background:#fbe6e8;color:#a3242f">Perdido: <b>${int(a.b.perdido.n)}</b>${a.b.perdido.v?" · "+brlK(a.b.perdido.v):""}</span></div>`;
   let foot="";
   if(plat){const cpl=plat.leads?plat.gasto/plat.leads:0;
     foot=`<div class="fnl-foot">Meta plataforma: <b>${int(plat.leads)}</b> leads (histórico) · Investido <b>${brlK(plat.gasto)}</b> · Custo/lead <b>${brlK(cpl)}</b><br>`+
