@@ -84,6 +84,8 @@
   @media(max-width:900px){.topgrid{grid-template-columns:1fr}}
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;grid-auto-rows:1fr}
   @media(max-width:520px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  @media(max-width:860px){.grid2{grid-template-columns:1fr}}
   .kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 17px;box-shadow:var(--shadow)}
   .kpi .lbl{font-size:12px;color:var(--muted);font-weight:600}
   .kpi .big{font-size:26px;font-weight:760;letter-spacing:-.02em;margin-top:7px;line-height:1}
@@ -1019,11 +1021,8 @@ function renderMarketing(){
   const perfCount={};                                  // segmento detalhado (respeita filtros)
   fun.forEach(r=>{perfCount[r.p]=(perfCount[r.p]||0)+1;});
   metaLeads.forEach(l=>{perfCount[l.p]=(perfCount[l.p]||0)+1;});
-  const perfAll={};                                    // PF × B2B (não filtra por segmento)
-  funBase.forEach(r=>{perfAll[r.p]=(perfAll[r.p]||0)+1;});
-  metaBase.forEach(l=>{perfAll[l.p]=(perfAll[l.p]||0)+1;});
-  const b2bCnt=Object.entries(perfAll).filter(([k])=>k!==PF_LABEL).reduce((a,[,n])=>a+n,0);
-  const pfCnt=perfAll[PF_LABEL]||0;
+  const pfCnt=metaBase.filter(l=>l.p===PF_LABEL).length;   // PF × B2B: só leads (split limpo do form Meta)
+  const b2bCnt=metaBase.filter(l=>l.p!==PF_LABEL).length;
   const porteCount={}; (M.portes||[]).forEach(p=>porteCount[p]=0);
   fun.forEach(r=>{porteCount[r.pt]=(porteCount[r.pt]||0)+1;});
   // ----- daily 30d (leads plataforma por dia, respeita filtros) -----
@@ -1033,7 +1032,8 @@ function renderMarketing(){
   (M.meta_leads||[]).forEach(l=>{if(segMatch(l.p)&&perfMatch(l.p)&&fonteOK("1")&&(!F.camp||l.c===F.camp)&&dmap[l.dt]!=null)dmap[l.dt]++;});
   if(F.seg!=="pf"&&!perfilEsp&&!porteEsp)(M.google_daily||[]).forEach(r=>{if(fonteOK("2")&&(!F.camp||r.c===F.camp)&&dmap[r.dt]!=null)dmap[r.dt]+=r.n;});
   const maxD=Math.max(...days.map(d=>dmap[d]),1);
-  const dailyHTML=days.map(d=>`<div class="mcol"><div class="bars"><div class="cr" style="width:74%;height:${Math.max(dmap[d]/maxD*100,dmap[d]?4:0)}%;background:var(--brand)" title="${d.split('-').reverse().join('/')}: ${Math.round(dmap[d])} leads"></div></div><div class="ml" style="font-size:9px">${(+d.slice(8,10))}</div></div>`).join("");
+  const dailyHTML=days.map((d,i)=>{const lbl=(i%5===0||i===days.length-1)?(+d.slice(8,10))+"/"+(+d.slice(5,7)):"";
+    return `<div class="mcol"><div class="bars"><div class="cr" style="width:72%;height:${Math.max(dmap[d]/maxD*100,dmap[d]?3:0)}%;background:var(--brand);border-radius:3px 3px 0 0" title="${d.split('-').reverse().join('/')}: ${Math.round(dmap[d])} leads"></div></div><div class="ml" style="font-size:10px">${lbl}</div></div>`;}).join("");
   // ----- tabelas de campanha (agregadas por data/fonte/campanha) -----
   const metaRows=Object.entries(metaCampAgg).sort((a,b)=>b[1].leads-a[1].leads).map(([nome,c])=>{
     const cp=c.leads?c.gasto/c.leads:0;
@@ -1047,16 +1047,15 @@ function renderMarketing(){
   document.getElementById("mkt-body").innerHTML=`
     <div class="kpis" style="grid-template-columns:repeat(3,1fr)">${kpis}</div>
     <div class="eyebrow">Funil de vendas (B2B)</div>
+    <div class="card">${funilHTML}</div>
+    <div class="eyebrow">Perfil &amp; porte dos leads</div>
     <div class="grid2">
-      <div class="card">${funilHTML}</div>
-      <div class="card"><div class="cardh">Perfil dos leads (PF × B2B)</div><div id="mkt-pfb2b"></div></div>
-    </div>
-    <div class="grid2" style="margin-top:14px">
-      <div class="card"><div class="cardh">Segmento (perfil detalhado)</div><div id="mkt-segchart"></div></div>
+      <div class="card"><div class="cardh">Perfil · Pessoa Física × B2B</div><div id="mkt-pfb2b"></div></div>
       <div class="card"><div class="cardh">Porte da empresa</div><div id="mkt-porte-c"></div></div>
     </div>
+    <div class="card" style="margin-top:14px"><div class="cardh">Segmento — perfil detalhado (B2B)</div><div id="mkt-segchart"></div></div>
     <div class="eyebrow">Entrada de leads · últimos 30 dias</div>
-    <div class="card"><div class="months" id="mkt-daily" style="height:140px">${dailyHTML}</div></div>
+    <div class="card"><div class="months" id="mkt-daily" style="height:150px">${dailyHTML}</div></div>
     <div class="eyebrow">Resultados por campanha</div>
     <div class="card" style="overflow-x:auto"><div class="cardh">Meta Ads <span style="color:var(--muted);font-weight:500">· ${nf}</span></div>
       <table><thead><tr><th>Campanha</th><th class="r">Leads</th><th class="r">CPL</th><th class="r">Investido</th></tr></thead><tbody>${metaRows}</tbody></table></div>
@@ -1064,7 +1063,7 @@ function renderMarketing(){
       <table><thead><tr><th>Campanha</th><th class="r">Leads</th><th class="r">CPL</th><th class="r">WhatsApp</th><th class="r">Formulário</th><th class="r">Investido</th></tr></thead><tbody>${gRows}</tbody></table></div>`;
   // donuts/bars pós-inserção
   makeDonutInto(document.getElementById("mkt-pfb2b"),[
-    {label:"B2B",value:b2bCnt,color:"var(--brand)"},{label:"Pessoa Física",value:pfCnt,color:"var(--line)"}],int(b2bCnt),"B2B");
+    {label:"B2B",value:b2bCnt,color:"var(--brand)"},{label:"Pessoa Física",value:pfCnt,color:"var(--muted)"}],int(b2bCnt+pfCnt),"leads");
   const segArr=Object.entries(perfCount).filter(([k])=>k!==PF_LABEL).map(([k,n])=>({label:k,n,disp:int(n)})).sort((a,b)=>b.n-a.n);
   renderBars(document.getElementById("mkt-segchart"),segArr,"var(--brand)");
   const PAL2=["#2853a1","#f5c518","var(--good)","#8b5cf6"];
