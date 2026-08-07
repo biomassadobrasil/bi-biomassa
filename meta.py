@@ -68,6 +68,45 @@ def amostra_leads():
     out["obs"]="nenhum ad retornou leads (ou sem permissão)"
     return out
 
+def leads_diag():
+    """Diagnóstico SEM PII: prova se leads_retrieval funciona.
+    Retorna nomes dos campos do formulário e a distribuição do campo de PERFIL
+    (categorias PF/B2B/segmento — não são dados pessoais). Nenhum nome/telefone/e-mail."""
+    ativas=[c for c in campanhas() if c.get("effective_status")=="ACTIVE"]
+    if not ativas: return {"ok":False,"erro":"sem campanhas ativas"}
+    out={"ok":False,"campanhas":[]}
+    campos_perfil=("perfil","segmento","atividade","porte","voce_e","você_é","qual")
+    for c in ativas[:3]:
+        info={"campanha":c["name"],"leads_lidos":0}
+        try:
+            ads=_get(f"{c['id']}/ads", {"fields":"id","limit":25}).get("data",[])
+        except Exception as e:
+            info["erro"]=str(e)[:200]; out["campanhas"].append(info); continue
+        campos=set(); dist={}
+        for a in ads:
+            try:
+                after=None
+                while True:
+                    p={"fields":"field_data","limit":100}
+                    if after: p["after"]=after
+                    res=_get(f"{a['id']}/leads", p)
+                    for lead in res.get("data",[]):
+                        info["leads_lidos"]+=1
+                        for fd in lead.get("field_data",[]):
+                            nm=(fd.get("name") or "").lower(); campos.add(nm)
+                            if any(k in nm for k in campos_perfil):
+                                v=(fd.get("values") or [None])[0]
+                                dist.setdefault(nm,{}); dist[nm][v]=dist[nm].get(v,0)+1
+                    after=(res.get("paging",{}).get("cursors",{}) or {}).get("after")
+                    if not after or not res.get("data"): break
+            except Exception as e:
+                info.setdefault("erros",[]).append(str(e)[:160])
+        info["campos_form"]=sorted(campos)
+        info["distribuicao_perfil"]=dist
+        if info["leads_lidos"]>0: out["ok"]=True
+        out["campanhas"].append(info)
+    return out
+
 def resumo_ativas():
     """Campanhas ATIVAS com leads (métrica 'lead'), gasto, impressões, cliques."""
     ids={c["id"]:c["name"] for c in campanhas() if c.get("effective_status")=="ACTIVE"}
