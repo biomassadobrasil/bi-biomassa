@@ -142,6 +142,24 @@ def leads_raw():
                 if not after or not res.get("data"): break
     return out
 
+def spend_diario(date_preset="last_90d"):
+    """Gasto por campanha ATIVA por dia (time_increment=1) -> [{c,dt,gasto}]."""
+    ids={c["id"]:c["name"] for c in campanhas() if c.get("effective_status")=="ACTIVE"}
+    out=[]; after=None
+    while True:
+        p={"level":"campaign","date_preset":date_preset,"time_increment":1,
+           "fields":"campaign_id,campaign_name,spend","limit":300}
+        if after: p["after"]=after
+        res=_get(f"{_acct()}/insights", p)
+        for i in res.get("data",[]):
+            cid=i.get("campaign_id")
+            if cid not in ids: continue
+            out.append({"c":ids[cid],"dt":(i.get("date_start") or "")[:10],
+                        "gasto":round(float(i.get("spend") or 0),2)})
+        after=(res.get("paging",{}).get("cursors",{}) or {}).get("after")
+        if not after or not res.get("data"): break
+    return out
+
 def resumo_ativas():
     """Campanhas ATIVAS com leads (métrica 'lead'), gasto, impressões, cliques."""
     ids={c["id"]:c["name"] for c in campanhas() if c.get("effective_status")=="ACTIVE"}

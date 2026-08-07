@@ -347,7 +347,9 @@ def build_meta():
     camps=meta.resumo_ativas()          # [{nome,leads,gasto,impressoes,cliques}]
     try: leads=meta.leads_raw()         # [{c,p,dt}] via leads_retrieval
     except Exception: import traceback; print("[BI] Meta leads_raw falhou:\n"+traceback.format_exc()); leads=[]
-    return {"camp":camps,"leads":leads}
+    try: daily=meta.spend_diario()      # [{c,dt,gasto}] p/ filtro de data nas tabelas
+    except Exception: import traceback; print("[BI] Meta spend_diario falhou:\n"+traceback.format_exc()); daily=[]
+    return {"camp":camps,"leads":leads,"daily":daily}
 
 def build_google():
     """Google: campanhas (leads/CPL/wpp/form/investido) + leads diários (90d p/ filtro de data)."""
@@ -357,6 +359,7 @@ def build_google():
         acoes=g.conversoes_por_acao()
         ate=datetime.date.today(); desde=ate-datetime.timedelta(days=89)
         daily=g.leads_diarios(desde,ate)
+        cost=g.custo_diario(desde,ate)
     except Exception:
         import traceback; print("[BI] Google falhou:\n"+traceback.format_exc()); return None
     camps=[]
@@ -365,7 +368,7 @@ def build_google():
         wpp=round(sum(v for k,v in ac.items() if "whats" in k.lower() or "zap" in k.lower()))
         form=round(sum(v for k,v in ac.items() if "form" in k.lower()))
         camps.append({**c,"wpp":wpp,"form":form})
-    return {"camp":camps,"daily":daily}
+    return {"camp":camps,"daily":daily,"cost":cost}
 
 def run():
     if not B: raise SystemExit("Falta a variável de ambiente BI_WEBHOOK")
@@ -386,8 +389,10 @@ def run():
         "funil":funil,
         "meta_camp":(meta_blk or {}).get("camp",[]),
         "meta_leads":meta_leads,
+        "meta_daily":(meta_blk or {}).get("daily",[]),
         "google_camp":(google_blk or {}).get("camp",[]),
         "google_daily":(google_blk or {}).get("daily",[]),
+        "google_cost":(google_blk or {}).get("cost",[]),
         "perfis":PERFIL_ORDER,"portes":PORTE_ORDER}
     tpl=open(os.path.join(HERE,"template.html"),encoding="utf-8").read()
     hoje=datetime.datetime.now().strftime("%d/%m/%Y %H:%M")

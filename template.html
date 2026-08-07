@@ -213,6 +213,7 @@
   .ico-solid{background:var(--brand);color:#fff}
   .ico-green{background:var(--good-soft);color:var(--good)}
   .ico-amber{background:#fff6d6;color:#b8860b}
+  .ico-red{background:var(--bad-soft);color:var(--bad)}
   .kpi .kbody{min-width:0}
   /* ===== sparkline card ===== */
   .kpi.wide{grid-column:span 2}
@@ -430,8 +431,17 @@
       <select id="mkt-fonte" class="tiny-select"></select>
       <span class="fllbl" style="margin-left:6px">Campanha</span>
       <select id="mkt-camp" class="tiny-select"></select>
+      <span class="fllbl" style="margin-left:6px">Segmento</span>
+      <select id="mkt-seg" class="tiny-select">
+        <option value="b2b">B2B</option>
+        <option value="pf">Consumidor Final</option>
+        <option value="">Todos</option>
+      </select>
       <span class="fllbl" style="margin-left:6px">Perfil</span>
-      <select id="mkt-perfil" class="tiny-select"></select>
+      <div class="mktdd" style="position:relative">
+        <button type="button" id="mkt-perfil-btn" class="tiny-select" style="text-align:left;cursor:pointer;min-width:170px">Todos os perfis</button>
+        <div class="menu" id="mkt-perfil-menu" style="display:none;position:absolute;z-index:30;margin-top:4px;min-width:250px;max-height:300px;overflow:auto;padding:6px"></div>
+      </div>
       <span class="fllbl" style="margin-left:6px">Porte</span>
       <select id="mkt-porte" class="tiny-select"></select>
       <button id="mkt-reset" class="reset" style="margin-left:auto">limpar filtros</button>
@@ -873,9 +883,12 @@ document.getElementById("tiny-reset").onclick=()=>{TINYF.vd="";TINYF.q="";TINYF.
   document.getElementById("tiny-vd").value="";document.getElementById("tiny-search").value="";
   document.getElementById("tiny-from").value="";document.getElementById("tiny-to").value="";renderTiny();};
 // ================= B.I Marketing =================
-const MKT={from:"",to:"",fonte:"",camp:"",perfil:"",porte:""};
+const MKT={from:"",to:"",fonte:"",camp:"",seg:"b2b",perfil:new Set(),porte:""};
 function ymd(d){return d.toISOString().slice(0,10);}
 const FONTES={"1":"Meta Ads","2":"Google Ads"};
+const PF_LABEL="Pessoa Física";
+const segMatch=p=> MKT.seg==="pf" ? p===PF_LABEL : (MKT.seg==="b2b" ? p!==PF_LABEL : true);
+const perfMatch=p=> MKT.perfil.size===0 ? true : MKT.perfil.has(p);
 function mktPreset(p){
   const now=new Date(); const t=ymd(now);
   if(p==="hoje"){MKT.from=t;MKT.to=t;}
@@ -894,13 +907,23 @@ function mktCampOpts(){
   if(!camps.includes(MKT.camp)) MKT.camp="";
   sel.innerHTML='<option value="">Todas as campanhas</option>'+camps.map(c=>`<option ${c===MKT.camp?"selected":""}>${c}</option>`).join("");
 }
+function mktPerfilBtnLabel(){
+  const n=MKT.perfil.size;
+  document.getElementById("mkt-perfil-btn").textContent = n===0?"Todos os perfis":(n===1?[...MKT.perfil][0]:`${n} perfis`);
+}
 function mktFillSelects(){
   const M=D.marketing||{};
   const fs=document.getElementById("mkt-fonte");
   if(!fs.dataset.filled){
     fs.innerHTML='<option value="">Todas as fontes</option><option value="1">Meta Ads</option><option value="2">Google Ads</option>';
-    const pf=document.getElementById("mkt-perfil");
-    pf.innerHTML='<option value="">Todos os perfis</option>'+(M.perfis||[]).map(p=>`<option>${p}</option>`).join("");
+    document.getElementById("mkt-seg").value=MKT.seg;
+    // perfis B2B (exclui Pessoa Física — isso é o Segmento) no dropdown de checkboxes
+    const menu=document.getElementById("mkt-perfil-menu");
+    const perfis=(M.perfis||[]).filter(p=>p!==PF_LABEL);
+    menu.innerHTML=perfis.map(p=>`<label class="opt"><input type="checkbox" value="${p}"> ${p}</label>`).join("");
+    menu.querySelectorAll("input").forEach(inp=>inp.onchange=()=>{
+      inp.checked?MKT.perfil.add(inp.value):MKT.perfil.delete(inp.value);
+      mktPerfilBtnLabel(); renderMarketing();});
     const pt=document.getElementById("mkt-porte");
     pt.innerHTML='<option value="">Todos os portes</option>'+(M.portes||[]).map(p=>`<option>${p}</option>`).join("");
     fs.dataset.filled="1";
@@ -930,8 +953,11 @@ function renderMarketing(){
   const F=MKT;
   const inr=dt=>(!F.from||(dt&&dt>=F.from))&&(!F.to||(dt&&dt<=F.to));
   const fonteOK=s=>!F.fonte||F.fonte===s;
+  const porteEsp=F.porte&&F.porte!=="Sem identificação";
+  const perfilEsp=MKT.perfil.size>0;
   // ----- funil Bitrix (deals de Vendas fonte 1/2) -----
-  const fun=(M.funil||[]).filter(r=>fonteOK(r.s)&&inr(r.dt)&&(!F.perfil||r.p===F.perfil)&&(!F.porte||r.pt===F.porte)&&r.seg!=="__pf__");
+  const funBase=(M.funil||[]).filter(r=>fonteOK(r.s)&&inr(r.dt)&&(!F.porte||r.pt===F.porte)); // sem seg/perfil (p/ donut PF×B2B)
+  const fun=funBase.filter(r=>segMatch(r.p)&&perfMatch(r.p));
   const g={contato:0,proposta:0,negociacao:0,obrafutura:0,ganho:0,perdido:0};
   const gv={proposta:0,negociacao:0,obrafutura:0,ganho:0,perdido:0};
   fun.forEach(r=>{if(g[r.seg]!=null)g[r.seg]++; if(gv[r.seg]!=null)gv[r.seg]+=r.o||0;});
@@ -940,38 +966,41 @@ function renderMarketing(){
   const propV=gv.proposta+gv.negociacao+gv.obrafutura+gv.ganho;
   const nego=g.negociacao+g.obrafutura+g.ganho, negoV=gv.negociacao+gv.obrafutura+gv.ganho;
   // ----- leads da plataforma -----
-  const perfilBloqueiaPlat=F.perfil&&F.perfil!=="Sem identificação"&&F.perfil!=="Pessoa Física";
-  const porteBloqueiaPlat=F.porte&&F.porte!=="Sem identificação";
-  let metaLeads=(M.meta_leads||[]).filter(l=>inr(l.dt)&&(!F.camp||l.c===F.camp)&&(!F.perfil||l.p===F.perfil));
-  if(F.fonte==="2"||porteBloqueiaPlat) metaLeads=[];
+  const metaBase=(M.meta_leads||[]).filter(l=>inr(l.dt)&&(!F.camp||l.c===F.camp)&&F.fonte!=="2"&&!porteEsp); // sem seg/perfil
+  const metaLeads=metaBase.filter(l=>segMatch(l.p)&&perfMatch(l.p));
   let gDaily=(M.google_daily||[]).filter(r=>inr(r.dt)&&(!F.camp||r.c===F.camp));
-  if(F.fonte==="1"||perfilBloqueiaPlat||porteBloqueiaPlat) gDaily=[];
-  const metaB2B=metaLeads.filter(l=>l.p!=="Pessoa Física");
-  const metaLeadN=metaB2B.length;
+  if(F.fonte==="1"||F.seg==="pf"||perfilEsp||porteEsp) gDaily=[];   // Google não tem perfil
+  const metaLeadN=metaLeads.length;
   const gLeadN=Math.round(gDaily.reduce((a,r)=>a+(r.n||0),0));
   const totLeads=metaLeadN+gLeadN;
-  // ----- investido / CPL (base: tabelas de campanha) -----
-  const invMeta=(F.fonte==="2")?0:(M.meta_camp||[]).filter(c=>!F.camp||c.nome===F.camp).reduce((a,c)=>a+(c.gasto||0),0);
-  const invG=(F.fonte==="1")?0:(M.google_camp||[]).filter(c=>!F.camp||c.nome===F.camp).reduce((a,c)=>a+(c.gasto||0),0);
-  const leadsMetaPlat=(F.fonte==="2")?0:(M.meta_camp||[]).filter(c=>!F.camp||c.nome===F.camp).reduce((a,c)=>a+(c.leads||0),0);
-  const leadsGPlat=(F.fonte==="1")?0:(M.google_camp||[]).filter(c=>!F.camp||c.nome===F.camp).reduce((a,c)=>a+(c.leads||0),0);
-  const invest=invMeta+invG;
-  const cpl=totLeads?invest/totLeads:0;   // por lead B2B (consistente com "Total de Leads")
+  // ----- agregação por campanha (respeita data+fonte+camp; a partir dos diários) -----
+  const inCamp=r=>inr(r.dt)&&(!F.camp||r.c===F.camp);
+  const metaCampAgg={};   // nome -> {leads,gasto}
+  metaLeads.forEach(l=>{(metaCampAgg[l.c]=metaCampAgg[l.c]||{leads:0,gasto:0}).leads++;});
+  if(F.fonte!=="2") (M.meta_daily||[]).forEach(r=>{if(inCamp(r))(metaCampAgg[r.c]=metaCampAgg[r.c]||{leads:0,gasto:0}).gasto+=r.gasto||0;});
+  const gCampAgg={};      // nome -> {leads,gasto,wpp,form}
+  if(F.fonte!=="1"&&F.seg!=="pf"&&!perfilEsp&&!porteEsp){
+    (M.google_daily||[]).forEach(r=>{if(inCamp(r)){const a=gCampAgg[r.c]=gCampAgg[r.c]||{leads:0,gasto:0,wpp:0,form:0};a.leads+=r.n;if(r.ch==="wpp")a.wpp+=r.n;else if(r.ch==="form")a.form+=r.n;}});
+    (M.google_cost||[]).forEach(r=>{if(inCamp(r))(gCampAgg[r.c]=gCampAgg[r.c]||{leads:0,gasto:0,wpp:0,form:0}).gasto+=r.gasto||0;});
+  }
+  const invest=Object.values(metaCampAgg).reduce((a,c)=>a+c.gasto,0)+Object.values(gCampAgg).reduce((a,c)=>a+c.gasto,0);
+  const cpl=totLeads?invest/totLeads:0;
   // ----- fcount -----
   const br=d=>d?d.split("-").reverse().join("/"):"";
   const nf=(F.from||F.to)?`${br(F.from)||"início"} → ${br(F.to)||"hoje"}`:"todo o período";
-  const chips=[F.fonte?FONTES[F.fonte]:"",F.camp,F.perfil,F.porte].filter(Boolean);
+  const segLbl={b2b:"B2B",pf:"Consumidor Final"}[F.seg]||"";
+  const chips=[F.fonte?FONTES[F.fonte]:"",F.camp,segLbl,MKT.perfil.size?`${MKT.perfil.size} perfil(is)`:"",F.porte].filter(Boolean);
   document.getElementById("mkt-fcount").innerHTML=`período ${nf}`+(chips.length?` · ${chips.length} filtro(s)`:"");
   // ----- KPIs -----
   const kc=(l,v,f,ic,tint)=>`<div class="kpi"><div class="kico ${tint}">${svgico(KIC[ic])}</div><div class="kbody"><div class="lbl">${l}</div><div class="big tnum">${v}</div><div class="foot">${f}</div></div></div>`;
   const vaz=totLeads?Math.round((1-totNeg/totLeads)*100):0;
   const kpis=[
     kc("Total de Leads",int(totLeads),"da plataforma (Meta/Google)","trend","ico-blue"),
-    kc("Total de Negócios",int(totNeg),vaz>0?`${vaz}% de vazamento até o CRM`:"no Bitrix","brief","ico-solid"),
-    kc("Custo por Lead B2B",totLeads?brlK(cpl):"—",`investido ${brlK(invest)}`,"dollar","ico-green"),
+    kc("Total de Negócios",int(totNeg),vaz>0?`${vaz}% viram card no CRM`:"no Bitrix","brief","ico-solid"),
+    kc("Custo por Lead",totLeads?brlK(cpl):"—",`investido ${brlK(invest)}`,"dollar","ico-green"),
     kc("Em Negociação",int(nego),brlK(negoV),"clock","ico-amber"),
     kc("Ganhos",int(g.ganho),brlK(gv.ganho),"trophy","ico-green"),
-    kc("Perdidos",int(g.perdido),brlK(gv.perdido),"tag","ico-blue"),
+    kc("Perdidos",int(g.perdido),brlK(gv.perdido),"tag","ico-red"),
   ].join("");
   // ----- funil -----
   const steps=[
@@ -985,33 +1014,35 @@ function renderMarketing(){
        <span class="mkt-chip" style="background:var(--bad-soft);color:var(--bad)">Perdido: <b>${int(g.perdido)}</b>${gv.perdido?" · "+brlK(gv.perdido):""}</span>
        <span class="mkt-chip" style="background:var(--brand-soft);color:var(--brand)">Obra Futura: <b>${int(g.obrafutura)}</b>${gv.obrafutura?" · "+brlK(gv.obrafutura):""}</span>
      </div>
-     <div class="fnl-foot">Topo = negócios B2B no Bitrix. <b>${int(totLeads)}</b> leads na plataforma no recorte — a diferença vaza antes do CRM.</div>`;
-  // ----- distribuições (perfil / segmento / porte) a partir do funil Bitrix + leads Meta -----
-  const perfCount={};
+     <div class="fnl-foot"><b>${int(totLeads)}</b> leads na plataforma no recorte → <b>${int(totNeg)}</b> viraram negócio no CRM. A diferença vaza antes do CRM.</div>`;
+  // ----- distribuições -----
+  const perfCount={};                                  // segmento detalhado (respeita filtros)
   fun.forEach(r=>{perfCount[r.p]=(perfCount[r.p]||0)+1;});
-  metaB2B.forEach(l=>{perfCount[l.p]=(perfCount[l.p]||0)+1;});   // enriquece com leads do form Meta
-  const PF="Pessoa Física";
-  const b2bCnt=Object.entries(perfCount).filter(([k])=>k!==PF).reduce((a,[,n])=>a+n,0);
-  const pfCnt=perfCount[PF]||0;
+  metaLeads.forEach(l=>{perfCount[l.p]=(perfCount[l.p]||0)+1;});
+  const perfAll={};                                    // PF × B2B (não filtra por segmento)
+  funBase.forEach(r=>{perfAll[r.p]=(perfAll[r.p]||0)+1;});
+  metaBase.forEach(l=>{perfAll[l.p]=(perfAll[l.p]||0)+1;});
+  const b2bCnt=Object.entries(perfAll).filter(([k])=>k!==PF_LABEL).reduce((a,[,n])=>a+n,0);
+  const pfCnt=perfAll[PF_LABEL]||0;
   const porteCount={}; (M.portes||[]).forEach(p=>porteCount[p]=0);
   fun.forEach(r=>{porteCount[r.pt]=(porteCount[r.pt]||0)+1;});
-  // ----- daily 30d (leads plataforma por dia) -----
+  // ----- daily 30d (leads plataforma por dia, respeita filtros) -----
   const today=new Date(); const days=[];
   for(let i=29;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);days.push(ymd(d));}
   const dmap={}; days.forEach(d=>dmap[d]=0);
-  (M.meta_leads||[]).forEach(l=>{if(l.p!=="Pessoa Física"&&fonteOK("1")&&(!F.camp||l.c===F.camp)&&dmap[l.dt]!=null)dmap[l.dt]++;});
-  (M.google_daily||[]).forEach(r=>{if(fonteOK("2")&&(!F.camp||r.c===F.camp)&&dmap[r.dt]!=null)dmap[r.dt]+=r.n;});
+  (M.meta_leads||[]).forEach(l=>{if(segMatch(l.p)&&perfMatch(l.p)&&fonteOK("1")&&(!F.camp||l.c===F.camp)&&dmap[l.dt]!=null)dmap[l.dt]++;});
+  if(F.seg!=="pf"&&!perfilEsp&&!porteEsp)(M.google_daily||[]).forEach(r=>{if(fonteOK("2")&&(!F.camp||r.c===F.camp)&&dmap[r.dt]!=null)dmap[r.dt]+=r.n;});
   const maxD=Math.max(...days.map(d=>dmap[d]),1);
-  const dailyHTML=days.map(d=>`<div class="mcol"><div class="bars"><div class="cr" style="width:70%;height:${dmap[d]/maxD*100}%;background:var(--brand)" title="${d.split('-').reverse().join('/')}: ${Math.round(dmap[d])}"></div></div><div class="ml" style="font-size:9px">${(+d.slice(8,10))}</div></div>`).join("");
-  // ----- tabelas de campanha -----
-  const metaRows=(M.meta_camp||[]).filter(c=>!F.camp||c.nome===F.camp).map(c=>{
+  const dailyHTML=days.map(d=>`<div class="mcol"><div class="bars"><div class="cr" style="width:74%;height:${Math.max(dmap[d]/maxD*100,dmap[d]?4:0)}%;background:var(--brand)" title="${d.split('-').reverse().join('/')}: ${Math.round(dmap[d])} leads"></div></div><div class="ml" style="font-size:9px">${(+d.slice(8,10))}</div></div>`).join("");
+  // ----- tabelas de campanha (agregadas por data/fonte/campanha) -----
+  const metaRows=Object.entries(metaCampAgg).sort((a,b)=>b[1].leads-a[1].leads).map(([nome,c])=>{
     const cp=c.leads?c.gasto/c.leads:0;
-    return `<tr><td><b>${c.nome}</b></td><td class="r tnum">${int(c.leads)}</td><td class="r tnum">${c.leads?brlK(cp):"—"}</td><td class="r tnum">${brlK(c.gasto)}</td></tr>`;}).join("")
-    ||`<tr><td colspan="4" class="empty">Sem campanhas Meta no recorte.</td></tr>`;
-  const gRows=(M.google_camp||[]).filter(c=>!F.camp||c.nome===F.camp).map(c=>{
+    return `<tr><td><b>${nome}</b></td><td class="r tnum">${int(c.leads)}</td><td class="r tnum">${c.leads?brlK(cp):"—"}</td><td class="r tnum">${brlK(c.gasto)}</td></tr>`;}).join("")
+    ||`<tr><td colspan="4" class="empty">Sem dados do Meta no recorte.</td></tr>`;
+  const gRows=Object.entries(gCampAgg).sort((a,b)=>b[1].leads-a[1].leads).map(([nome,c])=>{
     const cp=c.leads?c.gasto/c.leads:0;
-    return `<tr><td><b>${c.nome}</b></td><td class="r tnum">${int(c.leads)}</td><td class="r tnum">${c.leads?brlK(cp):"—"}</td><td class="r tnum">${int(c.wpp)}</td><td class="r tnum">${int(c.form)}</td><td class="r tnum">${brlK(c.gasto)}</td></tr>`;}).join("")
-    ||`<tr><td colspan="6" class="empty">Sem campanhas Google no recorte.</td></tr>`;
+    return `<tr><td><b>${nome}</b></td><td class="r tnum">${int(Math.round(c.leads))}</td><td class="r tnum">${c.leads?brlK(cp):"—"}</td><td class="r tnum">${int(Math.round(c.wpp))}</td><td class="r tnum">${int(Math.round(c.form))}</td><td class="r tnum">${brlK(c.gasto)}</td></tr>`;}).join("")
+    ||`<tr><td colspan="6" class="empty">Sem dados do Google no recorte.</td></tr>`;
   // ----- monta o body -----
   document.getElementById("mkt-body").innerHTML=`
     <div class="kpis" style="grid-template-columns:repeat(3,1fr)">${kpis}</div>
@@ -1021,21 +1052,21 @@ function renderMarketing(){
       <div class="card"><div class="cardh">Perfil dos leads (PF × B2B)</div><div id="mkt-pfb2b"></div></div>
     </div>
     <div class="grid2" style="margin-top:14px">
-      <div class="card"><div class="cardh">Segmento (perfil detalhado)</div><div id="mkt-seg"></div></div>
+      <div class="card"><div class="cardh">Segmento (perfil detalhado)</div><div id="mkt-segchart"></div></div>
       <div class="card"><div class="cardh">Porte da empresa</div><div id="mkt-porte-c"></div></div>
     </div>
     <div class="eyebrow">Entrada de leads · últimos 30 dias</div>
-    <div class="card"><div class="months" id="mkt-daily" style="height:150px">${dailyHTML}</div></div>
+    <div class="card"><div class="months" id="mkt-daily" style="height:140px">${dailyHTML}</div></div>
     <div class="eyebrow">Resultados por campanha</div>
-    <div class="card" style="overflow-x:auto"><div class="cardh">Meta Ads · <span style="color:var(--muted);font-weight:500">histórico</span></div>
+    <div class="card" style="overflow-x:auto"><div class="cardh">Meta Ads <span style="color:var(--muted);font-weight:500">· ${nf}</span></div>
       <table><thead><tr><th>Campanha</th><th class="r">Leads</th><th class="r">CPL</th><th class="r">Investido</th></tr></thead><tbody>${metaRows}</tbody></table></div>
-    <div class="card" style="overflow-x:auto;margin-top:14px"><div class="cardh">Google Ads · <span style="color:var(--muted);font-weight:500">últimos 30 dias</span></div>
+    <div class="card" style="overflow-x:auto;margin-top:14px"><div class="cardh">Google Ads <span style="color:var(--muted);font-weight:500">· ${nf}</span></div>
       <table><thead><tr><th>Campanha</th><th class="r">Leads</th><th class="r">CPL</th><th class="r">WhatsApp</th><th class="r">Formulário</th><th class="r">Investido</th></tr></thead><tbody>${gRows}</tbody></table></div>`;
   // donuts/bars pós-inserção
   makeDonutInto(document.getElementById("mkt-pfb2b"),[
-    {label:"B2B",value:b2bCnt,color:"var(--brand)"},{label:"Pessoa Física (ignorada)",value:pfCnt,color:"var(--line)"}],int(b2bCnt),"B2B");
-  const segArr=Object.entries(perfCount).filter(([k])=>k!==PF).map(([k,n])=>({label:k,n,disp:int(n)})).sort((a,b)=>b.n-a.n);
-  renderBars(document.getElementById("mkt-seg"),segArr,"var(--brand)");
+    {label:"B2B",value:b2bCnt,color:"var(--brand)"},{label:"Pessoa Física",value:pfCnt,color:"var(--line)"}],int(b2bCnt),"B2B");
+  const segArr=Object.entries(perfCount).filter(([k])=>k!==PF_LABEL).map(([k,n])=>({label:k,n,disp:int(n)})).sort((a,b)=>b.n-a.n);
+  renderBars(document.getElementById("mkt-segchart"),segArr,"var(--brand)");
   const PAL2=["#2853a1","#f5c518","var(--good)","#8b5cf6"];
   makeDonutInto(document.getElementById("mkt-porte-c"),
     (M.portes||[]).map((p,i)=>({label:p,value:porteCount[p]||0,color:PAL2[i%PAL2.length]})),int(totNeg),"negócios");
@@ -1050,10 +1081,16 @@ document.getElementById("mkt-from").onchange=e=>{MKT.from=e.target.value;mktClea
 document.getElementById("mkt-to").onchange=e=>{MKT.to=e.target.value;mktClearPresets();renderMarketing();};
 document.getElementById("mkt-fonte").onchange=e=>{MKT.fonte=e.target.value;mktCampOpts();renderMarketing();};
 document.getElementById("mkt-camp").onchange=e=>{MKT.camp=e.target.value;renderMarketing();};
-document.getElementById("mkt-perfil").onchange=e=>{MKT.perfil=e.target.value;renderMarketing();};
+document.getElementById("mkt-seg").onchange=e=>{MKT.seg=e.target.value;renderMarketing();};
 document.getElementById("mkt-porte").onchange=e=>{MKT.porte=e.target.value;renderMarketing();};
-document.getElementById("mkt-reset").onclick=()=>{Object.assign(MKT,{from:"",to:"",fonte:"",camp:"",perfil:"",porte:""});
-  ["mkt-from","mkt-to","mkt-fonte","mkt-camp","mkt-perfil","mkt-porte"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+// dropdown de Perfil (multi-seleção)
+const perfilBtn=document.getElementById("mkt-perfil-btn"), perfilMenu=document.getElementById("mkt-perfil-menu");
+perfilBtn.onclick=e=>{e.stopPropagation();perfilMenu.style.display=perfilMenu.style.display==="none"?"block":"none";};
+document.addEventListener("click",e=>{if(!perfilMenu.contains(e.target)&&e.target!==perfilBtn)perfilMenu.style.display="none";});
+document.getElementById("mkt-reset").onclick=()=>{MKT.from="";MKT.to="";MKT.fonte="";MKT.camp="";MKT.seg="b2b";MKT.perfil.clear();MKT.porte="";
+  ["mkt-from","mkt-to","mkt-fonte","mkt-camp","mkt-porte"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+  document.getElementById("mkt-seg").value="b2b";
+  perfilMenu.querySelectorAll("input").forEach(i=>i.checked=false); mktPerfilBtnLabel();
   mktClearPresets();document.querySelector('.mkt-presets [data-p="tudo"]').classList.add("on");renderMarketing();};
 renderTiny();
 refresh();

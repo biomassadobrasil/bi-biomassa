@@ -53,12 +53,18 @@ def _search(gaql):
            "Content-Type": "application/json"}
     login = (c["login_customer_id"] or "").replace("-", "")
     if login: hdr["login-customer-id"] = login
-    req = urllib.request.Request(url, data=json.dumps({"query": gaql}).encode(), headers=hdr)
-    try:
-        with urllib.request.urlopen(req, timeout=90) as r:
-            data = json.load(r)
-    except urllib.error.HTTPError as e:
-        raise RuntimeError(f"Google Ads {e.code}: {e.read().decode()[:300]}")
+    data = None; last = None
+    for tent in range(3):   # Google às vezes devolve 400/5xx transitório
+        req = urllib.request.Request(url, data=json.dumps({"query": gaql}).encode(), headers=hdr)
+        try:
+            with urllib.request.urlopen(req, timeout=90) as r:
+                data = json.load(r); break
+        except urllib.error.HTTPError as e:
+            last = RuntimeError(f"Google Ads {e.code}: {e.read().decode()[:300]}")
+        except Exception as e:
+            last = e
+        import time as _t; _t.sleep(2 * (tent + 1))
+    if data is None: raise last
     rows = []
     for chunk in (data if isinstance(data, list) else [data]):
         rows += chunk.get("results", [])
@@ -117,6 +123,19 @@ def _canal(nome_acao):
     if "whats" in a or "zap" in a: return "wpp"
     if "form" in a: return "form"
     return "outro"
+
+def custo_diario(desde, ate):
+    """Gasto por campanha ENABLED por dia -> [{c,dt,gasto}]."""
+    gaql = ("SELECT campaign.name, segments.date, metrics.cost_micros "
+            f"FROM campaign WHERE campaign.status = 'ENABLED' "
+            f"AND segments.date BETWEEN '{_dstr(desde)}' AND '{_dstr(ate)}'")
+    out = []
+    for r in _search(gaql):
+        camp = r.get("campaign", {}); seg = r.get("segments", {}); m = r.get("metrics", {})
+        g = round((int(m.get("costMicros", 0) or 0)) / 1e6, 2)
+        if not g: continue
+        out.append({"c": camp.get("name", ""), "dt": seg.get("date", ""), "gasto": g})
+    return out
 
 def leads_diarios(desde, ate):
     """Conversões por campanha/dia/canal (wpp|form) no intervalo — p/ filtro de data e gráfico diário."""
