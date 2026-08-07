@@ -32,14 +32,6 @@ def atualizar():
     regenerar()
     return "Atualizado.", 200
 
-@app.route("/_leadsdiag")
-def _leadsdiag():
-    import meta
-    try:
-        return Response(json.dumps(meta.leads_diag(), ensure_ascii=False, indent=2), mimetype="application/json")
-    except Exception:
-        return Response(traceback.format_exc(), mimetype="text/plain"), 500
-
 # agenda 08:00 e 12:30 no horário de São Paulo
 tz = ZoneInfo("America/Sao_Paulo")
 sched = BackgroundScheduler(timezone=tz)

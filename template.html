@@ -86,6 +86,8 @@
   @media(max-width:520px){.kpis{grid-template-columns:repeat(2,1fr)}}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
   @media(max-width:860px){.grid2{grid-template-columns:1fr}}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+  @media(max-width:860px){.grid3{grid-template-columns:1fr}}
   .kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 17px;box-shadow:var(--shadow)}
   .kpi .lbl{font-size:12px;color:var(--muted);font-weight:600}
   .kpi .big{font-size:26px;font-weight:760;letter-spacing:-.02em;margin-top:7px;line-height:1}
@@ -1048,8 +1050,9 @@ function renderMarketing(){
     <div class="kpis" style="grid-template-columns:repeat(3,1fr)">${kpis}</div>
     <div class="eyebrow">Funil de vendas (B2B)</div>
     <div class="card">${funilHTML}</div>
-    <div class="eyebrow">Perfil &amp; porte dos leads</div>
-    <div class="grid2">
+    <div class="eyebrow">Origem &amp; perfil dos leads</div>
+    <div class="grid3">
+      <div class="card"><div class="cardh">Fonte · Meta × Google</div><div id="mkt-fonte-c"></div></div>
       <div class="card"><div class="cardh">Perfil · Pessoa Física × B2B</div><div id="mkt-pfb2b"></div></div>
       <div class="card"><div class="cardh">Porte da empresa</div><div id="mkt-porte-c"></div></div>
     </div>
@@ -1062,6 +1065,8 @@ function renderMarketing(){
     <div class="card" style="overflow-x:auto;margin-top:14px"><div class="cardh">Google Ads <span style="color:var(--muted);font-weight:500">· ${nf}</span></div>
       <table><thead><tr><th>Campanha</th><th class="r">Leads</th><th class="r">CPL</th><th class="r">WhatsApp</th><th class="r">Formulário</th><th class="r">Investido</th></tr></thead><tbody>${gRows}</tbody></table></div>`;
   // donuts/bars pós-inserção
+  makeDonutInto(document.getElementById("mkt-fonte-c"),[
+    {label:"Meta Ads",value:metaLeadN,color:"var(--brand)"},{label:"Google Ads",value:gLeadN,color:"var(--open)"}],int(metaLeadN+gLeadN),"leads");
   makeDonutInto(document.getElementById("mkt-pfb2b"),[
     {label:"B2B",value:b2bCnt,color:"var(--brand)"},{label:"Pessoa Física",value:pfCnt,color:"var(--muted)"}],int(b2bCnt+pfCnt),"leads");
   const segArr=Object.entries(perfCount).filter(([k])=>k!==PF_LABEL).map(([k,n])=>({label:k,n,disp:int(n)})).sort((a,b)=>b.n-a.n);
