@@ -446,8 +446,6 @@
         <button type="button" id="mkt-perfil-btn" class="tiny-select" style="text-align:left;cursor:pointer;min-width:170px">Todos os perfis</button>
         <div class="menu" id="mkt-perfil-menu" style="display:none;position:absolute;z-index:30;margin-top:4px;min-width:250px;max-height:300px;overflow:auto;padding:6px"></div>
       </div>
-      <span class="fllbl" style="margin-left:6px">Porte</span>
-      <select id="mkt-porte" class="tiny-select"></select>
       <button id="mkt-reset" class="reset" style="margin-left:auto">limpar filtros</button>
     </div>
     <div id="mkt-body"></div>
@@ -887,7 +885,7 @@ document.getElementById("tiny-reset").onclick=()=>{TINYF.vd="";TINYF.q="";TINYF.
   document.getElementById("tiny-vd").value="";document.getElementById("tiny-search").value="";
   document.getElementById("tiny-from").value="";document.getElementById("tiny-to").value="";renderTiny();};
 // ================= B.I Marketing =================
-const MKT={from:"",to:"",fonte:"",camp:"",seg:"b2b",perfil:new Set(),porte:""};
+const MKT={from:"",to:"",fonte:"",camp:"",seg:"b2b",perfil:new Set()};
 function ymd(d){return d.toISOString().slice(0,10);}
 const FONTES={"1":"Meta Ads","2":"Google Ads"};
 const PF_LABEL="Pessoa Física";
@@ -928,8 +926,6 @@ function mktFillSelects(){
     menu.querySelectorAll("input").forEach(inp=>inp.onchange=()=>{
       inp.checked?MKT.perfil.add(inp.value):MKT.perfil.delete(inp.value);
       mktPerfilBtnLabel(); renderMarketing();});
-    const pt=document.getElementById("mkt-porte");
-    pt.innerHTML='<option value="">Todos os portes</option>'+(M.portes||[]).map(p=>`<option>${p}</option>`).join("");
     fs.dataset.filled="1";
   }
   mktCampOpts();
@@ -957,10 +953,9 @@ function renderMarketing(){
   const F=MKT;
   const inr=dt=>(!F.from||(dt&&dt>=F.from))&&(!F.to||(dt&&dt<=F.to));
   const fonteOK=s=>!F.fonte||F.fonte===s;
-  const porteEsp=F.porte&&F.porte!=="Sem identificação";
   const perfilEsp=MKT.perfil.size>0;
   // ----- funil Bitrix (deals de Vendas fonte 1/2) -----
-  const funBase=(M.funil||[]).filter(r=>fonteOK(r.s)&&inr(r.dt)&&(!F.porte||r.pt===F.porte)); // sem seg/perfil (p/ donut PF×B2B)
+  const funBase=(M.funil||[]).filter(r=>fonteOK(r.s)&&inr(r.dt)); // sem seg/perfil (p/ donut PF×B2B)
   const fun=funBase.filter(r=>segMatch(r.p)&&perfMatch(r.p));
   const g={contato:0,proposta:0,negociacao:0,obrafutura:0,ganho:0,perdido:0};
   const gv={proposta:0,negociacao:0,obrafutura:0,ganho:0,perdido:0};
@@ -970,10 +965,10 @@ function renderMarketing(){
   const propV=gv.proposta+gv.negociacao+gv.obrafutura+gv.ganho;
   const nego=g.negociacao+g.obrafutura+g.ganho, negoV=gv.negociacao+gv.obrafutura+gv.ganho;
   // ----- leads da plataforma -----
-  const metaBase=(M.meta_leads||[]).filter(l=>inr(l.dt)&&(!F.camp||l.c===F.camp)&&F.fonte!=="2"&&!porteEsp); // sem seg/perfil
+  const metaBase=(M.meta_leads||[]).filter(l=>inr(l.dt)&&(!F.camp||l.c===F.camp)&&F.fonte!=="2"); // sem seg/perfil
   const metaLeads=metaBase.filter(l=>segMatch(l.p)&&perfMatch(l.p));
   let gDaily=(M.google_daily||[]).filter(r=>inr(r.dt)&&(!F.camp||r.c===F.camp));
-  if(F.fonte==="1"||F.seg==="pf"||perfilEsp||porteEsp) gDaily=[];   // Google não tem perfil
+  if(F.fonte==="1"||F.seg==="pf"||perfilEsp) gDaily=[];   // Google não tem perfil
   const metaLeadN=metaLeads.length;
   const gLeadN=Math.round(gDaily.reduce((a,r)=>a+(r.n||0),0));
   const totLeads=metaLeadN+gLeadN;
@@ -983,7 +978,7 @@ function renderMarketing(){
   metaLeads.forEach(l=>{(metaCampAgg[l.c]=metaCampAgg[l.c]||{leads:0,gasto:0}).leads++;});
   if(F.fonte!=="2") (M.meta_daily||[]).forEach(r=>{if(inCamp(r))(metaCampAgg[r.c]=metaCampAgg[r.c]||{leads:0,gasto:0}).gasto+=r.gasto||0;});
   const gCampAgg={};      // nome -> {leads,gasto,wpp,form}
-  if(F.fonte!=="1"&&F.seg!=="pf"&&!perfilEsp&&!porteEsp){
+  if(F.fonte!=="1"&&F.seg!=="pf"&&!perfilEsp){
     (M.google_daily||[]).forEach(r=>{if(inCamp(r)){const a=gCampAgg[r.c]=gCampAgg[r.c]||{leads:0,gasto:0,wpp:0,form:0};a.leads+=r.n;if(r.ch==="wpp")a.wpp+=r.n;else if(r.ch==="form")a.form+=r.n;}});
     (M.google_cost||[]).forEach(r=>{if(inCamp(r))(gCampAgg[r.c]=gCampAgg[r.c]||{leads:0,gasto:0,wpp:0,form:0}).gasto+=r.gasto||0;});
   }
@@ -993,7 +988,7 @@ function renderMarketing(){
   const br=d=>d?d.split("-").reverse().join("/"):"";
   const nf=(F.from||F.to)?`${br(F.from)||"início"} → ${br(F.to)||"hoje"}`:"todo o período";
   const segLbl={b2b:"B2B",pf:"Consumidor Final"}[F.seg]||"";
-  const chips=[F.fonte?FONTES[F.fonte]:"",F.camp,segLbl,MKT.perfil.size?`${MKT.perfil.size} perfil(is)`:"",F.porte].filter(Boolean);
+  const chips=[F.fonte?FONTES[F.fonte]:"",F.camp,segLbl,MKT.perfil.size?`${MKT.perfil.size} perfil(is)`:""].filter(Boolean);
   document.getElementById("mkt-fcount").innerHTML=`período ${nf}`+(chips.length?` · ${chips.length} filtro(s)`:"");
   // ----- KPIs -----
   const kc=(l,v,f,ic,tint)=>`<div class="kpi"><div class="kico ${tint}">${svgico(KIC[ic])}</div><div class="kbody"><div class="lbl">${l}</div><div class="big tnum">${v}</div><div class="foot">${f}</div></div></div>`;
@@ -1025,14 +1020,12 @@ function renderMarketing(){
   metaLeads.forEach(l=>{perfCount[l.p]=(perfCount[l.p]||0)+1;});
   const pfCnt=metaBase.filter(l=>l.p===PF_LABEL).length;   // PF × B2B: só leads (split limpo do form Meta)
   const b2bCnt=metaBase.filter(l=>l.p!==PF_LABEL).length;
-  const porteCount={}; (M.portes||[]).forEach(p=>porteCount[p]=0);
-  fun.forEach(r=>{porteCount[r.pt]=(porteCount[r.pt]||0)+1;});
   // ----- daily 30d (leads plataforma por dia, respeita filtros) -----
   const today=new Date(); const days=[];
   for(let i=29;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);days.push(ymd(d));}
   const dmap={}; days.forEach(d=>dmap[d]=0);
   (M.meta_leads||[]).forEach(l=>{if(segMatch(l.p)&&perfMatch(l.p)&&fonteOK("1")&&(!F.camp||l.c===F.camp)&&dmap[l.dt]!=null)dmap[l.dt]++;});
-  if(F.seg!=="pf"&&!perfilEsp&&!porteEsp)(M.google_daily||[]).forEach(r=>{if(fonteOK("2")&&(!F.camp||r.c===F.camp)&&dmap[r.dt]!=null)dmap[r.dt]+=r.n;});
+  if(F.seg!=="pf"&&!perfilEsp)(M.google_daily||[]).forEach(r=>{if(fonteOK("2")&&(!F.camp||r.c===F.camp)&&dmap[r.dt]!=null)dmap[r.dt]+=r.n;});
   const maxD=Math.max(...days.map(d=>dmap[d]),1);
   const dailyHTML=days.map((d,i)=>{const lbl=(i%5===0||i===days.length-1)?(+d.slice(8,10))+"/"+(+d.slice(5,7)):"";
     return `<div class="mcol"><div class="bars"><div class="cr" style="width:72%;height:${Math.max(dmap[d]/maxD*100,dmap[d]?3:0)}%;background:var(--brand);border-radius:3px 3px 0 0" title="${d.split('-').reverse().join('/')}: ${Math.round(dmap[d])} leads"></div></div><div class="ml" style="font-size:10px">${lbl}</div></div>`;}).join("");
@@ -1051,10 +1044,9 @@ function renderMarketing(){
     <div class="eyebrow">Funil de vendas (B2B)</div>
     <div class="card">${funilHTML}</div>
     <div class="eyebrow">Origem &amp; perfil dos leads</div>
-    <div class="grid3">
+    <div class="grid2">
       <div class="card"><div class="cardh">Fonte · Meta × Google</div><div id="mkt-fonte-c"></div></div>
       <div class="card"><div class="cardh">Perfil · Pessoa Física × B2B</div><div id="mkt-pfb2b"></div></div>
-      <div class="card"><div class="cardh">Porte da empresa</div><div id="mkt-porte-c"></div></div>
     </div>
     <div class="card" style="margin-top:14px"><div class="cardh">Segmento — perfil detalhado (B2B)</div><div id="mkt-segchart"></div></div>
     <div class="eyebrow">Entrada de leads · últimos 30 dias</div>
@@ -1071,9 +1063,6 @@ function renderMarketing(){
     {label:"B2B",value:b2bCnt,color:"var(--brand)"},{label:"Pessoa Física",value:pfCnt,color:"var(--muted)"}],int(b2bCnt+pfCnt),"leads");
   const segArr=Object.entries(perfCount).filter(([k])=>k!==PF_LABEL).map(([k,n])=>({label:k,n,disp:int(n)})).sort((a,b)=>b.n-a.n);
   renderBars(document.getElementById("mkt-segchart"),segArr,"var(--brand)");
-  const PAL2=["#2853a1","#f5c518","var(--good)","#8b5cf6"];
-  makeDonutInto(document.getElementById("mkt-porte-c"),
-    (M.portes||[]).map((p,i)=>({label:p,value:porteCount[p]||0,color:PAL2[i%PAL2.length]})),int(totNeg),"negócios");
 }
 function makeDonutInto(el,data,top,bot){el.innerHTML=makeDonut(data,top,bot);}
 document.querySelectorAll(".mkt-presets button").forEach(btn=>btn.onclick=()=>{
@@ -1086,13 +1075,12 @@ document.getElementById("mkt-to").onchange=e=>{MKT.to=e.target.value;mktClearPre
 document.getElementById("mkt-fonte").onchange=e=>{MKT.fonte=e.target.value;mktCampOpts();renderMarketing();};
 document.getElementById("mkt-camp").onchange=e=>{MKT.camp=e.target.value;renderMarketing();};
 document.getElementById("mkt-seg").onchange=e=>{MKT.seg=e.target.value;renderMarketing();};
-document.getElementById("mkt-porte").onchange=e=>{MKT.porte=e.target.value;renderMarketing();};
 // dropdown de Perfil (multi-seleção)
 const perfilBtn=document.getElementById("mkt-perfil-btn"), perfilMenu=document.getElementById("mkt-perfil-menu");
 perfilBtn.onclick=e=>{e.stopPropagation();perfilMenu.style.display=perfilMenu.style.display==="none"?"block":"none";};
 document.addEventListener("click",e=>{if(!perfilMenu.contains(e.target)&&e.target!==perfilBtn)perfilMenu.style.display="none";});
-document.getElementById("mkt-reset").onclick=()=>{MKT.from="";MKT.to="";MKT.fonte="";MKT.camp="";MKT.seg="b2b";MKT.perfil.clear();MKT.porte="";
-  ["mkt-from","mkt-to","mkt-fonte","mkt-camp","mkt-porte"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+document.getElementById("mkt-reset").onclick=()=>{MKT.from="";MKT.to="";MKT.fonte="";MKT.camp="";MKT.seg="b2b";MKT.perfil.clear();
+  ["mkt-from","mkt-to","mkt-fonte","mkt-camp"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
   document.getElementById("mkt-seg").value="b2b";
   perfilMenu.querySelectorAll("input").forEach(i=>i.checked=false); mktPerfilBtnLabel();
   mktClearPresets();document.querySelector('.mkt-presets [data-p="tudo"]').classList.add("on");renderMarketing();};
