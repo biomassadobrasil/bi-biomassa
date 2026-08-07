@@ -107,6 +107,37 @@ def leads_diag():
         out["campanhas"].append(info)
     return out
 
+def leads_raw():
+    """Todos os leads das campanhas ATIVAS via leads_retrieval.
+    Retorna [{'c':campanha,'p':perfil_bruto,'dt':'YYYY-MM-DD'}]. Perfil e o campo do form
+    'qual_é_o_seu_perfil?'. Normalizacao dos buckets fica no generate.py."""
+    ativas=[c for c in campanhas() if c.get("effective_status")=="ACTIVE"]
+    out=[]
+    for c in ativas:
+        try:
+            ads=_get(f"{c['id']}/ads", {"fields":"id","limit":50}).get("data",[])
+        except Exception:
+            continue
+        for a in ads:
+            after=None
+            while True:
+                try:
+                    p={"fields":"created_time,campaign_name,field_data","limit":100}
+                    if after: p["after"]=after
+                    res=_get(f"{a['id']}/leads", p)
+                except Exception:
+                    break
+                for lead in res.get("data",[]):
+                    perfil=""
+                    for fd in lead.get("field_data",[]):
+                        if "perfil" in (fd.get("name") or "").lower():
+                            perfil=(fd.get("values") or [""])[0]; break
+                    out.append({"c":lead.get("campaign_name") or c["name"],
+                                "p":perfil,"dt":(lead.get("created_time") or "")[:10]})
+                after=(res.get("paging",{}).get("cursors",{}) or {}).get("after")
+                if not after or not res.get("data"): break
+    return out
+
 def resumo_ativas():
     """Campanhas ATIVAS com leads (métrica 'lead'), gasto, impressões, cliques."""
     ids={c["id"]:c["name"] for c in campanhas() if c.get("effective_status")=="ACTIVE"}

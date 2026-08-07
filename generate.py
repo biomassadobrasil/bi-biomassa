@@ -48,8 +48,41 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 B = os.environ.get("BI_WEBHOOK", "").rstrip("/")
 CATS = {"0":"Vendas | B2B","20":"Vendas | PF","16":"Prospecção Ativa","2":"LightWall"}
 ORDER = ["0","2","20","16"]
-F_ATIV="UF_CRM_6930463B0F0DE"; F_PROD="UF_CRM_1765205924"
+F_ATIV="UF_CRM_6930463B0F0DE"; F_PROD="UF_CRM_1765205924"; F_PORTE="UF_CRM_1769105308"
 PERFIL_FIELDS=["UF_CRM_68124F377432A","UF_CRM_67E591EFC1321","UF_CRM_1780594237","UF_CRM_6930463B0F0DE"]
+
+# ---- taxonomia unificada de perfil (Meta form + Bitrix atividade/enum) ----
+def perfil_bucket(raw):
+    t=norm(raw)
+    if not t: return "Sem identificação"
+    if any(x in t for x in ["pessoa fisica","pessoa_fisica","fisica","consumidor final"]): return "Pessoa Física"
+    if "incorporad" in t: return "Incorporadora"
+    if "empreiteir" in t: return "Empreiteira"
+    if "aplica" in t: return "Aplicador"
+    if "homecenter" in t or "home center" in t: return "Homecenter"
+    if any(x in t for x in ["loja","material","matcon","revenda","distribuidora","varejista"]): return "Loja de Material de Construção"
+    if "arquitet" in t or "designer" in t: return "Arquiteto / Designer"
+    if "mestre" in t: return "Mestre de Obras / Construtor"
+    if "engenheir" in t: return "Engenheiro"
+    if "industri" in t or "fabric" in t: return "Industrial"
+    if "reforma" in t or "cnpj" in t: return "CNPJ para Reforma"
+    if "constr" in t: return "Construtora"
+    if t in ("outro","outros","other"): return "Outro"
+    return "Outro"
+
+# ordem preferencial de exibição dos perfis
+PERFIL_ORDER=["Construtora","Incorporadora","Empreiteira","Loja de Material de Construção","Homecenter",
+              "Aplicador","Arquiteto / Designer","Engenheiro","Mestre de Obras / Construtor","Industrial",
+              "CNPJ para Reforma","Outro","Sem identificação","Pessoa Física"]
+PORTE_ORDER=["Pequeno","Médio","Grande","Sem identificação"]
+
+def porte_bucket(raw_label):
+    t=norm(raw_label)
+    if not t: return "Sem identificação"
+    if "pequen" in t: return "Pequeno"
+    if "medio" in t or "médio" in t: return "Médio"
+    if "grande" in t: return "Grande"
+    return "Sem identificação"
 VEND_NOMES={"948":"Patrícia","890":"Thauany","38":"Luiz Gomes","14":"Luis Araujo"}
 
 def call(method, payload):
@@ -77,11 +110,12 @@ def fetch_all():
         return {str(i["ID"]):i["VALUE"] for i in it} if it else None
     enum_by_uf={"UF_CRM_68124F377432A":items("UF_CRM_68124F377432A"),
                 "UF_CRM_67E591EFC1321":items("UF_CRM_67E591EFC1321"),
-                "UF_CRM_1780594237":items("UF_CRM_1780594237")}
+                "UF_CRM_1780594237":items("UF_CRM_1780594237"),
+                F_PORTE:items(F_PORTE)}
     # negócios
     SELECT=["ID","CATEGORY_ID","STAGE_ID","STAGE_SEMANTIC_ID","OPPORTUNITY","DATE_CREATE",
             "DATE_MODIFY","CLOSEDATE","ASSIGNED_BY_ID","SOURCE_ID","COMPANY_ID","CONTACT_ID",
-            F_ATIV,F_PROD,"UF_CRM_68124F377432A","UF_CRM_67E591EFC1321","UF_CRM_1780594237"]
+            F_ATIV,F_PROD,"UF_CRM_68124F377432A","UF_CRM_67E591EFC1321","UF_CRM_1780594237",F_PORTE]
     deals=[]
     for c in ORDER:
         start=0
@@ -216,9 +250,21 @@ def build(stages, sources, enum_by_uf, deals):
         st=wlo(d); nm=norm(stage_name(d))
         if st=="won": return "ganho"
         if st=="lost": return "perdido"
-        if "negocia" in nm or "obra futura" in nm: return "negociacao"
+        if "obra futura" in nm: return "obrafutura"
+        if "negocia" in nm: return "negociacao"
         if "proposta" in nm: return "proposta"
         return "contato"
+    def deal_perfil(d):
+        for uf in ("UF_CRM_68124F377432A","UF_CRM_1780594237","UF_CRM_67E591EFC1321"):
+            raw=str(d.get(uf) or "").strip()
+            if raw:
+                m=enum_by_uf.get(uf); lbl=m.get(raw) if m else None
+                if lbl: return perfil_bucket(lbl)
+        return perfil_bucket(d.get(F_ATIV))
+    def deal_porte(d):
+        raw=str(d.get(F_PORTE) or "").strip()
+        m=enum_by_uf.get(F_PORTE); lbl=m.get(raw) if m else None
+        return porte_bucket(lbl)
     mkt_vendas=[]   # 1 registro por deal de Vendas vindo de campanha (fonte 1/2), com data
     MKT_CATS=[c for c in CATS if c!="20"]   # exclui Vendas | PF (pessoa física vai p/ outra pipeline)
     for d in deals:
@@ -227,7 +273,8 @@ def build(stages, sources, enum_by_uf, deals):
         try: o=float(d.get("OPPORTUNITY") or 0)
         except: o=0.0
         mkt_vendas.append({"s":sid,"t":"v","seg":_bucket(d),
-                           "dt":(d.get("DATE_CREATE","") or "")[:10],"o":round(o,2)})
+                           "dt":(d.get("DATE_CREATE","") or "")[:10],"o":round(o,2),
+                           "p":deal_perfil(d),"pt":deal_porte(d)})
 
     return {"catNames":CATS,"order":ORDER,
         "stgOrder":{c:sorted(set(r["st"] for r in recs if r["c"]==c),key=lambda n:stg_sort.get((c,n),999)) for c in ORDER},
@@ -277,14 +324,31 @@ def build_tiny():
             "peds":peds,"vendedores":vends}
 
 def build_meta():
-    """Resumo das campanhas ativas do Meta (leads pela métrica 'lead'). None se sem token."""
+    """Meta: campanhas (insights) + leads individuais do formulário (perfil). None se sem token."""
     if not os.environ.get("META_TOKEN"): return None
     import meta
-    camps=meta.resumo_ativas()
-    return {"leads":sum(c["leads"] for c in camps),
-            "gasto":round(sum(c["gasto"] for c in camps),2),
-            "impressoes":sum(c["impressoes"] for c in camps),
-            "campanhas":camps}
+    camps=meta.resumo_ativas()          # [{nome,leads,gasto,impressoes,cliques}]
+    try: leads=meta.leads_raw()         # [{c,p,dt}] via leads_retrieval
+    except Exception: import traceback; print("[BI] Meta leads_raw falhou:\n"+traceback.format_exc()); leads=[]
+    return {"camp":camps,"leads":leads}
+
+def build_google():
+    """Google: campanhas (leads/CPL/wpp/form/investido) + leads diários (90d p/ filtro de data)."""
+    try:
+        import google_ads as g
+        resumo=g.campanhas_resumo()                 # últimos 30d
+        acoes=g.conversoes_por_acao()
+        ate=datetime.date.today(); desde=ate-datetime.timedelta(days=89)
+        daily=g.leads_diarios(desde,ate)
+    except Exception:
+        import traceback; print("[BI] Google falhou:\n"+traceback.format_exc()); return None
+    camps=[]
+    for c in resumo:
+        ac=acoes.get(c["id"],{}).get("acoes",{})
+        wpp=round(sum(v for k,v in ac.items() if "whats" in k.lower() or "zap" in k.lower()))
+        form=round(sum(v for k,v in ac.items() if "form" in k.lower()))
+        camps.append({**c,"wpp":wpp,"form":form})
+    return {"camp":camps,"daily":daily}
 
 def run():
     if not B: raise SystemExit("Falta a variável de ambiente BI_WEBHOOK")
@@ -294,25 +358,23 @@ def run():
         payload["tiny"]=build_tiny()
     except Exception as e:
         import traceback; print("[BI] Tiny falhou (segue sem):\n"+traceback.format_exc()); payload["tiny"]=None
-    # marketing: pipeline 14 (topo: leads/PF) + funil de Vendas (build já calculou)
-    meta_plat=None
-    try: meta_plat=build_meta()
+    # ---- B.I Marketing: funil (Bitrix Vendas) + Meta (form) + Google (plataforma) ----
+    funil=payload.pop("mkt_vendas",[])          # deals de Vendas fonte 1/2 (com perfil/porte)
+    meta_blk=None
+    try: meta_blk=build_meta()
     except Exception: import traceback; print("[BI] Meta falhou:\n"+traceback.format_exc())
-    mkt_recs=payload.pop("mkt_vendas",[])       # registros de Vendas (t="v")
-    STG14={"C14:UC_NNZW1X":"pf","C14:UC_YQ0LJX":"antigos","C14:NEW":"novo","C14:UC_KGMM21":"b2b14"}
-    try:
-        start=0
-        while True:
-            res=call("crm.deal.list",{"filter":{"CATEGORY_ID":14},"select":["ID","SOURCE_ID","STAGE_ID","DATE_CREATE"],"start":start,"order":{"ID":"ASC"}})
-            for d in res.get("result",[]):
-                sid=str(d.get("SOURCE_ID") or "")
-                if sid not in ("1","2"): continue
-                mkt_recs.append({"s":sid,"t":"c14","seg":STG14.get(d.get("STAGE_ID"),"fechado14"),
-                                 "dt":(d.get("DATE_CREATE","") or "")[:10],"o":0})
-            if res.get("next") is None: break
-            start=res["next"]
-    except Exception: import traceback; print("[BI] cat14 falhou:\n"+traceback.format_exc())
-    payload["marketing"]={"recs":mkt_recs,"meta_plat":meta_plat,"google_plat":None}
+    google_blk=None
+    try: google_blk=build_google()
+    except Exception: import traceback; print("[BI] Google falhou:\n"+traceback.format_exc())
+    meta_leads=[{"p":perfil_bucket(l.get("p")),"dt":l.get("dt",""),"c":l.get("c","")}
+                for l in (meta_blk or {}).get("leads",[])]
+    payload["marketing"]={
+        "funil":funil,
+        "meta_camp":(meta_blk or {}).get("camp",[]),
+        "meta_leads":meta_leads,
+        "google_camp":(google_blk or {}).get("camp",[]),
+        "google_daily":(google_blk or {}).get("daily",[]),
+        "perfis":PERFIL_ORDER,"portes":PORTE_ORDER}
     tpl=open(os.path.join(HERE,"template.html"),encoding="utf-8").read()
     hoje=datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
     html=tpl.replace("__DATA__", json.dumps(payload,ensure_ascii=False)).replace("__GENDATE__", hoje)
