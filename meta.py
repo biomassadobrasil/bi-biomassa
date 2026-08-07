@@ -85,7 +85,7 @@ def leads_diag():
     ativas=[c for c in campanhas() if c.get("effective_status")=="ACTIVE"]
     if not ativas: return {"ok":False,"erro":"sem campanhas ativas"}
     out={"ok":False,"campanhas":[]}
-    campos_perfil=("perfil","segmento","atividade","porte","voce_e","você_é","qual")
+    PII=("full_name","email","phone_number","telefone","e-mail","nome")
     for c in ativas[:3]:
         info={"campanha":c["name"],"leads_lidos":0}
         try:
@@ -104,7 +104,7 @@ def leads_diag():
                         info["leads_lidos"]+=1
                         for fd in lead.get("field_data",[]):
                             nm=(fd.get("name") or "").lower(); campos.add(nm)
-                            if any(k in nm for k in campos_perfil):
+                            if not any(k in nm for k in PII):
                                 v=(fd.get("values") or [None])[0]
                                 dist.setdefault(nm,{}); dist[nm][v]=dist[nm].get(v,0)+1
                     after=(res.get("paging",{}).get("cursors",{}) or {}).get("after")
