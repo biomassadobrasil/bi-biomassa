@@ -32,6 +32,18 @@ def atualizar():
     regenerar()
     return "Atualizado.", 200
 
+@app.route("/_gads")
+def _gads():
+    import os as _os
+    info={"envs":{k:bool(_os.environ.get(k)) for k in
+          ["GOOGLE_DEV_TOKEN","GOOGLE_CLIENT_ID","GOOGLE_CLIENT_SECRET","GOOGLE_REFRESH_TOKEN","GOOGLE_LOGIN_CUSTOMER_ID","GOOGLE_CUSTOMER_ID"]}}
+    try:
+        import google_ads as g
+        info["resumo"]=g.campanhas_resumo()
+    except Exception as e:
+        info["erro"]=str(e)[:400]
+    return Response(json.dumps(info, ensure_ascii=False, indent=2), mimetype="application/json")
+
 # agenda 08:00 e 12:30 no horário de São Paulo
 tz = ZoneInfo("America/Sao_Paulo")
 sched = BackgroundScheduler(timezone=tz)
