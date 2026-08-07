@@ -950,8 +950,8 @@ function renderMarketing(){
   const invG=(F.fonte==="1")?0:(M.google_camp||[]).filter(c=>!F.camp||c.nome===F.camp).reduce((a,c)=>a+(c.gasto||0),0);
   const leadsMetaPlat=(F.fonte==="2")?0:(M.meta_camp||[]).filter(c=>!F.camp||c.nome===F.camp).reduce((a,c)=>a+(c.leads||0),0);
   const leadsGPlat=(F.fonte==="1")?0:(M.google_camp||[]).filter(c=>!F.camp||c.nome===F.camp).reduce((a,c)=>a+(c.leads||0),0);
-  const invest=invMeta+invG, leadsPlatCPL=leadsMetaPlat+leadsGPlat;
-  const cpl=leadsPlatCPL?invest/leadsPlatCPL:0;
+  const invest=invMeta+invG;
+  const cpl=totLeads?invest/totLeads:0;   // por lead B2B (consistente com "Total de Leads")
   // ----- fcount -----
   const br=d=>d?d.split("-").reverse().join("/"):"";
   const nf=(F.from||F.to)?`${br(F.from)||"início"} → ${br(F.to)||"hoje"}`:"todo o período";
@@ -963,7 +963,7 @@ function renderMarketing(){
   const kpis=[
     kc("Total de Leads",int(totLeads),"da plataforma (Meta/Google)","trend","ico-blue"),
     kc("Total de Negócios",int(totNeg),vaz>0?`${vaz}% de vazamento até o CRM`:"no Bitrix","brief","ico-solid"),
-    kc("Custo por Lead",leadsPlatCPL?brlK(cpl):"—",`investido ${brlK(invest)}`,"dollar","ico-green"),
+    kc("Custo por Lead B2B",totLeads?brlK(cpl):"—",`investido ${brlK(invest)}`,"dollar","ico-green"),
     kc("Em Negociação",int(nego),brlK(negoV),"clock","ico-amber"),
     kc("Ganhos",int(g.ganho),brlK(gv.ganho),"trophy","ico-green"),
     kc("Perdidos",int(g.perdido),brlK(gv.perdido),"tag","ico-blue"),
