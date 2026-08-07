@@ -10,17 +10,27 @@ def _acct():
     if a and not a.startswith("act_"): a = "act_" + a
     return a
 
+import time as _time
+
 def _get(path, params):
     token = os.environ.get("META_TOKEN", "")
     if not token: raise RuntimeError("Falta META_TOKEN")
     q = {"access_token": token, **params}
     url = f"{BASE}/{path}?{urllib.parse.urlencode(q)}"
-    try:
-        with urllib.request.urlopen(url, timeout=60) as r:
-            return json.load(r)
-    except urllib.error.HTTPError as e:
-        body = e.read().decode("utf-8", "replace")
-        raise RuntimeError(f"Meta {e.code} em {path}: {body}")
+    last = None
+    for tent in range(4):   # retry: rate-limit/timeout do Meta são comuns em cargas grandes
+        try:
+            with urllib.request.urlopen(url, timeout=60) as r:
+                return json.load(r)
+        except urllib.error.HTTPError as e:
+            body = e.read().decode("utf-8", "replace")
+            last = RuntimeError(f"Meta {e.code} em {path}: {body}")
+            # 4xx de permissão/parâmetro não adianta repetir; rate-limit (limite) sim
+            if e.code not in (429, 500, 503) and "limit" not in body.lower(): raise last
+        except Exception as e:
+            last = e
+        _time.sleep(2 * (tent + 1))
+    raise last
 
 def campanhas():
     """Lista campanhas com status (ACTIVE/PAUSED)."""
@@ -114,19 +124,13 @@ def leads_raw():
     ativas=[c for c in campanhas() if c.get("effective_status")=="ACTIVE"]
     out=[]
     for c in ativas:
-        try:
-            ads=_get(f"{c['id']}/ads", {"fields":"id","limit":50}).get("data",[])
-        except Exception:
-            continue
+        ads=_get(f"{c['id']}/ads", {"fields":"id","limit":50}).get("data",[])
         for a in ads:
             after=None
             while True:
-                try:
-                    p={"fields":"created_time,campaign_name,field_data","limit":100}
-                    if after: p["after"]=after
-                    res=_get(f"{a['id']}/leads", p)
-                except Exception:
-                    break
+                p={"fields":"created_time,campaign_name,field_data","limit":100}
+                if after: p["after"]=after
+                res=_get(f"{a['id']}/leads", p)   # _get já tem retry; erro duro propaga -> cache anterior
                 for lead in res.get("data",[]):
                     perfil=""
                     for fd in lead.get("field_data",[]):

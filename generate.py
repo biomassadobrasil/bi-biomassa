@@ -44,6 +44,23 @@ def _itens_do_pedido(pid):
     time.sleep(0.2)   # respiro entre chamadas novas (rate-limit Tiny)
     return itens
 
+def _bloco_cache(key, fn, ok_fn):
+    """Roda fn(); se OK, guarda no Redis. Se falhar/vazio, cai pro último bom (evita zerar o painel)."""
+    val=None
+    try: val=fn()
+    except Exception: import traceback; print(f"[BI] {key} falhou:\n"+traceback.format_exc())
+    if val is not None and ok_fn(val):
+        if _RDS:
+            try: _RDS.set("bicache:"+key, json.dumps(val))
+            except Exception: pass
+        return val
+    if _RDS:
+        try:
+            c=_RDS.get("bicache:"+key)
+            if c: print(f"[BI] {key}: usando cache anterior (agora falhou/veio vazio)"); return json.loads(c)
+        except Exception: pass
+    return val
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 B = os.environ.get("BI_WEBHOOK", "").rstrip("/")
 CATS = {"0":"Vendas | B2B","20":"Vendas | PF","16":"Prospecção Ativa","2":"LightWall"}
@@ -360,12 +377,9 @@ def run():
         import traceback; print("[BI] Tiny falhou (segue sem):\n"+traceback.format_exc()); payload["tiny"]=None
     # ---- B.I Marketing: funil (Bitrix Vendas) + Meta (form) + Google (plataforma) ----
     funil=payload.pop("mkt_vendas",[])          # deals de Vendas fonte 1/2 (com perfil/porte)
-    meta_blk=None
-    try: meta_blk=build_meta()
-    except Exception: import traceback; print("[BI] Meta falhou:\n"+traceback.format_exc())
-    google_blk=None
-    try: google_blk=build_google()
-    except Exception: import traceback; print("[BI] Google falhou:\n"+traceback.format_exc())
+    # cache de bloco: se Meta/Google falhar numa regeneração, usa o último resultado bom
+    meta_blk=_bloco_cache("meta", build_meta, lambda v: bool(v and v.get("camp") and v.get("leads")))
+    google_blk=_bloco_cache("google", build_google, lambda v: bool(v and v.get("camp")))
     meta_leads=[{"p":perfil_bucket(l.get("p")),"dt":l.get("dt",""),"c":l.get("c","")}
                 for l in (meta_blk or {}).get("leads",[])]
     payload["marketing"]={
