@@ -103,9 +103,19 @@ def porte_bucket(raw_label):
 VEND_NOMES={"948":"Patrícia","890":"Thauany","38":"Luiz Gomes","14":"Luis Araujo"}
 
 def call(method, payload):
-    req=urllib.request.Request(f"{B}/{method}.json", data=json.dumps(payload).encode(),
-                               headers={"Content-Type":"application/json"})
-    with urllib.request.urlopen(req, timeout=90) as r: return json.load(r)
+    last=None
+    for tent in range(4):   # Bitrix às vezes devolve 503/500 transitório
+        req=urllib.request.Request(f"{B}/{method}.json", data=json.dumps(payload).encode(),
+                                   headers={"Content-Type":"application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=90) as r: return json.load(r)
+        except urllib.error.HTTPError as e:
+            last=e
+            if e.code not in (500,502,503,504): raise
+        except Exception as e:
+            last=e
+        time.sleep(2*(tent+1))
+    raise last
 
 def norm(s):
     s=(s or "").strip().lower()
@@ -378,7 +388,7 @@ def build_funil(stages, sources, deals):
     + ligações (voximplant: tentativas e atendidas=CALL_FAILED_CODE 200)."""
     def vkey(uid):
         u=str(uid or "")
-        return u if u in VEND_FUNIL else "outros"
+        return u if u in VEND_FUNIL else None   # só Patrícia/Thauany; resto ignorado
     # etapa de proposta e 1ª etapa por pipeline
     prop_stage={}; first_stage={}; stage_nome={}
     for cat in FUNIL_CATS:
@@ -410,8 +420,9 @@ def build_funil(stages, sources, deals):
         rows=res.get("result",[])
         for x in rows:
             if str(x.get("CALL_TYPE"))!="1": continue   # só saída = tentativa
-            calls.append({"dt":(x.get("CALL_START_DATE","") or "")[:10],
-                          "vd":vkey(x.get("PORTAL_USER_ID")),
+            vd=vkey(x.get("PORTAL_USER_ID"))
+            if not vd: continue                          # só Patrícia/Thauany
+            calls.append({"dt":(x.get("CALL_START_DATE","") or "")[:10],"vd":vd,
                           "ok":str(x.get("CALL_FAILED_CODE"))=="200",
                           "deal":str(x.get("CRM_ENTITY_ID")) if x.get("CRM_ENTITY_TYPE")=="DEAL" else None})
         if res.get("next") is None: break
@@ -421,6 +432,8 @@ def build_funil(stages, sources, deals):
     for d in deals:
         cat=str(d["CATEGORY_ID"])
         if cat not in FUNIL_CATS: continue
+        vd=vkey(d.get("ASSIGNED_BY_ID"))
+        if not vd: continue                              # só Patrícia/Thauany
         sem=d.get("STAGE_SEMANTIC_ID"); won=(sem=="S")
         did=str(d["ID"])
         try: o=float(d.get("OPPORTUNITY") or 0)
@@ -428,13 +441,12 @@ def build_funil(stages, sources, deals):
         cd=(d.get("CLOSEDATE","") or "")[:10]
         worked = d.get("STAGE_ID")!=first_stage.get(cat)   # saiu da 1ª etapa
         ds.append({"id":did,"dtc":(d.get("DATE_CREATE","") or "")[:10],
-                   "won":won,"dtw":cd if won else "","lost":(sem=="F"),
-                   "vd":vkey(d.get("ASSIGNED_BY_ID")),
+                   "won":won,"dtw":cd if won else "","lost":(sem=="F"),"vd":vd,
                    "src":sources.get(str(d.get("SOURCE_ID")),"Sem fonte"),
                    "cat":cat,"cli":d.get("_CLI") or "— sem cliente","o":round(o,2),
                    "worked":worked,"prop":did in prop_date,"dtp":prop_date.get(did,""),
                    "stage":stage_nome.get((cat,d.get("STAGE_ID")),d.get("STAGE_ID"))})
-    vend_nomes={k:v[0] for k,v in VEND_FUNIL.items()}; vend_nomes["outros"]="Outros vendedores"
+    vend_nomes={k:v[0] for k,v in VEND_FUNIL.items()}
     niveis={k:v[1] for k,v in VEND_FUNIL.items()}
     return {"deals":ds,"calls":calls,
             "vend":vend_nomes,"niveis":niveis,

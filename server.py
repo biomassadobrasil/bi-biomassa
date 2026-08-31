@@ -32,30 +32,6 @@ def atualizar():
     regenerar()
     return "Atualizado.", 200
 
-@app.route("/_tinyprop")
-def _tinyprop():
-    import tiny
-    out={}
-    cands=["pedidos.pesquisa.php","propostacomercial.pesquisa.php","propostas.comercial.pesquisa.php",
-           "proposta.comercial.obter.php","orcamento.pesquisa.php","orcamentos.pesquisa.php",
-           "propostas.comerciais.php","vendedores.pesquisa.php","contatos.pesquisa.php"]
-    for ep in cands:
-        try:
-            r=tiny.raw(ep,{"pagina":1}).get("retorno",{})
-            info={"status":r.get("status")}
-            if r.get("erros"): info["erros"]=r.get("erros")
-            # descobre a chave de lista e campos
-            for k,v in r.items():
-                if isinstance(v,list) and v:
-                    item=v[0].get(list(v[0].keys())[0]) if isinstance(v[0],dict) else v[0]
-                    info["lista_key"]=k
-                    info["campos"]=sorted(item.keys()) if isinstance(item,dict) else str(item)[:100]
-                    break
-            out[ep]=info
-        except Exception as e:
-            out[ep]={"exc":str(e)[:150]}
-    return Response(json.dumps(out,ensure_ascii=False,indent=2),mimetype="application/json")
-
 # agenda 08:00 e 12:30 no horário de São Paulo
 tz = ZoneInfo("America/Sao_Paulo")
 sched = BackgroundScheduler(timezone=tz)

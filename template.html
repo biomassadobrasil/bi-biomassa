@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>B.I Comercial — Biomassa do Brasil</title>
 <style>
   :root{
@@ -1209,32 +1210,31 @@ function renderFunil(){
   // ----- fcount -----
   const br=d=>d?d.split("-").reverse().join("/"):"";
   document.getElementById("fun-fcount").innerHTML=`período ${br(from)||"início"} → ${br(to)||"hoje"}`;
-  // ----- KPIs -----
+  const valProp=props.reduce((a,d)=>a+d.o,0);
+  // ----- KPIs (4) -----
   const kc=(l,v,f,ic,tint)=>`<div class="kpi"><div class="kico ${tint}">${svgico(KIC[ic])}</div><div class="kbody"><div class="lbl">${l}</div><div class="big tnum">${v}</div><div class="foot">${f}</div></div></div>`;
-  const lowCall=tent.length<5?' <span style="color:var(--muted)">· pouco registro no período</span>':'';
   const kpis=[
-    kc("Deals recebidos",int(cReceb),deltaTxt||"no período","brief","ico-blue"),
-    kc("Tentativas de ligação",int(tent.length),"ligações de saída"+lowCall,"clock","ico-amber"),
-    kc("Ligações atendidas",int(atend.length),`taxa de contato <b>${taxaContato.toFixed(1)}%</b>`,"trend","ico-green"),
-    kc("Propostas",int(props.length),"entraram em proposta","tag","ico-blue"),
-    kc("Vendas",int(vendas.length),brlK(valVendas),"trophy","ico-green"),
-    kc("Conversão geral",convGeral.toFixed(1)+"%",`${int(vendas.length)} de ${int(cReceb)} deals`,"dollar","ico-solid"),
+    kc("Negócios recebidos",int(cReceb),deltaTxt||"no período","brief","ico-blue"),
+    kc("Propostas comerciais",int(props.length),`valor <b>${brlK(valProp)}</b>`,"tag","ico-amber"),
+    kc("Vendas",int(vendas.length),`valor <b>${brlK(valVendas)}</b>`,"trophy","ico-green"),
+    kc("Taxa de conversão",convGeral.toFixed(1)+"%",`${int(vendas.length)} de ${int(cReceb)} negócios`,"dollar","ico-solid"),
   ].join("");
-  // ----- funil horizontal -----
+  // ----- funil horizontal (Recebidos → Tentativas → Propostas → Vendas) -----
+  const lowCall=tent.length<5?' · pouco registro de ligação no período':'';
   const fsteps=[
-    {l:"Deals recebidos",n:cReceb,c:"#004FC2"},
-    {l:"Trabalhados",n:cTrab,c:"#2f6fd0"},
-    {l:"Propostas",n:cProp,c:"#f0b429"},
-    {l:"Vendas",n:cVen,c:"#1f9d6b"},
+    {l:"Negócios recebidos",n:cReceb,c:"#004FC2"},
+    {l:"Tentativas de ligação",n:tent.length,c:"#2f6fd0"},
+    {l:"Propostas comerciais",n:props.length,c:"#f0b429"},
+    {l:"Vendas",n:vendas.length,c:"#1f9d6b"},
   ];
-  const fmax=cReceb||1;
+  const fmax=Math.max(...fsteps.map(s=>s.n),1), ftop=fsteps[0].n||1;
   const funilHTML=fsteps.map((s,i)=>{
-    const conv=i>0&&fsteps[i-1].n?Math.round(s.n/fsteps[i-1].n*100):null;
+    const conv=i>0?Math.round(s.n/ftop*100):null;   // % dos negócios recebidos (unidades comparáveis)
     return `<div class="funrow"><div class="funlbl">${s.l}</div>
       <div class="funbar"><div class="funfill" style="width:${Math.max(s.n/fmax*100,2)}%;background:${s.c}"><span>${int(s.n)}</span></div></div>
-      <div class="funconv">${conv!=null?`<b>${conv}%</b> <span>da etapa anterior</span>`:"&nbsp;"}</div></div>`;
+      <div class="funconv">${conv!=null?`<b>${conv}%</b> <span>dos recebidos</span>`:"&nbsp;"}</div></div>`;
   }).join("");
-  const convFim=cReceb?Math.round(cVen/cReceb*100):0;
+  const convFim=cReceb?Math.round(vendas.length/cReceb*100):0;
   // ----- performance por vendedor -----
   const vlist=["948","890"].filter(k=>F.vend[k]);   // Patrícia (Sênior) antes de Thauany
   const perV=vlist.map(vd=>{
@@ -1245,38 +1245,18 @@ function renderFunil(){
           te=cv.filter(c=>funInP(c.dt,from,to)), at=cv.filter(c=>funInP(c.dt,from,to)&&c.ok);
     return {vd,nome:F.vend[vd],nivel:F.niveis[vd]||"",rb:rb.length,te:te.length,at:at.length,
             tc:te.length?at.length/te.length*100:0,pr:pr.length,vn:vn.length,
-            cdp:rb.length?pr.filter(x=>rb.includes(x)).length:0,
             conv:rb.length?vn.length/rb.length*100:0};
   });
-  const rowsV=[["Deals recebidos","rb"],["Tentativas de ligação","te"],["Ligações atendidas","at"],
-    ["Taxa de contato","tc%"],["Propostas","pr"],["Vendas","vn"],["Conversão geral","conv%"]];
+  const rowsV=[["Negócios recebidos","rb"],["Tentativas de ligação","te"],["Ligações atendidas","at"],
+    ["Taxa de contato","tc%"],["Propostas comerciais","pr"],["Vendas","vn"],["Conversão geral","conv%"]];
   const perfTable=`<table class="perf"><thead><tr><th>Indicador</th>${perV.map(v=>`<th class="r">${v.nome}<br><span class="pill">${v.nivel}</span></th>`).join("")}</tr></thead><tbody>`+
     rowsV.map(([lbl,key])=>{const pct=key.endsWith("%");const k=pct?key.slice(0,-1):key;
       return `<tr><td>${lbl}</td>${perV.map(v=>`<td class="r tnum">${pct?v[k].toFixed(1)+"%":int(v[k])}</td>`).join("")}</tr>`;}).join("")+`</tbody></table>`;
-  // ----- evolução -----
-  let bfrom=from||receb.concat(props,vendas).map(d=>d.dtc).sort()[0]||ymd(new Date());
-  let bto=to||ymd(new Date());
-  const spanD=Math.round((new Date(bto)-new Date(bfrom))/864e5)+1;
-  const monthly=spanD>62;
-  const buckets=[];
-  if(monthly){let c=new Date(bfrom.slice(0,7)+"-01");const end=new Date(bto);while(c<=end){buckets.push(ymd(c).slice(0,7));c.setMonth(c.getMonth()+1);}}
-  else{let c=new Date(bfrom);const end=new Date(bto);while(c<=end){buckets.push(ymd(c));c.setDate(c.getDate()+1);}}
-  const bkey=s=>monthly?s.slice(0,7):s;
-  const acc=(arr,fld)=>{const m={};buckets.forEach(b=>m[b]=0);arr.forEach(d=>{const k=bkey(d[fld]||"");if(m[k]!=null)m[k]++;});return buckets.map(b=>m[b]);};
-  const evoHTML=funLine(buckets,[
-    {name:"Recebidos",c:"#004FC2",vals:acc(deals.filter(d=>funInP(d.dtc,bfrom,bto)),"dtc")},
-    {name:"Propostas",c:"#f0b429",vals:acc(deals.filter(d=>funInP(d.dtp,bfrom,bto)),"dtp")},
-    {name:"Vendas",c:"#1f9d6b",vals:acc(deals.filter(d=>d.won&&funInP(d.dtw,bfrom,bto)),"dtw")},
-  ],b=>monthly?b.slice(5)+"/"+b.slice(2,4):(+b.slice(8,10)));
-  const evoLeg=[["Recebidos","#004FC2"],["Propostas","#f0b429"],["Vendas","#1f9d6b"]].map(([n,c])=>`<span class="leg"><span class="ldot" style="background:${c}"></span>${n}</span>`).join("");
-  // ----- distribuição por vendedor -----
-  const distV={}; receb.forEach(d=>{const n=F.vend[d.vd];distV[n]=(distV[n]||0)+1;});
-  const distArr=Object.entries(distV).map(([k,n])=>({label:k,n,disp:int(n)})).sort((a,b)=>b.n-a.n);
   // ----- eficiência -----
   const effRate=(l,v,sub)=>`<div class="effcard"><div class="efflbl">${l}</div><div class="effbig tnum">${v}</div><div class="effsub">${sub}</div></div>`;
   const efic=effRate("Taxa de contato",taxaContato.toFixed(1)+"%","atendidas ÷ tentativas")+
-    effRate("Deal → Proposta",(cReceb?cProp/cReceb*100:0).toFixed(1)+"%","chegaram à proposta")+
-    effRate("Proposta → Venda",(cProp?cVen/cProp*100:0).toFixed(1)+"%","propostas que fecharam")+
+    effRate("Negócio → Proposta",(cReceb?props.length/cReceb*100:0).toFixed(1)+"%","chegaram à proposta")+
+    effRate("Proposta → Venda",(props.length?vendas.length/props.length*100:0).toFixed(1)+"%","propostas que fecharam")+
     effRate("Conversão geral",convGeral.toFixed(1)+"%","vendas ÷ recebidos");
   // ----- tabela detalhamento -----
   const callByDeal={}; tent.forEach(c=>{if(c.deal){const a=callByDeal[c.deal]=callByDeal[c.deal]||{t:0,a:0};a.t++;if(c.ok)a.a++;}});
@@ -1286,28 +1266,23 @@ function renderFunil(){
     return `<tr><td>${br(d.dtc)}</td><td><a href="${BX}${d.id}/" target="_blank">#${d.id}</a></td><td>${d.cli}</td>
       <td>${F.vend[d.vd]}</td><td>${d.src}</td><td class="r tnum">${cl.t}</td><td class="r">${sim(cl.a>0)}</td>
       <td class="r">${sim(d.prop)}</td><td>${d.stage}</td><td class="r">${sim(d.won)}</td><td class="r tnum">${d.won&&d.o?brl0(d.o):"—"}</td></tr>`;
-  }).join("")||`<tr><td colspan="11" class="empty">Nenhum deal recebido no período.</td></tr>`;
+  }).join("")||`<tr><td colspan="11" class="empty">Nenhum negócio recebido no período.</td></tr>`;
   // ----- monta -----
   document.getElementById("fun-body").innerHTML=`
-    <div class="kpis" style="grid-template-columns:repeat(3,1fr)">${kpis}</div>
+    <div class="kpis" style="grid-template-columns:repeat(4,1fr)">${kpis}</div>
     <div class="eyebrow">Funil comercial</div>
     <div class="card"><div class="funnel">${funilHTML}</div>
-      <div class="fnl-foot">Coorte dos <b>${int(cReceb)}</b> deals recebidos no período. Conversão <b>Deal → Venda: ${convFim}%</b>.</div></div>
+      <div class="fnl-foot">Números do período (cada etapa pela sua data). Conversão <b>Negócio → Venda: ${convFim}%</b>.${lowCall}</div></div>
     <div class="eyebrow">Performance da equipe</div>
     <div class="card" style="overflow-x:auto">${perfTable}
-      <div class="fnl-foot">Priorize as <b>taxas de conversão</b> — cada vendedor recebe volumes diferentes de leads.</div></div>
-    <div class="eyebrow">Evolução comercial</div>
-    <div class="card"><div class="legrow">${evoLeg}</div>${evoHTML}</div>
-    <div class="grid2" style="margin-top:14px">
-      <div class="card"><div class="cardh">Deals recebidos por vendedor</div><div id="fun-dist"></div></div>
-      <div class="card"><div class="cardh">Eficiência comercial</div><div class="effgrid">${efic}</div></div>
-    </div>
-    <div class="eyebrow">Detalhamento dos deals</div>
+      <div class="fnl-foot">Priorize as <b>taxas de conversão</b> — cada vendedora recebe volumes diferentes de negócios.</div></div>
+    <div class="eyebrow">Eficiência comercial</div>
+    <div class="card"><div class="effgrid">${efic}</div></div>
+    <div class="eyebrow">Detalhamento dos negócios</div>
     <div class="card" style="overflow-x:auto"><table class="deltbl"><thead><tr>
-      <th>Entrada</th><th>Deal</th><th>Cliente</th><th>Vendedor</th><th>Origem</th><th class="r">Tent.</th><th class="r">Atend.</th><th class="r">Prop.</th><th>Status</th><th class="r">Venda</th><th class="r">Valor</th>
+      <th>Entrada</th><th>Negócio</th><th>Cliente</th><th>Vendedor</th><th>Origem</th><th class="r">Tent.</th><th class="r">Atend.</th><th class="r">Prop.</th><th>Status</th><th class="r">Venda</th><th class="r">Valor</th>
       </tr></thead><tbody>${trows}</tbody></table>
-      <div class="fnl-foot">Tentativas/atendidas por deal contam só ligações vinculadas ao card. Clique no nº do deal para abrir no Bitrix.</div></div>`;
-  renderBars(document.getElementById("fun-dist"),distArr,"var(--brand)");
+      <div class="fnl-foot">Tentativas/atendidas por negócio contam só ligações vinculadas ao card. Clique no nº do negócio para abrir no Bitrix.</div></div>`;
 }
 document.querySelectorAll("#fun-presets button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#fun-presets button").forEach(x=>x.classList.toggle("on",x===b));funPreset(b.dataset.p);});
 function funClearP(){document.querySelectorAll("#fun-presets button").forEach(b=>b.classList.remove("on"));}
