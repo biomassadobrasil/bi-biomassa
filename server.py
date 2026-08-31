@@ -36,8 +36,9 @@ def atualizar():
 def _tinyprop():
     import tiny
     out={}
-    cands=["propostas.comerciais.pesquisa.php","proposta.comercial.pesquisa.php",
-           "propostas.pesquisa.php","proposta.pesquisa.php","orcamentos.pesquisa.php"]
+    cands=["pedidos.pesquisa.php","propostacomercial.pesquisa.php","propostas.comercial.pesquisa.php",
+           "proposta.comercial.obter.php","orcamento.pesquisa.php","orcamentos.pesquisa.php",
+           "propostas.comerciais.php","vendedores.pesquisa.php","contatos.pesquisa.php"]
     for ep in cands:
         try:
             r=tiny.raw(ep,{"pagina":1}).get("retorno",{})
