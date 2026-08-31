@@ -25,6 +25,10 @@ def pedido_obter(pedido_id):
     """pedido.obter.php — detalhe do pedido, com itens/produtos."""
     return _get("pedido.obter.php", {"id": pedido_id})
 
+def raw(endpoint, params=None):
+    """Chamada crua a um endpoint da API v2 (diagnóstico)."""
+    return _get(endpoint, params or {})
+
 def amostra_item():
     """Pega 1 pedido e mostra os campos dos itens (p/ montar produtos/ABC)."""
     res = pesquisa_pedidos(pagina=1)
