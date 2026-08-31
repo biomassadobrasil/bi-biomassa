@@ -270,6 +270,35 @@
   .mkt-perdas{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line2)}
   .mkt-chip{font-size:12.5px;font-weight:600;padding:4px 11px;border-radius:20px}
   .mkt-chip b{font-weight:800}
+  /* ===== B.I Funil ===== */
+  .funnel{display:flex;flex-direction:column;gap:12px;padding:4px 0}
+  .funrow{display:grid;grid-template-columns:150px 1fr 150px;gap:16px;align-items:center}
+  .funlbl{font-size:13.5px;font-weight:700;color:var(--ink);text-align:right}
+  .funbar{background:var(--line2);border-radius:9px;height:34px;overflow:hidden}
+  .funfill{height:100%;border-radius:9px;display:flex;align-items:center;justify-content:flex-end;padding:0 12px;min-width:34px;transition:width .3s}
+  .funfill span{color:#fff;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums}
+  .funconv{font-size:12px;color:var(--muted)}.funconv b{color:var(--ink);font-size:14px}
+  @media(max-width:640px){.funrow{grid-template-columns:96px 1fr;gap:8px}.funconv{grid-column:2}}
+  table.perf{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.perf th,table.perf td{padding:11px 12px;border-bottom:1px solid var(--line2);text-align:left}
+  table.perf th.r,table.perf td.r{text-align:right;font-variant-numeric:tabular-nums}
+  table.perf tbody tr:hover{background:var(--line2)}
+  table.perf td:first-child{color:var(--muted);font-weight:600}
+  .pill{display:inline-block;background:var(--brand-soft);color:var(--brand);font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em}
+  .legrow{display:flex;gap:16px;margin-bottom:10px}
+  .leg{font-size:12px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px}
+  .ldot{width:10px;height:10px;border-radius:3px;display:inline-block}
+  .effgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .effcard{background:var(--line2);border-radius:12px;padding:14px 15px}
+  .efflbl{font-size:12px;color:var(--muted);font-weight:600}
+  .effbig{font-size:26px;font-weight:800;margin:3px 0;color:var(--ink)}
+  .effsub{font-size:11.5px;color:var(--muted)}
+  .deltbl{width:100%;border-collapse:collapse;font-size:12.5px;white-space:nowrap}
+  .deltbl th,.deltbl td{padding:8px 10px;border-bottom:1px solid var(--line2);text-align:left}
+  .deltbl th.r,.deltbl td.r{text-align:right;font-variant-numeric:tabular-nums}
+  .deltbl a{color:var(--brand);font-weight:700;text-decoration:none}.deltbl a:hover{text-decoration:underline}
+  .deltbl .ok{color:var(--good);font-weight:700}.deltbl .no{color:var(--muted)}
+  .deltbl tbody tr:hover{background:var(--line2)}
 </style>
 
 <div class="app">
@@ -281,6 +310,7 @@
         <div class="bi-opt active" data-view="bitrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="12"/><line x1="10" y1="20" x2="10" y2="4"/><line x1="16" y1="20" x2="16" y2="9"/><line x1="21" y1="20" x2="3" y2="20"/></svg><span>B.I Bitrix</span></div>
         <div class="bi-opt" data-view="tiny"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span>B.I Tiny</span></div>
         <div class="bi-opt" data-view="marketing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/></svg><span>B.I Marketing</span></div>
+        <div class="bi-opt" data-view="funil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 4 21 4 14 12 14 19 10 21 10 12 3 4"/></svg><span>B.I Funil</span></div>
       </div>
     </div>
     <div class="sb-div"></div>
@@ -449,6 +479,32 @@
       <button id="mkt-reset" class="reset" style="margin-left:auto">limpar filtros</button>
     </div>
     <div id="mkt-body"></div>
+  </div>
+
+  <div id="view-funil" style="display:none">
+    <div class="filterbar" style="margin-bottom:10px;flex-wrap:wrap;row-gap:10px">
+      <span class="fllbl">Período</span>
+      <span class="mkt-presets" id="fun-presets">
+        <button data-p="hoje">Hoje</button><button data-p="ontem">Ontem</button>
+        <button data-p="7">7 dias</button><button data-p="mes" class="on">Este mês</button>
+        <button data-p="mesant">Mês anterior</button>
+      </span>
+      <span class="drsep">ou</span>
+      <input type="date" id="fun-from" class="tiny-select" style="color-scheme:light dark">
+      <span class="drsep">até</span>
+      <input type="date" id="fun-to" class="tiny-select" style="color-scheme:light dark">
+      <span class="fcount" id="fun-fcount" style="margin-left:auto"></span>
+    </div>
+    <div class="filterbar" style="margin-bottom:16px;flex-wrap:wrap;row-gap:10px">
+      <span class="fllbl">Vendedor</span>
+      <select id="fun-vd" class="tiny-select"></select>
+      <span class="fllbl" style="margin-left:6px">Pipeline</span>
+      <select id="fun-cat" class="tiny-select"></select>
+      <span class="fllbl" style="margin-left:6px">Origem</span>
+      <select id="fun-src" class="tiny-select"></select>
+      <button id="fun-reset" class="reset" style="margin-left:auto">limpar filtros</button>
+    </div>
+    <div id="fun-body"></div>
   </div>
 
   <footer>Fontes: Bitrix24 (Negócios) + Tiny (pedidos/vendas). Valores em BRL. Tiny complementa os negócios que passam só pela emissão de proposta/pedido.</footer>
@@ -805,14 +861,16 @@ function setView(v){
   document.getElementById("view-bitrix").style.display=(v==="bitrix")?"":"none";
   document.getElementById("view-tiny").style.display=(v==="tiny")?"":"none";
   document.getElementById("view-marketing").style.display=(v==="marketing")?"":"none";
+  document.getElementById("view-funil").style.display=(v==="funil")?"":"none";
   document.querySelector(".sb-secnav").style.display=(v==="bitrix")?"":"none";
   document.querySelectorAll(".bi-opt").forEach(o=>o.classList.toggle("active",o.dataset.view===v));
-  const nome={tiny:"Tiny",marketing:"Marketing"}[v]||"Bitrix";
+  const nome={tiny:"Tiny",marketing:"Marketing",funil:"Funil"}[v]||"Bitrix";
   document.getElementById("bi-cur").textContent=nome+" ▾";
-  const subs={tiny:"Dados do Tiny · pedidos/vendas",marketing:"Marketing · leads das campanhas (Meta/Google)",bitrix:"Dados ao vivo do Bitrix24 · Negócios"};
+  const subs={tiny:"Dados do Tiny · pedidos/vendas",marketing:"Marketing · leads das campanhas (Meta/Google)",funil:"Comercial · funil, ligações e produtividade",bitrix:"Dados ao vivo do Bitrix24 · Negócios"};
   document.querySelector(".ph-right .sub").innerHTML='<span class="dot"></span>'+subs[v]+' · gerado em __GENDATE__';
   if(v==="tiny") renderTiny();
   if(v==="marketing") renderMarketing();
+  if(v==="funil") renderFunil();
   window.scrollTo({top:0});
 }
 const biSwitch=document.getElementById("bi-switch");
@@ -1084,6 +1142,181 @@ document.getElementById("mkt-reset").onclick=()=>{MKT.from="";MKT.to="";MKT.font
   document.getElementById("mkt-seg").value="b2b";
   perfilMenu.querySelectorAll("input").forEach(i=>i.checked=false); mktPerfilBtnLabel();
   mktClearPresets();document.querySelector('.mkt-presets [data-p="tudo"]').classList.add("on");renderMarketing();};
+// ================= B.I Funil (comercial) =================
+const FUN={from:"",to:"",vd:"",cat:"",src:""};
+const BX="https://biomassadobrasil.bitrix24.com.br/crm/deal/details/";
+function funPreset(p){
+  const now=new Date(), t=ymd(now);
+  if(p==="hoje"){FUN.from=t;FUN.to=t;}
+  else if(p==="ontem"){const y=new Date(now);y.setDate(y.getDate()-1);FUN.from=ymd(y);FUN.to=ymd(y);}
+  else if(p==="7"){const s=new Date(now);s.setDate(s.getDate()-6);FUN.from=ymd(s);FUN.to=t;}
+  else if(p==="mes"){FUN.from=t.slice(0,8)+"01";FUN.to=t;}
+  else if(p==="mesant"){const f=new Date(now.getFullYear(),now.getMonth()-1,1),l=new Date(now.getFullYear(),now.getMonth(),0);FUN.from=ymd(f);FUN.to=ymd(l);}
+  document.getElementById("fun-from").value=FUN.from;document.getElementById("fun-to").value=FUN.to;
+  renderFunil();
+}
+function funFill(){
+  const F=D.funil; const vs=document.getElementById("fun-vd");
+  if(vs.dataset.filled)return;
+  const vopt=Object.entries(F.vend).map(([k,n])=>`<option value="${k}">${n}${F.niveis[k]?" — "+F.niveis[k]:""}</option>`).join("");
+  vs.innerHTML='<option value="">Todos os vendedores</option>'+vopt;
+  document.getElementById("fun-cat").innerHTML='<option value="">Todos os pipelines</option>'+Object.entries(F.pipelines).map(([k,n])=>`<option value="${k}">${n}</option>`).join("");
+  document.getElementById("fun-src").innerHTML='<option value="">Todas as origens</option>'+(F.sources||[]).map(s=>`<option>${s}</option>`).join("");
+  vs.dataset.filled="1";
+}
+const funInP=(dt,from,to)=>dt&&(!from||dt>=from)&&(!to||dt<=to);
+function funLine(buckets,series,labelFn){
+  const W=760,H=210,pl=44,pb=24,pt=12,pr=12,iw=W-pl-pr,ih=H-pb-pt;
+  const max=Math.max(1,...series.flatMap(s=>s.vals));
+  const n=buckets.length, x=i=>pl+(n<=1?iw/2:iw*i/(n-1)), y=v=>pt+ih-(v/max*ih);
+  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-height:${H}px">`;
+  for(let g=0;g<=4;g++){const v=Math.round(max*g/4),yy=y(v);svg+=`<line x1="${pl}" y1="${yy}" x2="${W-pr}" y2="${yy}" stroke="var(--line2)"/><text x="${pl-6}" y="${yy+3}" text-anchor="end" fill="var(--muted)" font-size="10">${v}</text>`;}
+  series.forEach(s=>{const pts=s.vals.map((v,i)=>`${x(i)},${y(v)}`).join(" ");
+    svg+=`<polyline points="${pts}" fill="none" stroke="${s.c}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+    s.vals.forEach((v,i)=>{svg+=`<circle cx="${x(i)}" cy="${y(v)}" r="2.6" fill="${s.c}"/>`;});});
+  const step=Math.ceil(n/8);
+  buckets.forEach((b,i)=>{if(i%step===0||i===n-1)svg+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle" fill="var(--muted)" font-size="10">${labelFn(b)}</text>`;});
+  return svg+`</svg>`;
+}
+function renderFunil(){
+  const F=D.funil;
+  if(!F){document.getElementById("fun-body").innerHTML='<div class="card"><div class="empty">Sem dados do funil ainda.</div></div>';return;}
+  funFill();
+  if(!FUN.from&&!FUN.to){const t=ymd(new Date());FUN.from=t.slice(0,8)+"01";FUN.to=t;
+    document.getElementById("fun-from").value=FUN.from;document.getElementById("fun-to").value=FUN.to;}
+  const from=FUN.from,to=FUN.to;
+  const dOK=d=>(!FUN.vd||d.vd===FUN.vd)&&(!FUN.cat||d.cat===FUN.cat)&&(!FUN.src||d.src===FUN.src);
+  const cOK=c=>(!FUN.vd||c.vd===FUN.vd);   // ligação responde a Vendedor+Período (não tem pipeline/origem)
+  const deals=F.deals.filter(dOK), calls=F.calls.filter(cOK);
+  // ----- métricas por período (cada uma com sua data) -----
+  const receb=deals.filter(d=>funInP(d.dtc,from,to));
+  const tent=calls.filter(c=>funInP(c.dt,from,to));
+  const atend=tent.filter(c=>c.ok);
+  const props=deals.filter(d=>funInP(d.dtp,from,to));
+  const vendas=deals.filter(d=>d.won&&funInP(d.dtw,from,to));
+  const taxaContato=tent.length?atend.length/tent.length*100:0;
+  const convGeral=receb.length?vendas.length/receb.length*100:0;
+  const valVendas=vendas.reduce((a,d)=>a+d.o,0);
+  // comparação período anterior (mesma duração) p/ deals recebidos
+  let deltaTxt="";
+  if(from&&to){const d1=new Date(from),d2=new Date(to);const dur=Math.round((d2-d1)/864e5)+1;
+    const pe=new Date(d1);pe.setDate(pe.getDate()-1);const ps=new Date(pe);ps.setDate(ps.getDate()-dur+1);
+    const prev=deals.filter(d=>funInP(d.dtc,ymd(ps),ymd(pe))).length;
+    if(prev>0){const dl=Math.round((receb.length-prev)/prev*100);deltaTxt=`${dl>=0?"↑":"↓"} ${Math.abs(dl)}% vs. período anterior`;}
+    else deltaTxt="sem base anterior";}
+  // ----- funil (coorte dos deals recebidos no período) -----
+  const cReceb=receb.length, cTrab=receb.filter(d=>d.worked).length, cProp=receb.filter(d=>d.prop).length, cVen=receb.filter(d=>d.won).length;
+  // ----- fcount -----
+  const br=d=>d?d.split("-").reverse().join("/"):"";
+  document.getElementById("fun-fcount").innerHTML=`período ${br(from)||"início"} → ${br(to)||"hoje"}`;
+  // ----- KPIs -----
+  const kc=(l,v,f,ic,tint)=>`<div class="kpi"><div class="kico ${tint}">${svgico(KIC[ic])}</div><div class="kbody"><div class="lbl">${l}</div><div class="big tnum">${v}</div><div class="foot">${f}</div></div></div>`;
+  const lowCall=tent.length<5?' <span style="color:var(--muted)">· pouco registro no período</span>':'';
+  const kpis=[
+    kc("Deals recebidos",int(cReceb),deltaTxt||"no período","brief","ico-blue"),
+    kc("Tentativas de ligação",int(tent.length),"ligações de saída"+lowCall,"clock","ico-amber"),
+    kc("Ligações atendidas",int(atend.length),`taxa de contato <b>${taxaContato.toFixed(1)}%</b>`,"trend","ico-green"),
+    kc("Propostas",int(props.length),"entraram em proposta","tag","ico-blue"),
+    kc("Vendas",int(vendas.length),brlK(valVendas),"trophy","ico-green"),
+    kc("Conversão geral",convGeral.toFixed(1)+"%",`${int(vendas.length)} de ${int(cReceb)} deals`,"dollar","ico-solid"),
+  ].join("");
+  // ----- funil horizontal -----
+  const fsteps=[
+    {l:"Deals recebidos",n:cReceb,c:"#004FC2"},
+    {l:"Trabalhados",n:cTrab,c:"#2f6fd0"},
+    {l:"Propostas",n:cProp,c:"#f0b429"},
+    {l:"Vendas",n:cVen,c:"#1f9d6b"},
+  ];
+  const fmax=cReceb||1;
+  const funilHTML=fsteps.map((s,i)=>{
+    const conv=i>0&&fsteps[i-1].n?Math.round(s.n/fsteps[i-1].n*100):null;
+    return `<div class="funrow"><div class="funlbl">${s.l}</div>
+      <div class="funbar"><div class="funfill" style="width:${Math.max(s.n/fmax*100,2)}%;background:${s.c}"><span>${int(s.n)}</span></div></div>
+      <div class="funconv">${conv!=null?`<b>${conv}%</b> <span>da etapa anterior</span>`:"&nbsp;"}</div></div>`;
+  }).join("");
+  const convFim=cReceb?Math.round(cVen/cReceb*100):0;
+  // ----- performance por vendedor -----
+  const vlist=["948","890"].filter(k=>F.vend[k]);   // Patrícia (Sênior) antes de Thauany
+  const perV=vlist.map(vd=>{
+    const dv=F.deals.filter(d=>d.vd===vd&&(!FUN.cat||d.cat===FUN.cat)&&(!FUN.src||d.src===FUN.src));
+    const cv=F.calls.filter(c=>c.vd===vd);
+    const rb=dv.filter(d=>funInP(d.dtc,from,to)), pr=dv.filter(d=>funInP(d.dtp,from,to)),
+          vn=dv.filter(d=>d.won&&funInP(d.dtw,from,to)),
+          te=cv.filter(c=>funInP(c.dt,from,to)), at=cv.filter(c=>funInP(c.dt,from,to)&&c.ok);
+    return {vd,nome:F.vend[vd],nivel:F.niveis[vd]||"",rb:rb.length,te:te.length,at:at.length,
+            tc:te.length?at.length/te.length*100:0,pr:pr.length,vn:vn.length,
+            cdp:rb.length?pr.filter(x=>rb.includes(x)).length:0,
+            conv:rb.length?vn.length/rb.length*100:0};
+  });
+  const rowsV=[["Deals recebidos","rb"],["Tentativas de ligação","te"],["Ligações atendidas","at"],
+    ["Taxa de contato","tc%"],["Propostas","pr"],["Vendas","vn"],["Conversão geral","conv%"]];
+  const perfTable=`<table class="perf"><thead><tr><th>Indicador</th>${perV.map(v=>`<th class="r">${v.nome}<br><span class="pill">${v.nivel}</span></th>`).join("")}</tr></thead><tbody>`+
+    rowsV.map(([lbl,key])=>{const pct=key.endsWith("%");const k=pct?key.slice(0,-1):key;
+      return `<tr><td>${lbl}</td>${perV.map(v=>`<td class="r tnum">${pct?v[k].toFixed(1)+"%":int(v[k])}</td>`).join("")}</tr>`;}).join("")+`</tbody></table>`;
+  // ----- evolução -----
+  let bfrom=from||receb.concat(props,vendas).map(d=>d.dtc).sort()[0]||ymd(new Date());
+  let bto=to||ymd(new Date());
+  const spanD=Math.round((new Date(bto)-new Date(bfrom))/864e5)+1;
+  const monthly=spanD>62;
+  const buckets=[];
+  if(monthly){let c=new Date(bfrom.slice(0,7)+"-01");const end=new Date(bto);while(c<=end){buckets.push(ymd(c).slice(0,7));c.setMonth(c.getMonth()+1);}}
+  else{let c=new Date(bfrom);const end=new Date(bto);while(c<=end){buckets.push(ymd(c));c.setDate(c.getDate()+1);}}
+  const bkey=s=>monthly?s.slice(0,7):s;
+  const acc=(arr,fld)=>{const m={};buckets.forEach(b=>m[b]=0);arr.forEach(d=>{const k=bkey(d[fld]||"");if(m[k]!=null)m[k]++;});return buckets.map(b=>m[b]);};
+  const evoHTML=funLine(buckets,[
+    {name:"Recebidos",c:"#004FC2",vals:acc(deals.filter(d=>funInP(d.dtc,bfrom,bto)),"dtc")},
+    {name:"Propostas",c:"#f0b429",vals:acc(deals.filter(d=>funInP(d.dtp,bfrom,bto)),"dtp")},
+    {name:"Vendas",c:"#1f9d6b",vals:acc(deals.filter(d=>d.won&&funInP(d.dtw,bfrom,bto)),"dtw")},
+  ],b=>monthly?b.slice(5)+"/"+b.slice(2,4):(+b.slice(8,10)));
+  const evoLeg=[["Recebidos","#004FC2"],["Propostas","#f0b429"],["Vendas","#1f9d6b"]].map(([n,c])=>`<span class="leg"><span class="ldot" style="background:${c}"></span>${n}</span>`).join("");
+  // ----- distribuição por vendedor -----
+  const distV={}; receb.forEach(d=>{const n=F.vend[d.vd];distV[n]=(distV[n]||0)+1;});
+  const distArr=Object.entries(distV).map(([k,n])=>({label:k,n,disp:int(n)})).sort((a,b)=>b.n-a.n);
+  // ----- eficiência -----
+  const effRate=(l,v,sub)=>`<div class="effcard"><div class="efflbl">${l}</div><div class="effbig tnum">${v}</div><div class="effsub">${sub}</div></div>`;
+  const efic=effRate("Taxa de contato",taxaContato.toFixed(1)+"%","atendidas ÷ tentativas")+
+    effRate("Deal → Proposta",(cReceb?cProp/cReceb*100:0).toFixed(1)+"%","chegaram à proposta")+
+    effRate("Proposta → Venda",(cProp?cVen/cProp*100:0).toFixed(1)+"%","propostas que fecharam")+
+    effRate("Conversão geral",convGeral.toFixed(1)+"%","vendas ÷ recebidos");
+  // ----- tabela detalhamento -----
+  const callByDeal={}; tent.forEach(c=>{if(c.deal){const a=callByDeal[c.deal]=callByDeal[c.deal]||{t:0,a:0};a.t++;if(c.ok)a.a++;}});
+  const trows=receb.slice().sort((a,b)=>(b.dtc||"").localeCompare(a.dtc||"")).slice(0,120).map(d=>{
+    const cl=callByDeal[d.id]||{t:0,a:0};
+    const sim=b=>b?'<span class="ok">Sim</span>':'<span class="no">Não</span>';
+    return `<tr><td>${br(d.dtc)}</td><td><a href="${BX}${d.id}/" target="_blank">#${d.id}</a></td><td>${d.cli}</td>
+      <td>${F.vend[d.vd]}</td><td>${d.src}</td><td class="r tnum">${cl.t}</td><td class="r">${sim(cl.a>0)}</td>
+      <td class="r">${sim(d.prop)}</td><td>${d.stage}</td><td class="r">${sim(d.won)}</td><td class="r tnum">${d.won&&d.o?brl0(d.o):"—"}</td></tr>`;
+  }).join("")||`<tr><td colspan="11" class="empty">Nenhum deal recebido no período.</td></tr>`;
+  // ----- monta -----
+  document.getElementById("fun-body").innerHTML=`
+    <div class="kpis" style="grid-template-columns:repeat(3,1fr)">${kpis}</div>
+    <div class="eyebrow">Funil comercial</div>
+    <div class="card"><div class="funnel">${funilHTML}</div>
+      <div class="fnl-foot">Coorte dos <b>${int(cReceb)}</b> deals recebidos no período. Conversão <b>Deal → Venda: ${convFim}%</b>.</div></div>
+    <div class="eyebrow">Performance da equipe</div>
+    <div class="card" style="overflow-x:auto">${perfTable}
+      <div class="fnl-foot">Priorize as <b>taxas de conversão</b> — cada vendedor recebe volumes diferentes de leads.</div></div>
+    <div class="eyebrow">Evolução comercial</div>
+    <div class="card"><div class="legrow">${evoLeg}</div>${evoHTML}</div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card"><div class="cardh">Deals recebidos por vendedor</div><div id="fun-dist"></div></div>
+      <div class="card"><div class="cardh">Eficiência comercial</div><div class="effgrid">${efic}</div></div>
+    </div>
+    <div class="eyebrow">Detalhamento dos deals</div>
+    <div class="card" style="overflow-x:auto"><table class="deltbl"><thead><tr>
+      <th>Entrada</th><th>Deal</th><th>Cliente</th><th>Vendedor</th><th>Origem</th><th class="r">Tent.</th><th class="r">Atend.</th><th class="r">Prop.</th><th>Status</th><th class="r">Venda</th><th class="r">Valor</th>
+      </tr></thead><tbody>${trows}</tbody></table>
+      <div class="fnl-foot">Tentativas/atendidas por deal contam só ligações vinculadas ao card. Clique no nº do deal para abrir no Bitrix.</div></div>`;
+  renderBars(document.getElementById("fun-dist"),distArr,"var(--brand)");
+}
+document.querySelectorAll("#fun-presets button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#fun-presets button").forEach(x=>x.classList.toggle("on",x===b));funPreset(b.dataset.p);});
+function funClearP(){document.querySelectorAll("#fun-presets button").forEach(b=>b.classList.remove("on"));}
+document.getElementById("fun-from").onchange=e=>{FUN.from=e.target.value;funClearP();renderFunil();};
+document.getElementById("fun-to").onchange=e=>{FUN.to=e.target.value;funClearP();renderFunil();};
+document.getElementById("fun-vd").onchange=e=>{FUN.vd=e.target.value;renderFunil();};
+document.getElementById("fun-cat").onchange=e=>{FUN.cat=e.target.value;renderFunil();};
+document.getElementById("fun-src").onchange=e=>{FUN.src=e.target.value;renderFunil();};
+document.getElementById("fun-reset").onclick=()=>{FUN.vd="";FUN.cat="";FUN.src="";["fun-vd","fun-cat","fun-src"].forEach(id=>document.getElementById(id).value="");funClearP();document.querySelector('#fun-presets [data-p="mes"]').classList.add("on");funPreset("mes");};
 renderTiny();
 refresh();
 </script>

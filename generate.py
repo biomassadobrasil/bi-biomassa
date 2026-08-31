@@ -370,6 +370,77 @@ def build_google():
         camps.append({**c,"wpp":wpp,"form":form})
     return {"camp":camps,"daily":daily,"cost":cost}
 
+VEND_FUNIL={"948":("Patrícia","Sênior"),"890":("Thauany","Júnior")}
+FUNIL_CATS=["0","20","16"]   # pipelines comerciais (Vendas B2B, Vendas PF, Prospecção)
+
+def build_funil(stages, sources, deals):
+    """B.I Funil comercial: deals (por data-correta de cada métrica) + propostas (stagehistory)
+    + ligações (voximplant: tentativas e atendidas=CALL_FAILED_CODE 200)."""
+    def vkey(uid):
+        u=str(uid or "")
+        return u if u in VEND_FUNIL else "outros"
+    # etapa de proposta e 1ª etapa por pipeline
+    prop_stage={}; first_stage={}; stage_nome={}
+    for cat in FUNIL_CATS:
+        lst=stages.get(cat) or []
+        if not lst: continue
+        first_stage[cat]=lst[0]["STATUS_ID"]
+        for s in lst:
+            stage_nome[(cat,s["STATUS_ID"])]=s["NAME"]
+            if "propost" in s["NAME"].lower(): prop_stage[cat]=s["STATUS_ID"]
+    # stagehistory: data que cada deal entrou na etapa de proposta
+    prop_date={}
+    for cat,sid in prop_stage.items():
+        start=0
+        while True:
+            res=call("crm.stagehistory.list",{"entityTypeId":2,"filter":{"STAGE_ID":sid},
+                     "order":{"ID":"ASC"},"start":start})
+            items=res.get("result",[]); items=items.get("items",items) if isinstance(items,dict) else items
+            for h in items or []:
+                did=str(h.get("OWNER_ID")); dt=(h.get("CREATED_TIME","") or "")[:10]
+                if did and (did not in prop_date or dt<prop_date[did]): prop_date[did]=dt
+            if res.get("next") is None: break
+            start=res["next"]
+    # ligações (voximplant): tentativas (saída) + atendidas (CALL_FAILED_CODE 200)
+    calls=[]; start=0
+    while True:
+        try:
+            res=call("voximplant.statistic.get",{"SORT":"CALL_START_DATE","ORDER":"DESC","start":start})
+        except Exception: import traceback; print("[BI] voximplant falhou:\n"+traceback.format_exc()); break
+        rows=res.get("result",[])
+        for x in rows:
+            if str(x.get("CALL_TYPE"))!="1": continue   # só saída = tentativa
+            calls.append({"dt":(x.get("CALL_START_DATE","") or "")[:10],
+                          "vd":vkey(x.get("PORTAL_USER_ID")),
+                          "ok":str(x.get("CALL_FAILED_CODE"))=="200",
+                          "deal":str(x.get("CRM_ENTITY_ID")) if x.get("CRM_ENTITY_TYPE")=="DEAL" else None})
+        if res.get("next") is None: break
+        start=res["next"]
+    # deals dos pipelines comerciais
+    ds=[]
+    for d in deals:
+        cat=str(d["CATEGORY_ID"])
+        if cat not in FUNIL_CATS: continue
+        sem=d.get("STAGE_SEMANTIC_ID"); won=(sem=="S")
+        did=str(d["ID"])
+        try: o=float(d.get("OPPORTUNITY") or 0)
+        except: o=0.0
+        cd=(d.get("CLOSEDATE","") or "")[:10]
+        worked = d.get("STAGE_ID")!=first_stage.get(cat)   # saiu da 1ª etapa
+        ds.append({"id":did,"dtc":(d.get("DATE_CREATE","") or "")[:10],
+                   "won":won,"dtw":cd if won else "","lost":(sem=="F"),
+                   "vd":vkey(d.get("ASSIGNED_BY_ID")),
+                   "src":sources.get(str(d.get("SOURCE_ID")),"Sem fonte"),
+                   "cat":cat,"cli":d.get("_CLI") or "— sem cliente","o":round(o,2),
+                   "worked":worked,"prop":did in prop_date,"dtp":prop_date.get(did,""),
+                   "stage":stage_nome.get((cat,d.get("STAGE_ID")),d.get("STAGE_ID"))})
+    vend_nomes={k:v[0] for k,v in VEND_FUNIL.items()}; vend_nomes["outros"]="Outros vendedores"
+    niveis={k:v[1] for k,v in VEND_FUNIL.items()}
+    return {"deals":ds,"calls":calls,
+            "vend":vend_nomes,"niveis":niveis,
+            "pipelines":{c:CATS.get(c,c) for c in FUNIL_CATS if (stages.get(c))},
+            "sources":sorted({x["src"] for x in ds})}
+
 def run():
     if not B: raise SystemExit("Falta a variável de ambiente BI_WEBHOOK")
     stages,sources,enum_by_uf,deals=fetch_all()
@@ -394,6 +465,9 @@ def run():
         "google_daily":(google_blk or {}).get("daily",[]),
         "google_cost":(google_blk or {}).get("cost",[]),
         "perfis":PERFIL_ORDER,"portes":PORTE_ORDER}
+    # ---- B.I Funil (comercial: deals + propostas + ligações) ----
+    try: payload["funil"]=build_funil(stages,sources,deals)
+    except Exception: import traceback; print("[BI] Funil falhou:\n"+traceback.format_exc()); payload["funil"]=None
     tpl=open(os.path.join(HERE,"template.html"),encoding="utf-8").read()
     hoje=datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
     html=tpl.replace("__DATA__", json.dumps(payload,ensure_ascii=False)).replace("__GENDATE__", hoje)
