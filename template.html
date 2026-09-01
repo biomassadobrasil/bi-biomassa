@@ -1258,15 +1258,6 @@ function renderFunil(){
     effRate("Negócio → Proposta",(cReceb?props.length/cReceb*100:0).toFixed(1)+"%","chegaram à proposta")+
     effRate("Proposta → Venda",(props.length?vendas.length/props.length*100:0).toFixed(1)+"%","propostas que fecharam")+
     effRate("Conversão geral",convGeral.toFixed(1)+"%","vendas ÷ recebidos");
-  // ----- tabela detalhamento -----
-  const callByDeal={}; tent.forEach(c=>{if(c.deal){const a=callByDeal[c.deal]=callByDeal[c.deal]||{t:0,a:0};a.t++;if(c.ok)a.a++;}});
-  const trows=receb.slice().sort((a,b)=>(b.dtc||"").localeCompare(a.dtc||"")).slice(0,120).map(d=>{
-    const cl=callByDeal[d.id]||{t:0,a:0};
-    const sim=b=>b?'<span class="ok">Sim</span>':'<span class="no">Não</span>';
-    return `<tr><td>${br(d.dtc)}</td><td><a href="${BX}${d.id}/" target="_blank">#${d.id}</a></td><td>${d.cli}</td>
-      <td>${F.vend[d.vd]}</td><td>${d.src}</td><td class="r tnum">${cl.t}</td><td class="r">${sim(cl.a>0)}</td>
-      <td class="r">${sim(d.prop)}</td><td>${d.stage}</td><td class="r">${sim(d.won)}</td><td class="r tnum">${d.won&&d.o?brl0(d.o):"—"}</td></tr>`;
-  }).join("")||`<tr><td colspan="11" class="empty">Nenhum negócio recebido no período.</td></tr>`;
   // ----- monta -----
   document.getElementById("fun-body").innerHTML=`
     <div class="kpis" style="grid-template-columns:repeat(4,1fr)">${kpis}</div>
@@ -1277,12 +1268,7 @@ function renderFunil(){
     <div class="card" style="overflow-x:auto">${perfTable}
       <div class="fnl-foot">Priorize as <b>taxas de conversão</b> — cada vendedora recebe volumes diferentes de negócios.</div></div>
     <div class="eyebrow">Eficiência comercial</div>
-    <div class="card"><div class="effgrid">${efic}</div></div>
-    <div class="eyebrow">Detalhamento dos negócios</div>
-    <div class="card" style="overflow-x:auto"><table class="deltbl"><thead><tr>
-      <th>Entrada</th><th>Negócio</th><th>Cliente</th><th>Vendedor</th><th>Origem</th><th class="r">Tent.</th><th class="r">Atend.</th><th class="r">Prop.</th><th>Status</th><th class="r">Venda</th><th class="r">Valor</th>
-      </tr></thead><tbody>${trows}</tbody></table>
-      <div class="fnl-foot">Tentativas/atendidas por negócio contam só ligações vinculadas ao card. Clique no nº do negócio para abrir no Bitrix.</div></div>`;
+    <div class="card"><div class="effgrid">${efic}</div></div>`;
 }
 document.querySelectorAll("#fun-presets button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#fun-presets button").forEach(x=>x.classList.toggle("on",x===b));funPreset(b.dataset.p);});
 function funClearP(){document.querySelectorAll("#fun-presets button").forEach(b=>b.classList.remove("on"));}
