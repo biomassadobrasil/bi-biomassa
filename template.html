@@ -1146,13 +1146,14 @@ document.getElementById("mkt-reset").onclick=()=>{MKT.from="";MKT.to="";MKT.font
 // ================= B.I Funil (comercial) =================
 const FUN={from:"",to:"",vd:"",cat:"",src:""};
 const BX="https://biomassadobrasil.bitrix24.com.br/crm/deal/details/";
+function hojeBR(){return new Date().toLocaleDateString("en-CA",{timeZone:"America/Sao_Paulo"});} // YYYY-MM-DD em Brasília
 function funPreset(p){
-  const now=new Date(), t=ymd(now);
+  const t=hojeBR(), base=new Date(t+"T12:00:00");
   if(p==="hoje"){FUN.from=t;FUN.to=t;}
-  else if(p==="ontem"){const y=new Date(now);y.setDate(y.getDate()-1);FUN.from=ymd(y);FUN.to=ymd(y);}
-  else if(p==="7"){const s=new Date(now);s.setDate(s.getDate()-6);FUN.from=ymd(s);FUN.to=t;}
+  else if(p==="ontem"){const y=new Date(base);y.setDate(y.getDate()-1);FUN.from=ymd(y);FUN.to=ymd(y);}
+  else if(p==="7"){const s=new Date(base);s.setDate(s.getDate()-6);FUN.from=ymd(s);FUN.to=t;}
   else if(p==="mes"){FUN.from=t.slice(0,8)+"01";FUN.to=t;}
-  else if(p==="mesant"){const f=new Date(now.getFullYear(),now.getMonth()-1,1),l=new Date(now.getFullYear(),now.getMonth(),0);FUN.from=ymd(f);FUN.to=ymd(l);}
+  else if(p==="mesant"){const f=new Date(base.getFullYear(),base.getMonth()-1,1),l=new Date(base.getFullYear(),base.getMonth(),0);FUN.from=ymd(f);FUN.to=ymd(l);}
   document.getElementById("fun-from").value=FUN.from;document.getElementById("fun-to").value=FUN.to;
   renderFunil();
 }
@@ -1183,7 +1184,7 @@ function renderFunil(){
   const F=D.funil;
   if(!F){document.getElementById("fun-body").innerHTML='<div class="card"><div class="empty">Sem dados do funil ainda.</div></div>';return;}
   funFill();
-  if(!FUN.from&&!FUN.to){const t=ymd(new Date());FUN.from=t.slice(0,8)+"01";FUN.to=t;
+  if(!FUN.from&&!FUN.to){const t=hojeBR();FUN.from=t.slice(0,8)+"01";FUN.to=t;
     document.getElementById("fun-from").value=FUN.from;document.getElementById("fun-to").value=FUN.to;}
   const from=FUN.from,to=FUN.to;
   const dOK=d=>(!FUN.vd||d.vd===FUN.vd)&&(!FUN.cat||d.cat===FUN.cat)&&(!FUN.src||d.src===FUN.src);
