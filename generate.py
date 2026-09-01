@@ -446,9 +446,16 @@ def build_funil(stages, sources, deals):
                    "cat":cat,"cli":d.get("_CLI") or "— sem cliente","o":round(o,2),
                    "worked":worked,"prop":did in prop_date,"dtp":prop_date.get(did,""),
                    "stage":stage_nome.get((cat,d.get("STAGE_ID")),d.get("STAGE_ID"))})
+    # propostas comerciais do Tiny (API v3 / orçamentos)
+    tiny_props=[]
+    try:
+        import tiny_v3
+        tp=tiny_v3.propostas(desde="2025-01-01")
+        if tp is not None: tiny_props=tp
+    except Exception: import traceback; print("[BI] Tiny v3 propostas falhou:\n"+traceback.format_exc())
     vend_nomes={k:v[0] for k,v in VEND_FUNIL.items()}
     niveis={k:v[1] for k,v in VEND_FUNIL.items()}
-    return {"deals":ds,"calls":calls,
+    return {"deals":ds,"calls":calls,"props":tiny_props,
             "vend":vend_nomes,"niveis":niveis,
             "pipelines":{c:CATS.get(c,c) for c in FUNIL_CATS if (stages.get(c))},
             "sources":sorted({x["src"] for x in ds})}

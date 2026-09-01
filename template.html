@@ -286,6 +286,8 @@
   table.perf tbody tr:hover{background:var(--line2)}
   table.perf td:first-child{color:var(--muted);font-weight:600}
   .pill{display:inline-block;background:var(--brand-soft);color:var(--brand);font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em}
+  .sitdot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:8px;vertical-align:middle}
+  table.perf tr.tot td{border-top:2px solid var(--line);font-weight:700}
   .legrow{display:flex;gap:16px;margin-bottom:10px}
   .leg{font-size:12px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px}
   .ldot{width:10px;height:10px;border-radius:3px;display:inline-block}
@@ -1228,16 +1230,17 @@ function renderFunil(){
   const dOK=d=>(!FUN.vd||d.vd===FUN.vd)&&(!FUN.cat||d.cat===FUN.cat)&&(!FUN.src||d.src===FUN.src);
   const cOK=c=>(!FUN.vd||c.vd===FUN.vd);   // ligação responde a Vendedor+Período (não tem pipeline/origem)
   const deals=F.deals.filter(dOK), calls=F.calls.filter(cOK);
+  const pOK=p=>(!FUN.vd||p.vd===FUN.vd);   // propostas (Tiny) respondem a Vendedor+Período
   // ----- métricas por período (cada uma com sua data) -----
   const receb=deals.filter(d=>funInP(d.dtc,from,to));
   const tent=calls.filter(c=>funInP(c.dt,from,to));
   const atend=tent.filter(c=>c.ok);
-  const props=deals.filter(d=>funInP(d.dtp,from,to));
+  const props=(F.props||[]).filter(p=>pOK(p)&&funInP(p.dt,from,to));   // propostas comerciais do Tiny
   const vendas=deals.filter(d=>d.won&&funInP(d.dtw,from,to));
   const taxaContato=tent.length?atend.length/tent.length*100:0;
   const convGeral=receb.length?vendas.length/receb.length*100:0;
   const valVendas=vendas.reduce((a,d)=>a+d.o,0);
-  const cReceb=receb.length, valProp=props.reduce((a,d)=>a+d.o,0);
+  const cReceb=receb.length, valProp=props.reduce((a,p)=>a+(p.valor||0),0);
   const convFim=cReceb?Math.round(vendas.length/cReceb*100):0;
   const pctBR=v=>v.toFixed(1).replace(".",",")+"%";
   // comparação período anterior (mesma duração)
@@ -1278,9 +1281,10 @@ function renderFunil(){
   const perV=vlist.map(vd=>{
     const dv=F.deals.filter(d=>d.vd===vd&&(!FUN.cat||d.cat===FUN.cat)&&(!FUN.src||d.src===FUN.src));
     const cv=F.calls.filter(c=>c.vd===vd);
-    const rb=dv.filter(d=>funInP(d.dtc,from,to)),pr=dv.filter(d=>funInP(d.dtp,from,to)),
+    const rb=dv.filter(d=>funInP(d.dtc,from,to)),
           vn=dv.filter(d=>d.won&&funInP(d.dtw,from,to)),
-          te=cv.filter(c=>funInP(c.dt,from,to)),at=cv.filter(c=>funInP(c.dt,from,to)&&c.ok);
+          te=cv.filter(c=>funInP(c.dt,from,to)),at=cv.filter(c=>funInP(c.dt,from,to)&&c.ok),
+          pr=(F.props||[]).filter(p=>p.vd===vd&&funInP(p.dt,from,to));   // propostas Tiny
     return {vd,nome:F.vend[vd],nivel:F.niveis[vd]||"",rb:rb.length,te:te.length,at:at.length,
             tc:te.length?at.length/te.length*100:0,pr:pr.length,vn:vn.length,conv:rb.length?vn.length/rb.length*100:0};
   });
@@ -1305,6 +1309,17 @@ function renderFunil(){
   const bar=(v,mx,c,pct)=>`<div class="vsside"><span class="vnum">${pct?pctBR(v):int(v)}</span><div class="vstrack"><div class="vsfill" style="width:${Math.min(v/mx*100,100)}%;background:${c}"></div></div></div>`;
   const vsBody=vsM.map(m=>{const pv=P[m.k]||0,tv=T[m.k]||0,mx=m.pct?100:Math.max(pv,tv,1);
     return `<div class="vsrow"><div class="vslbl">${svgico(IC[m.ic])}${m.lbl}</div>${bar(pv,mx,m.c,m.pct)}<div></div>${bar(tv,mx,m.c,m.pct)}</div>`;}).join("");
+  // ----- propostas por situação × vendedora (Tiny) -----
+  const sitG=s=>{s=(s||"").toLowerCase();return (s.includes("não aprov")||s.includes("nao aprov"))?"Não aprovada":((s.includes("conclu")||s.includes("aprovad"))?"Concluída":"Pendente");};
+  const sitBy={}; vlist.forEach(vd=>sitBy[vd]={"Concluída":0,"Pendente":0,"Não aprovada":0,tot:0,val:0});
+  props.forEach(p=>{if(sitBy[p.vd]){const g=sitG(p.sit);sitBy[p.vd][g]++;sitBy[p.vd].tot++;sitBy[p.vd].val+=p.valor||0;}});
+  const sitCol={"Concluída":"var(--good)","Pendente":"var(--open)","Não aprovada":"var(--bad)"};
+  const sumK=k=>vlist.reduce((a,vd)=>a+sitBy[vd][k],0);
+  const propTable=`<table class="perf"><thead><tr><th>Situação</th>${vlist.map(vd=>`<th class="r">${F.vend[vd]}</th>`).join("")}<th class="r">Total</th></tr></thead><tbody>`+
+    ["Concluída","Pendente","Não aprovada"].map(k=>`<tr><td><span class="sitdot" style="background:${sitCol[k]}"></span>${k}s</td>${vlist.map(vd=>`<td class="r tnum">${int(sitBy[vd][k])}</td>`).join("")}<td class="r tnum">${int(sumK(k))}</td></tr>`).join("")+
+    `<tr class="tot"><td>Total de propostas</td>${vlist.map(vd=>`<td class="r tnum">${int(sitBy[vd].tot)}</td>`).join("")}<td class="r tnum">${int(props.length)}</td></tr>`+
+    `<tr><td>Valor total</td>${vlist.map(vd=>`<td class="r tnum">${brl0(sitBy[vd].val)}</td>`).join("")}<td class="r tnum">${brl0(valProp)}</td></tr>`+
+    `</tbody></table>`;
   // ----- monta -----
   document.getElementById("fun-body").innerHTML=`
     <div class="kpis" style="grid-template-columns:repeat(5,1fr)">${kpis}</div>
@@ -1315,7 +1330,10 @@ function renderFunil(){
     </div>
     <div class="eyebrow">Performance da equipe</div>
     <div class="card" style="overflow-x:auto">${vsHead}${vsBody}
-      <div class="fnl-foot">Priorize as <b>taxas de conversão</b> — cada vendedora recebe volumes diferentes de negócios.</div></div>`;
+      <div class="fnl-foot">Priorize as <b>taxas de conversão</b> — cada vendedora recebe volumes diferentes de negócios.</div></div>
+    <div class="eyebrow">Propostas comerciais por situação · Tiny</div>
+    <div class="card" style="overflow-x:auto">${propTable}
+      <div class="fnl-foot">Propostas comerciais (orçamentos) puxadas do <b>Tiny</b>, por vendedora e situação, no período.</div></div>`;
 }
 const funDateRow=()=>document.getElementById("fun-daterow");
 document.getElementById("fun-per").onchange=e=>{const v=e.target.value;
