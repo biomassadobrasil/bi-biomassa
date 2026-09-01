@@ -316,6 +316,7 @@
   .fkpi .lbl{font-size:13px;color:var(--muted);font-weight:600}
   .fkpi .big{font-size:33px;font-weight:800;line-height:1;margin-top:2px}
   .fkpi .foot{font-size:12.5px;color:var(--muted);margin-top:7px}.fkpi .foot b{color:var(--ink)}
+  .fkpi .fval{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
   .fkpi .foot .up{color:var(--good);font-weight:700}.fkpi .foot .dn{color:var(--bad);font-weight:700}
   .insights{display:flex;flex-direction:column}
   .insrow{display:flex;gap:13px;padding:14px 0;border-top:1px solid var(--line2)}
@@ -1260,8 +1261,8 @@ function renderFunil(){
   const kpis=[
     fk("brief","#004FC2","#fff","Negócios recebidos",int(cReceb),deltaTxt),
     fk("phone","var(--brand-soft)","var(--brand)","Tentativas de ligação",int(tent.length),`${Math.round(tent.length/(cReceb||1)*100)}% dos recebidos`),
-    fk("doc","#f0b429","#fff","Propostas comerciais",int(props.length),`valor <b>${brlK(valProp)}</b>`),
-    fk("trophy","#1f9d6b","#fff","Vendas",int(vendas.length),`valor <b>${brlK(valVendas)}</b>`),
+    fk("doc","#f0b429","#fff","Propostas comerciais",int(props.length),`<span class="fval">${brl0(valProp)}</span>`),
+    fk("trophy","#1f9d6b","#fff","Vendas",int(vendas.length),`<span class="fval">${brl0(valVendas)}</span>`),
     fk("dollar","#17356b","#fff","Taxa de conversão",pctBR(convGeral),`${int(vendas.length)} de ${int(cReceb)} negócios`),
   ].join("");
   // ----- funil trapézio -----
