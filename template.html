@@ -533,6 +533,10 @@
         <option value="7">Últimos 7 dias</option><option value="mes" selected>Este mês</option>
         <option value="mesant">Mês anterior</option><option value="custom">Personalizado…</option>
       </select></div>
+      <div class="ff"><label>Base da data</label><select id="fun-base" class="tiny-select">
+        <option value="alt" selected>Alterado em (fechamento)</option>
+        <option value="cri">Criado em</option>
+      </select></div>
       <button id="fun-reset" class="fun-clear"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v6h6"/><path d="M3 8a9 9 0 1 0 2.5-4.5L3 8"/></svg>Limpar filtros</button>
     </div>
     <div id="fun-daterow" class="fun-daterow" style="display:none">
@@ -1179,7 +1183,7 @@ document.getElementById("mkt-reset").onclick=()=>{MKT.from="";MKT.to="";MKT.font
   perfilMenu.querySelectorAll("input").forEach(i=>i.checked=false); mktPerfilBtnLabel();
   mktClearPresets();document.querySelector('.mkt-presets [data-p="tudo"]').classList.add("on");renderMarketing();};
 // ================= B.I Funil (comercial) =================
-const FUN={from:"",to:"",vd:"",cat:"",src:""};
+const FUN={from:"",to:"",vd:"",cat:"",src:"",base:"alt"};
 const BX="https://biomassadobrasil.bitrix24.com.br/crm/deal/details/";
 function hojeBR(){return new Date().toLocaleDateString("en-CA",{timeZone:"America/Sao_Paulo"});} // YYYY-MM-DD em Brasília
 function funPreset(p){
@@ -1236,7 +1240,8 @@ function renderFunil(){
   const tent=calls.filter(c=>funInP(c.dt,from,to));
   const atend=tent.filter(c=>c.ok);
   const props=(F.props||[]).filter(p=>pOK(p)&&funInP(p.dt,from,to));   // propostas comerciais do Tiny
-  const vendas=deals.filter(d=>d.won&&funInP(d.dtw,from,to));
+  const wdt=d=>FUN.base==="cri"?d.dtc:d.dtw;   // base da data das VENDAS: criado x fechamento(alterado)
+  const vendas=deals.filter(d=>d.won&&funInP(wdt(d),from,to));
   const taxaContato=tent.length?atend.length/tent.length*100:0;
   const convGeral=receb.length?vendas.length/receb.length*100:0;
   const valVendas=vendas.reduce((a,d)=>a+d.o,0);
@@ -1282,7 +1287,7 @@ function renderFunil(){
     const dv=F.deals.filter(d=>d.vd===vd&&(!FUN.cat||d.cat===FUN.cat)&&(!FUN.src||d.src===FUN.src));
     const cv=F.calls.filter(c=>c.vd===vd);
     const rb=dv.filter(d=>funInP(d.dtc,from,to)),
-          vn=dv.filter(d=>d.won&&funInP(d.dtw,from,to)),
+          vn=dv.filter(d=>d.won&&funInP(wdt(d),from,to)),
           te=cv.filter(c=>funInP(c.dt,from,to)),at=cv.filter(c=>funInP(c.dt,from,to)&&c.ok),
           pr=(F.props||[]).filter(p=>p.vd===vd&&funInP(p.dt,from,to));   // propostas Tiny
     return {vd,nome:F.vend[vd],nivel:F.niveis[vd]||"",rb:rb.length,te:te.length,at:at.length,
@@ -1345,7 +1350,8 @@ document.getElementById("fun-to").onchange=e=>{FUN.to=e.target.value;funCustom()
 document.getElementById("fun-vd").onchange=e=>{FUN.vd=e.target.value;renderFunil();};
 document.getElementById("fun-cat").onchange=e=>{FUN.cat=e.target.value;renderFunil();};
 document.getElementById("fun-src").onchange=e=>{FUN.src=e.target.value;renderFunil();};
-document.getElementById("fun-reset").onclick=()=>{FUN.vd="";FUN.cat="";FUN.src="";["fun-vd","fun-cat","fun-src"].forEach(id=>document.getElementById(id).value="");document.getElementById("fun-per").value="mes";funDateRow().style.display="none";funPreset("mes");};
+document.getElementById("fun-base").onchange=e=>{FUN.base=e.target.value;renderFunil();};
+document.getElementById("fun-reset").onclick=()=>{FUN.vd="";FUN.cat="";FUN.src="";FUN.base="alt";["fun-vd","fun-cat","fun-src"].forEach(id=>document.getElementById(id).value="");document.getElementById("fun-base").value="alt";document.getElementById("fun-per").value="mes";funDateRow().style.display="none";funPreset("mes");};
 renderTiny();
 refresh();
 </script>
