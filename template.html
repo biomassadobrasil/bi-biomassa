@@ -288,6 +288,36 @@
   .pill{display:inline-block;background:var(--brand-soft);color:var(--brand);font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em}
   .sitdot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:8px;vertical-align:middle}
   table.perf tr.tot td{border-top:2px solid var(--line);font-weight:700}
+  /* header de seção + chips de resumo */
+  .perfhead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+  .perftitle{display:flex;gap:13px;align-items:center}
+  .phico{width:42px;height:42px;border-radius:12px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto}
+  .phico svg{width:21px;height:21px}
+  .pht{font-size:16px;font-weight:800}.phs{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .perfchips{display:flex;gap:10px;flex-wrap:wrap}
+  .perfchip{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 13px}
+  .pcico{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto}.pcico svg{width:16px;height:16px}
+  .pclbl{font-size:11px;color:var(--muted);font-weight:600}.pcval{font-size:13.5px;font-weight:800;margin-top:1px}
+  .vshlbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;align-self:center}
+  /* propostas por etapa */
+  .statcards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+  .statcard{border-radius:14px;padding:15px 16px}
+  .scico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff;margin-bottom:9px}.scico svg{width:17px;height:17px}
+  .sclbl{font-size:12.5px;font-weight:700}
+  .scbig{font-size:30px;font-weight:800;line-height:1;margin-top:2px;color:var(--ink)}
+  .scsub{font-size:11.5px;color:var(--muted);margin:3px 0 8px}
+  .scval{font-size:14px;font-weight:800}
+  .pdhead{display:grid;grid-template-columns:190px 1fr 74px 120px;gap:14px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;padding-bottom:6px}
+  .pdhead .propleg{display:flex;gap:14px;text-transform:none;letter-spacing:0}
+  .propvrow{display:grid;grid-template-columns:190px 1fr 74px 120px;gap:14px;align-items:center;padding:11px 0;border-top:1px solid var(--line2)}
+  .propvrow.tot{border-top:2px solid var(--line);margin-top:2px}
+  .pvname{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600}
+  .pvav{width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:800;flex:0 0 auto}
+  .stkbar{display:flex;height:28px;border-radius:8px;overflow:hidden;background:var(--line2)}
+  .stkseg{display:flex;align-items:center;justify-content:center;color:#fff;font-size:12.5px;font-weight:800;min-width:22px}
+  .leitura{display:flex;gap:11px;align-items:center;background:var(--brand-soft);border-radius:12px;padding:13px 16px;margin-top:16px;font-size:13px;color:var(--ink);line-height:1.5}
+  .leitura svg{width:19px;height:19px;color:var(--brand);flex:0 0 auto}
+  @media(max-width:760px){.statcards{grid-template-columns:1fr}.propvrow,.pdhead{grid-template-columns:1fr}.pdhead .r{display:none}}
   .legrow{display:flex;gap:16px;margin-bottom:10px}
   .leg{font-size:12px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px}
   .ldot{width:10px;height:10px;border-radius:3px;display:inline-block}
@@ -1262,7 +1292,10 @@ function renderFunil(){
     users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
     percent:'<line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>',
     target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
-    medal:'<circle cx="12" cy="8" r="6"/><path d="M8.21 13.89 7 22l5-3 5 3-1.21-8.11"/>'};
+    medal:'<circle cx="12" cy="8" r="6"/><path d="M8.21 13.89 7 22l5-3 5 3-1.21-8.11"/>',
+    clock:'<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>',
+    xc:'<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>',
+    bolt:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>'};
   // ----- KPIs (5) -----
   const fk=(ic,bg,col,l,v,f)=>`<div class="fkpi"><div class="fkico" style="background:${bg};color:${col}">${svgico(IC[ic])}</div><div class="lbl">${l}</div><div class="big tnum">${v}</div><div class="foot">${f}</div></div>`;
   const kpis=[
@@ -1301,7 +1334,7 @@ function renderFunil(){
   if(bestC&&ins.length<4) ins.push({ic:'target',bg:'var(--good-soft)',col:'var(--good)',t:'Melhor taxa de conversão',s:`${bestC.nome} converte ${pctBR(bestC.conv)} dos negócios em venda.`});
   const insHTML=ins.slice(0,4).map(x=>`<div class="insrow"><div class="insico" style="background:${x.bg};color:${x.col}">${svgico(IC[x.ic])}</div><div class="instxt"><b>${x.t}</b><span>${x.s}</span></div></div>`).join("");
   // ----- comparativo VS -----
-  const P=perV[0]||{nome:"—",nivel:""}, T=perV[1]||{nome:"—",nivel:""};
+  const P=perV[0]||{nome:"—",nivel:"",pr:0,vn:0,conv:0}, T=perV[1]||{nome:"—",nivel:"",pr:0,vn:0,conv:0};
   const vsM=[{ic:'brief',lbl:'Negócios recebidos',k:'rb',c:'#004FC2'},
     {ic:'phone',lbl:'Tentativas de ligação',k:'te',c:'var(--brand)'},
     {ic:'users',lbl:'Contatos efetivos',k:'at',c:'var(--brand)'},
@@ -1309,21 +1342,34 @@ function renderFunil(){
     {ic:'doc',lbl:'Propostas comerciais',k:'pr',c:'#f0b429'},
     {ic:'trophy',lbl:'Vendas',k:'vn',c:'#1f9d6b'},
     {ic:'trend',lbl:'Conversão geral',k:'conv',c:'#004FC2',pct:true}];
-  const vsHead=`<div class="vshead"><div></div><div class="vsname">${P.nome} <span class="pill">${P.nivel}</span></div><div class="vsbadge">VS</div><div class="vsname">${T.nome} <span class="pill">${T.nivel}</span></div></div>`;
+  const vsHeadRow=`<div class="vshead"><div class="vshlbl">Indicador</div><div class="vsname">${P.nome} <span class="pill">${P.nivel}</span></div><div class="vsbadge">VS</div><div class="vsname">${T.nome} <span class="pill">${T.nivel}</span></div></div>`;
   const bar=(v,mx,c,pct)=>`<div class="vsside"><span class="vnum">${pct?pctBR(v):int(v)}</span><div class="vstrack"><div class="vsfill" style="width:${Math.min(v/mx*100,100)}%;background:${c}"></div></div></div>`;
   const vsBody=vsM.map(m=>{const pv=P[m.k]||0,tv=T[m.k]||0,mx=m.pct?100:Math.max(pv,tv,1);
     return `<div class="vsrow"><div class="vslbl">${svgico(IC[m.ic])}${m.lbl}</div>${bar(pv,mx,m.c,m.pct)}<div></div>${bar(tv,mx,m.c,m.pct)}</div>`;}).join("");
-  // ----- propostas por situação × vendedora (Tiny) -----
-  const sitG=s=>{s=(s||"").toLowerCase();return (s.includes("não aprov")||s.includes("nao aprov"))?"Não aprovada":((s.includes("conclu")||s.includes("aprovad"))?"Concluída":"Pendente");};
-  const sitBy={}; vlist.forEach(vd=>sitBy[vd]={"Concluída":0,"Pendente":0,"Não aprovada":0,tot:0,val:0});
-  props.forEach(p=>{if(sitBy[p.vd]){const g=sitG(p.sit);sitBy[p.vd][g]++;sitBy[p.vd].tot++;sitBy[p.vd].val+=p.valor||0;}});
-  const sitCol={"Concluída":"var(--good)","Pendente":"var(--open)","Não aprovada":"var(--bad)"};
-  const sumK=k=>vlist.reduce((a,vd)=>a+sitBy[vd][k],0);
-  const propTable=`<table class="perf"><thead><tr><th>Situação</th>${vlist.map(vd=>`<th class="r">${F.vend[vd]}</th>`).join("")}<th class="r">Total</th></tr></thead><tbody>`+
-    ["Concluída","Pendente","Não aprovada"].map(k=>`<tr><td><span class="sitdot" style="background:${sitCol[k]}"></span>${k}s</td>${vlist.map(vd=>`<td class="r tnum">${int(sitBy[vd][k])}</td>`).join("")}<td class="r tnum">${int(sumK(k))}</td></tr>`).join("")+
-    `<tr class="tot"><td>Total de propostas</td>${vlist.map(vd=>`<td class="r tnum">${int(sitBy[vd].tot)}</td>`).join("")}<td class="r tnum">${int(props.length)}</td></tr>`+
-    `<tr><td>Valor total</td>${vlist.map(vd=>`<td class="r tnum">${brl0(sitBy[vd].val)}</td>`).join("")}<td class="r tnum">${brl0(valProp)}</td></tr>`+
-    `</tbody></table>`;
+  // resumo (melhores do período)
+  const winBy=k=>perV.slice().sort((a,b)=>b[k]-a[k])[0]||{nome:"—"};
+  const wP=winBy('pr'), wV=winBy('vn'), wC=perV.slice().filter(v=>v.rb>=1).sort((a,b)=>b.conv-a.conv)[0]||{nome:"—",conv:0};
+  const chip=(ic,bg,col,lbl,val)=>`<div class="perfchip"><div class="pcico" style="background:${bg};color:${col}">${svgico(IC[ic])}</div><div><div class="pclbl">${lbl}</div><div class="pcval">${val}</div></div></div>`;
+  const perfChips=chip('doc','var(--brand-soft)','var(--brand)','Maior volume de propostas',`${wP.nome} (${int(wP.pr)})`)+
+    chip('trophy','var(--good-soft)','var(--good)','Mais vendas',`${wV.nome} (${int(wV.vn)})`)+
+    chip('trend','#efe9fb','#7c5cd6','Melhor conversão',`${wC.nome} (${pctBR(wC.conv)})`);
+  // ----- propostas por etapa (Tiny) -----
+  const sitG=s=>{s=(s||"").toLowerCase();return (s.includes("não aprov")||s.includes("nao aprov"))?"perdida":((s.includes("conclu")||s.includes("aprovad"))?"ganha":"aberto");};
+  const GM={aberto:{lbl:"Em aberto",c:"var(--open)",soft:"var(--open-soft)",col:"#c98a00",ic:"clock"},
+            ganha:{lbl:"Ganhas",c:"var(--good)",soft:"var(--good-soft)",col:"var(--good)",ic:"trophy"},
+            perdida:{lbl:"Perdidas",c:"var(--bad)",soft:"var(--bad-soft)",col:"var(--bad)",ic:"xc"}};
+  const GORD=["aberto","ganha","perdida"];
+  const perS={}; vlist.forEach(vd=>perS[vd]={aberto:0,ganha:0,perdida:0,val:0,tot:0});
+  const totG={aberto:0,ganha:0,perdida:0}, valG={aberto:0,ganha:0,perdida:0};
+  props.forEach(p=>{const g=sitG(p.sit); if(perS[p.vd]){perS[p.vd][g]++;perS[p.vd].val+=p.valor||0;perS[p.vd].tot++;} totG[g]++; valG[g]+=p.valor||0;});
+  const totAll=props.length||1;
+  const statCards=GORD.map(g=>`<div class="statcard" style="background:${GM[g].soft}"><div class="scico" style="background:${GM[g].c}">${svgico(IC[GM[g].ic])}</div><div class="sclbl" style="color:${GM[g].col}">${GM[g].lbl}</div><div class="scbig">${int(totG[g])}</div><div class="scsub">${Math.round(totG[g]/totAll*100)}% do total</div><div class="scval" style="color:${GM[g].col}">${brl0(valG[g])}</div></div>`).join("");
+  const leg=GORD.map(g=>`<span class="leg"><span class="ldot" style="background:${GM[g].c}"></span>${GM[g].lbl}</span>`).join("");
+  const stk=o=>{const t=(o.aberto+o.ganha+o.perdida)||1;return `<div class="stkbar">`+GORD.map(g=>o[g]?`<div class="stkseg" style="width:${o[g]/t*100}%;background:${GM[g].c}" title="${GM[g].lbl}: ${o[g]}">${o[g]}</div>`:"").join("")+`</div>`;};
+  const propRows=vlist.map(vd=>{const o=perS[vd];
+    return `<div class="propvrow"><div class="pvname"><span class="pvav">${(F.vend[vd]||"?")[0]}</span>${F.vend[vd]} <span class="pill">${F.niveis[vd]}</span></div>${stk(o)}<div class="r tnum">${int(o.tot)}</div><div class="r tnum">${brl0(o.val)}</div></div>`;}).join("");
+  const totRow=`<div class="propvrow tot"><div class="pvname"><b>Total geral</b></div>${stk(totG)}<div class="r tnum"><b>${int(props.length)}</b></div><div class="r tnum"><b>${brl0(valProp)}</b></div></div>`;
+  const leitura=`<b>${wP.nome}</b> lidera em volume de propostas`+(wC.nome!=="—"?`, enquanto <b>${wC.nome}</b> tem a melhor conversão${wV.nome===wC.nome?" e mais vendas":""}`:"")+` no período.`;
   // ----- monta -----
   document.getElementById("fun-body").innerHTML=`
     <div class="kpis" style="grid-template-columns:repeat(5,1fr)">${kpis}</div>
@@ -1333,11 +1379,21 @@ function renderFunil(){
       <div class="card"><div class="cardh">Insights do período</div><div class="insights">${insHTML}</div></div>
     </div>
     <div class="eyebrow">Performance da equipe</div>
-    <div class="card" style="overflow-x:auto">${vsHead}${vsBody}
-      <div class="fnl-foot">Priorize as <b>taxas de conversão</b> — cada vendedora recebe volumes diferentes de negócios.</div></div>
-    <div class="eyebrow">Propostas comerciais por situação · Tiny</div>
-    <div class="card" style="overflow-x:auto">${propTable}
-      <div class="fnl-foot">Propostas comerciais (orçamentos) puxadas do <b>Tiny</b>, por vendedora e situação, no período.</div></div>`;
+    <div class="card" style="overflow-x:auto">
+      <div class="perfhead">
+        <div class="perftitle"><div class="phico">${svgico(IC.users)}</div><div><div class="pht">Performance da equipe</div><div class="phs">Comparativo de resultados no período</div></div></div>
+        <div class="perfchips">${perfChips}</div>
+      </div>
+      ${vsHeadRow}${vsBody}
+    </div>
+    <div class="eyebrow">Propostas comerciais por etapa · Tiny</div>
+    <div class="card" style="overflow-x:auto">
+      <div class="perfhead"><div class="perftitle"><div class="phico">${svgico(IC.doc)}</div><div><div class="pht">Propostas comerciais por etapa</div><div class="phs">Distribuição e valor das propostas no período</div></div></div></div>
+      <div class="statcards">${statCards}</div>
+      <div class="pdhead"><span class="propleg" style="grid-column:1/3">Distribuição por vendedora ${leg}</span><span class="r">Propostas</span><span class="r">Valor total</span></div>
+      ${propRows}${totRow}
+      <div class="leitura">${svgico(IC.bolt)}<div><b>Leitura rápida:</b> ${leitura}</div></div>
+    </div>`;
 }
 const funDateRow=()=>document.getElementById("fun-daterow");
 document.getElementById("fun-per").onchange=e=>{const v=e.target.value;
