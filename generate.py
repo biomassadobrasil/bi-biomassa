@@ -100,7 +100,7 @@ def porte_bucket(raw_label):
     if "medio" in t or "médio" in t: return "Médio"
     if "grande" in t: return "Grande"
     return "Sem identificação"
-VEND_NOMES={"948":"Patrícia","890":"Thauany","38":"Luiz Gomes","14":"Luis Araujo"}
+VEND_NOMES={"948":"Patrícia","890":"Thauany","376":"Douglas","16812":"Vanessa","16942":"Ingrid","38":"Luiz Gomes"}
 
 def call(method, payload):
     last=None
@@ -251,6 +251,7 @@ def build(stages, sources, enum_by_uf, deals):
     for d in deals:
         cat=str(d["CATEGORY_ID"])
         if cat not in CATS: continue
+        if str(d.get("ASSIGNED_BY_ID") or "") not in VEND_NOMES: continue   # só os 6 vendedores
         try: opp=float(d.get("OPPORTUNITY") or 0)
         except: opp=0.0
         dc=d.get("DATE_CREATE","") or ""; cd=d.get("CLOSEDATE","") or ""; dm=d.get("DATE_MODIFY","") or ""
