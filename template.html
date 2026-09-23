@@ -288,6 +288,23 @@
   .pill{display:inline-block;background:var(--brand-soft);color:var(--brand);font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em}
   .sitdot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:8px;vertical-align:middle}
   table.perf tr.tot td{border-top:2px solid var(--line);font-weight:700}
+  table.rank{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.rank th,table.rank td{padding:11px 12px;border-bottom:1px solid var(--line2);text-align:left;white-space:nowrap}
+  table.rank th.r,table.rank td.r{text-align:right;font-variant-numeric:tabular-nums}
+  table.rank th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700}
+  table.rank td:first-child{font-weight:600}
+  table.rank td:first-child .pvav{margin-right:9px;display:inline-grid;vertical-align:middle}
+  table.rank tbody tr:hover{background:var(--line2)}
+  table.rank td.hi{font-weight:800;color:var(--good)}
+  .origem{display:flex;flex-direction:column}
+  .orow{display:grid;grid-template-columns:210px 1fr 92px;gap:14px;align-items:center;padding:9px 0;border-top:1px solid var(--line2)}
+  .orow:first-child{border-top:none}
+  .olbl{font-size:13px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .otrack{height:16px;background:var(--line2);border-radius:8px;overflow:hidden}
+  .ofill{height:100%;border-radius:8px;background:var(--brand)}
+  .oval{text-align:right;font-weight:800;font-size:13.5px}
+  .oval .opct{color:var(--muted);font-weight:600;font-size:12px;margin-left:8px}
+  @media(max-width:640px){.orow{grid-template-columns:130px 1fr 60px;gap:8px}.oval .opct{display:none}}
   /* header de seção + chips de resumo */
   .perfhead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:18px}
   .perftitle{display:flex;gap:13px;align-items:center}
@@ -576,7 +593,7 @@
     <div id="fun-body"></div>
   </div>
 
-  <footer>Fontes: Bitrix24 (Negócios) + Tiny (pedidos/vendas). Valores em BRL. Tiny complementa os negócios que passam só pela emissão de proposta/pedido.</footer>
+  <footer>Fontes: Bitrix24 (negócios, etapas e ligações) + BioHub (propostas comerciais) + Meta/Google Ads (marketing). Valores em BRL. Atualização automática 2× ao dia.</footer>
 </div>
 </div>
 
@@ -1237,7 +1254,7 @@ function funFill(){
 const funInP=(dt,from,to)=>dt&&(!from||dt>=from)&&(!to||dt<=to);
 function funTrapezoid(steps){
   const top=steps[0].n||1, W=640, cx=268, maxW=440, segH=62, gap=5, H=steps.length*(segH+gap)+30;
-  const wv=n=>Math.max(n/top*maxW,64);
+  const wv=n=>Math.max(Math.min(n/top,1)*maxW,64);
   let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-height:${H+8}px">`;
   svg+=`<text x="580" y="16" text-anchor="middle" fill="var(--muted)" font-size="11.5" font-weight="600">% dos recebidos</text>`;
   steps.forEach((s,i)=>{
@@ -1268,11 +1285,12 @@ function renderFunil(){
   const receb=deals.filter(d=>funInP(d.dtc,from,to));
   const tent=calls.filter(c=>funInP(c.dt,from,to));
   const atend=tent.filter(c=>c.ok);
-  const props=(F.props||[]).filter(p=>pOK(p)&&funInP(p.dt,from,to));   // propostas comerciais do Tiny
+  const props=(F.props||[]).filter(p=>pOK(p)&&(!FUN.cat||p.cat===FUN.cat)&&funInP(p.dt,from,to));   // propostas do BioHub
   const wdt=d=>FUN.base==="cri"?d.dtc:d.dtw;   // base da data das VENDAS: criado x fechamento(alterado)
   const vendas=deals.filter(d=>d.won&&funInP(wdt(d),from,to));
   const taxaContato=tent.length?atend.length/tent.length*100:0;
   const convGeral=receb.length?vendas.length/receb.length*100:0;
+  const convPV=props.length?vendas.length/props.length*100:0;   // proposta → venda
   const valVendas=vendas.reduce((a,d)=>a+d.o,0);
   const cReceb=receb.length, valProp=props.reduce((a,p)=>a+(p.valor||0),0);
   const convFim=cReceb?Math.round(vendas.length/cReceb*100):0;
@@ -1303,7 +1321,7 @@ function renderFunil(){
     fk("phone","var(--brand-soft)","var(--brand)","Tentativas de ligação",int(tent.length),`${Math.round(tent.length/(cReceb||1)*100)}% dos recebidos`),
     fk("doc","#f0b429","#fff","Propostas comerciais",int(props.length),`<span class="fval">${brl0(valProp)}</span>`),
     fk("trophy","#1f9d6b","#fff","Vendas",int(vendas.length),`<span class="fval">${brl0(valVendas)}</span>`),
-    fk("dollar","#17356b","#fff","Taxa de conversão",pctBR(convGeral),`${int(vendas.length)} de ${int(cReceb)} negócios`),
+    fk("dollar","#17356b","#fff","Conversão proposta → venda",pctBR(convPV),`${int(vendas.length)} vendas de ${int(props.length)} propostas`),
   ].join("");
   // ----- funil trapézio -----
   const fsteps=[
@@ -1314,16 +1332,18 @@ function renderFunil(){
   ];
   const funilSVG=funTrapezoid(fsteps);
   // ----- performance por vendedora -----
-  const vlist=["948","890"].filter(k=>F.vend[k]);
+  const vlist=(F.ordem||Object.keys(F.vend)).filter(k=>F.vend[k]);
   const perV=vlist.map(vd=>{
     const dv=F.deals.filter(d=>d.vd===vd&&(!FUN.cat||d.cat===FUN.cat)&&(!FUN.src||d.src===FUN.src));
     const cv=F.calls.filter(c=>c.vd===vd);
     const rb=dv.filter(d=>funInP(d.dtc,from,to)),
           vn=dv.filter(d=>d.won&&funInP(wdt(d),from,to)),
           te=cv.filter(c=>funInP(c.dt,from,to)),at=cv.filter(c=>funInP(c.dt,from,to)&&c.ok),
-          pr=(F.props||[]).filter(p=>p.vd===vd&&funInP(p.dt,from,to));   // propostas Tiny
+          pr=props.filter(p=>p.vd===vd);
     return {vd,nome:F.vend[vd],nivel:F.niveis[vd]||"",rb:rb.length,te:te.length,at:at.length,
-            tc:te.length?at.length/te.length*100:0,pr:pr.length,vn:vn.length,conv:rb.length?vn.length/rb.length*100:0};
+            tc:te.length?at.length/te.length*100:0,pr:pr.length,
+            pval:pr.reduce((a,p)=>a+(p.valor||0),0),
+            vn:vn.length,vval:vn.reduce((a,d)=>a+(d.o||0),0),conv:rb.length?vn.length/rb.length*100:0};
   });
   // ----- insights -----
   const ins=[{ic:'trend',bg:'var(--brand-soft)',col:'var(--brand)',t:`Conversão negócio → venda: ${pctBR(convGeral)}`,s:`${int(vendas.length)} vendas de ${int(cReceb)} negócios recebidos.`}];
@@ -1333,63 +1353,65 @@ function renderFunil(){
   const bestC=perV.slice().filter(v=>v.rb>=3).sort((a,b)=>b.conv-a.conv)[0];
   if(bestC&&ins.length<4) ins.push({ic:'target',bg:'var(--good-soft)',col:'var(--good)',t:'Melhor taxa de conversão',s:`${bestC.nome} converte ${pctBR(bestC.conv)} dos negócios em venda.`});
   const insHTML=ins.slice(0,4).map(x=>`<div class="insrow"><div class="insico" style="background:${x.bg};color:${x.col}">${svgico(IC[x.ic])}</div><div class="instxt"><b>${x.t}</b><span>${x.s}</span></div></div>`).join("");
-  // ----- comparativo VS -----
-  const P=perV[0]||{nome:"—",nivel:"",pr:0,vn:0,conv:0}, T=perV[1]||{nome:"—",nivel:"",pr:0,vn:0,conv:0};
-  const vsM=[{ic:'brief',lbl:'Negócios recebidos',k:'rb',c:'#004FC2'},
-    {ic:'phone',lbl:'Tentativas de ligação',k:'te',c:'var(--brand)'},
-    {ic:'users',lbl:'Contatos efetivos',k:'at',c:'var(--brand)'},
-    {ic:'percent',lbl:'Taxa de contato',k:'tc',c:'var(--brand)',pct:true},
-    {ic:'doc',lbl:'Propostas comerciais',k:'pr',c:'#f0b429'},
-    {ic:'trophy',lbl:'Vendas',k:'vn',c:'#1f9d6b'},
-    {ic:'trend',lbl:'Conversão geral',k:'conv',c:'#004FC2',pct:true}];
-  const vsHeadRow=`<div class="vshead"><div class="vshlbl">Indicador</div><div class="vsname">${P.nome} <span class="pill">${P.nivel}</span></div><div class="vsbadge">VS</div><div class="vsname">${T.nome} <span class="pill">${T.nivel}</span></div></div>`;
-  const bar=(v,mx,c,pct)=>`<div class="vsside"><span class="vnum">${pct?pctBR(v):int(v)}</span><div class="vstrack"><div class="vsfill" style="width:${Math.min(v/mx*100,100)}%;background:${c}"></div></div></div>`;
-  const vsBody=vsM.map(m=>{const pv=P[m.k]||0,tv=T[m.k]||0,mx=m.pct?100:Math.max(pv,tv,1);
-    return `<div class="vsrow"><div class="vslbl">${svgico(IC[m.ic])}${m.lbl}</div>${bar(pv,mx,m.c,m.pct)}<div></div>${bar(tv,mx,m.c,m.pct)}</div>`;}).join("");
-  // resumo (melhores do período)
+  // ----- resumo (melhores do período) -----
   const winBy=k=>perV.slice().sort((a,b)=>b[k]-a[k])[0]||{nome:"—"};
   const wP=winBy('pr'), wV=winBy('vn'), wC=perV.slice().filter(v=>v.rb>=1).sort((a,b)=>b.conv-a.conv)[0]||{nome:"—",conv:0};
   const chip=(ic,bg,col,lbl,val)=>`<div class="perfchip"><div class="pcico" style="background:${bg};color:${col}">${svgico(IC[ic])}</div><div><div class="pclbl">${lbl}</div><div class="pcval">${val}</div></div></div>`;
   const perfChips=chip('doc','var(--brand-soft)','var(--brand)','Maior volume de propostas',`${wP.nome} (${int(wP.pr)})`)+
     chip('trophy','var(--good-soft)','var(--good)','Mais vendas',`${wV.nome} (${int(wV.vn)})`)+
     chip('trend','#efe9fb','#7c5cd6','Melhor conversão',`${wC.nome} (${pctBR(wC.conv)})`);
-  // ----- propostas por etapa (Tiny) -----
-  const sitG=s=>{s=(s||"").toLowerCase();return (s.includes("não aprov")||s.includes("nao aprov"))?"perdida":((s.includes("conclu")||s.includes("aprovad"))?"ganha":"aberto");};
-  const GM={aberto:{lbl:"Em aberto",c:"var(--open)",soft:"var(--open-soft)",col:"#c98a00",ic:"clock"},
-            ganha:{lbl:"Ganhas",c:"var(--good)",soft:"var(--good-soft)",col:"var(--good)",ic:"trophy"},
-            perdida:{lbl:"Perdidas",c:"var(--bad)",soft:"var(--bad-soft)",col:"var(--bad)",ic:"xc"}};
-  const GORD=["aberto","ganha","perdida"];
-  const perS={}; vlist.forEach(vd=>perS[vd]={aberto:0,ganha:0,perdida:0,val:0,tot:0});
-  const totG={aberto:0,ganha:0,perdida:0}, valG={aberto:0,ganha:0,perdida:0};
-  props.forEach(p=>{const g=sitG(p.sit); if(perS[p.vd]){perS[p.vd][g]++;perS[p.vd].val+=p.valor||0;perS[p.vd].tot++;} totG[g]++; valG[g]+=p.valor||0;});
+  // ----- ranking da equipe (tabela, N vendedoras) -----
+  const rk=perV.slice().sort((a,b)=>b.vn-a.vn||b.rb-a.rb);
+  const cols=[['brief','Negócios','rb'],['phone','Tentativas','te'],['doc','Propostas','pr'],['trophy','Vendas','vn'],['trend','Conversão','conv%']];
+  const rankTable=`<table class="rank"><thead><tr><th>Vendedor(a)</th>${cols.map(c=>`<th class="r">${c[1]}</th>`).join("")}</tr></thead><tbody>`+
+    rk.map(v=>`<tr><td><span class="pvav">${(v.nome||'?')[0]}</span>${v.nome}</td>`+
+      cols.map(c=>{const pct=c[2].endsWith('%');const key=pct?c[2].slice(0,-1):c[2];const val=pct?v[key].toFixed(1).replace('.',',')+'%':int(v[key]);
+        return `<td class="r tnum${c[2]==='vn'?' hi':''}">${val}</td>`;}).join("")+`</tr>`).join("")+`</tbody></table>`;
+  // ----- propostas por etapa (BioHub / Bitrix) -----
+  const GRUP=F.gruposEtapa||{};
+  const GORD=['em_andamento','ganho','obra_futura','renutrida','perdido'].filter(g=>GRUP[g]);
+  const gcol=g=>(GRUP[g]||{}).cor||'var(--muted)';
+  const glbl=g=>(GRUP[g]||{}).label||g;
+  const gico={em_andamento:'clock',ganho:'trophy',obra_futura:'brief',renutrida:'target',perdido:'xc'};
+  const perS={}; vlist.forEach(vd=>perS[vd]=Object.fromEntries([...GORD.map(g=>[g,0]),['val',0],['tot',0]]));
+  const totG=Object.fromEntries(GORD.map(g=>[g,0])), valG=Object.fromEntries(GORD.map(g=>[g,0]));
+  props.forEach(p=>{const g=p.grp; if(perS[p.vd]&&g in totG){perS[p.vd][g]++;perS[p.vd].val+=p.valor||0;perS[p.vd].tot++;totG[g]++;valG[g]+=p.valor||0;}});
   const totAll=props.length||1;
-  const statCards=GORD.map(g=>`<div class="statcard" style="background:${GM[g].soft}"><div class="scico" style="background:${GM[g].c}">${svgico(IC[GM[g].ic])}</div><div class="sclbl" style="color:${GM[g].col}">${GM[g].lbl}</div><div class="scbig">${int(totG[g])}</div><div class="scsub">${Math.round(totG[g]/totAll*100)}% do total</div><div class="scval" style="color:${GM[g].col}">${brl0(valG[g])}</div></div>`).join("");
-  const leg=GORD.map(g=>`<span class="leg"><span class="ldot" style="background:${GM[g].c}"></span>${GM[g].lbl}</span>`).join("");
-  const stk=o=>{const t=(o.aberto+o.ganha+o.perdida)||1;return `<div class="stkbar">`+GORD.map(g=>o[g]?`<div class="stkseg" style="width:${o[g]/t*100}%;background:${GM[g].c}" title="${GM[g].lbl}: ${o[g]}">${o[g]}</div>`:"").join("")+`</div>`;};
+  const statCards=GORD.map(g=>`<div class="statcard" style="background:${gcol(g)}14"><div class="scico" style="background:${gcol(g)}">${svgico(IC[gico[g]||'brief'])}</div><div class="sclbl" style="color:${gcol(g)}">${glbl(g)}</div><div class="scbig">${int(totG[g])}</div><div class="scsub">${Math.round(totG[g]/totAll*100)}% do total</div><div class="scval" style="color:${gcol(g)}">${brl0(valG[g])}</div></div>`).join("");
+  const leg=GORD.map(g=>`<span class="leg"><span class="ldot" style="background:${gcol(g)}"></span>${glbl(g)}</span>`).join("");
+  const stk=o=>{const t=GORD.reduce((a,g)=>a+o[g],0)||1;return `<div class="stkbar">`+GORD.map(g=>o[g]?`<div class="stkseg" style="width:${o[g]/t*100}%;background:${gcol(g)}" title="${glbl(g)}: ${o[g]}">${o[g]}</div>`:"").join("")+`</div>`;};
   const propRows=vlist.map(vd=>{const o=perS[vd];
-    return `<div class="propvrow"><div class="pvname"><span class="pvav">${(F.vend[vd]||"?")[0]}</span>${F.vend[vd]} <span class="pill">${F.niveis[vd]}</span></div>${stk(o)}<div class="r tnum">${int(o.tot)}</div><div class="r tnum">${brl0(o.val)}</div></div>`;}).join("");
+    return `<div class="propvrow"><div class="pvname"><span class="pvav">${(F.vend[vd]||"?")[0]}</span>${F.vend[vd]}</div>${stk(o)}<div class="r tnum">${int(o.tot)}</div><div class="r tnum">${brl0(o.val)}</div></div>`;}).join("");
   const totRow=`<div class="propvrow tot"><div class="pvname"><b>Total geral</b></div>${stk(totG)}<div class="r tnum"><b>${int(props.length)}</b></div><div class="r tnum"><b>${brl0(valProp)}</b></div></div>`;
   const leitura=`<b>${wP.nome}</b> lidera em volume de propostas`+(wC.nome!=="—"?`, enquanto <b>${wC.nome}</b> tem a melhor conversão${wV.nome===wC.nome?" e mais vendas":""}`:"")+` no período.`;
+  // ----- origem dos negócios (recebidos no período, por fonte) -----
+  const orig={}; receb.forEach(d=>{const s=d.src||"Sem fonte";orig[s]=(orig[s]||0)+1;});
+  const origArr=Object.entries(orig).sort((a,b)=>b[1]-a[1]);
+  const omax=Math.max(...origArr.map(x=>x[1]),1);
+  const origHTML=origArr.length?origArr.map(([k,n])=>`<div class="orow"><span class="olbl" title="${k}">${k}</span><div class="otrack"><div class="ofill" style="width:${Math.max(n/omax*100,2)}%"></div></div><span class="oval tnum">${int(n)}<span class="opct">${Math.round(n/(cReceb||1)*100)}%</span></span></div>`).join(""):'<div class="empty" style="color:var(--muted);padding:8px 0">Sem negócios no recorte.</div>';
   // ----- monta -----
   document.getElementById("fun-body").innerHTML=`
     <div class="kpis" style="grid-template-columns:repeat(5,1fr)">${kpis}</div>
     <div class="gfun">
       <div class="card"><div class="cardh">Funil comercial</div>${funilSVG}
-        <div class="mkt-perdas"><span class="mkt-chip" style="background:var(--brand-soft);color:var(--brand)">Conversão negócio → venda: <b>${pctBR(convGeral)}</b></span>${tent.length<5?'<span class="mkt-chip" style="background:var(--open-soft);color:#c98a00">Pouco registro de ligação no período</span>':''}</div></div>
+        <div class="mkt-perdas"><span class="mkt-chip" style="background:var(--brand-soft);color:var(--brand)">Proposta → venda: <b>${pctBR(convPV)}</b></span><span class="mkt-chip" style="background:var(--good-soft);color:var(--good)">Negócio → venda: <b>${pctBR(convGeral)}</b></span></div></div>
       <div class="card"><div class="cardh">Insights do período</div><div class="insights">${insHTML}</div></div>
     </div>
     <div class="eyebrow">Performance da equipe</div>
     <div class="card" style="overflow-x:auto">
       <div class="perfhead">
-        <div class="perftitle"><div class="phico">${svgico(IC.users)}</div><div><div class="pht">Performance da equipe</div><div class="phs">Comparativo de resultados no período</div></div></div>
+        <div class="perftitle"><div class="phico">${svgico(IC.users)}</div><div><div class="pht">Performance da equipe</div><div class="phs">Ranking de resultados no período · ordenado por vendas</div></div></div>
         <div class="perfchips">${perfChips}</div>
       </div>
-      ${vsHeadRow}${vsBody}
+      ${rankTable}
     </div>
-    <div class="eyebrow">Propostas comerciais por etapa · Tiny</div>
+    <div class="eyebrow">Origem dos negócios</div>
+    <div class="card"><div class="origem">${origHTML}</div>
+      <div class="fnl-foot">Negócios recebidos no período por fonte de origem (Bitrix).</div></div>
+    <div class="eyebrow">Propostas comerciais por etapa · Bitrix</div>
     <div class="card" style="overflow-x:auto">
-      <div class="perfhead"><div class="perftitle"><div class="phico">${svgico(IC.doc)}</div><div><div class="pht">Propostas comerciais por etapa</div><div class="phs">Distribuição e valor das propostas no período</div></div></div></div>
-      <div class="statcards">${statCards}</div>
+      <div class="perfhead"><div class="perftitle"><div class="phico">${svgico(IC.doc)}</div><div><div class="pht">Propostas comerciais por etapa</div><div class="phs">Distribuição e valor das propostas no período · fonte BioHub/Bitrix</div></div></div></div>
+      <div class="statcards" style="grid-template-columns:repeat(${GORD.length||1},1fr)">${statCards}</div>
       <div class="pdhead"><span class="propleg" style="grid-column:1/3">Distribuição por vendedora ${leg}</span><span class="r">Propostas</span><span class="r">Valor total</span></div>
       ${propRows}${totRow}
       <div class="leitura">${svgico(IC.bolt)}<div><b>Leitura rápida:</b> ${leitura}</div></div>

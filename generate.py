@@ -380,8 +380,42 @@ def build_google():
         camps.append({**c,"wpp":wpp,"form":form})
     return {"camp":camps,"daily":daily,"cost":cost}
 
-VEND_FUNIL={"948":("Patrícia","Sênior"),"890":("Thauany","Júnior")}
-FUNIL_CATS=["0","20","16"]   # pipelines comerciais (Vendas B2B, Vendas PF, Prospecção)
+VEND_FUNIL={"948":("Patrícia","Sênior"),"890":("Thauany","Júnior"),
+            "376":("Douglas",""),"16812":("Vanessa",""),"16942":("Ingrid",""),"38":("Luiz","")}
+VEND_ORDER=["948","890","376","16812","16942","38"]
+FUNIL_CATS=["0","2"]                       # Vendas Internas + LightWall
+FUNIL_CAT_NAMES={"0":"Vendas Internas","2":"LightWall"}
+BIOHUB="https://biohub-production.up.railway.app/api/propostas"
+
+def build_propostas():
+    """Propostas comerciais do BioHub (que já puxa do Bitrix). Mapeia vendedor->chave do funil."""
+    try:
+        req=urllib.request.Request(BIOHUB,headers={"User-Agent":"bi-biomassa"})
+        r=json.load(urllib.request.urlopen(req,timeout=60))
+    except Exception:
+        import traceback; print("[BI] BioHub falhou:\n"+traceback.format_exc()); return [],{}
+    def vk(v):
+        s=str(v or "").strip()
+        if s in VEND_FUNIL: return s
+        n=norm(s)
+        if "gualdiano" in n or n=="patricia": return "948"
+        if "thauany" in n: return "890"
+        if "douglas" in n: return "376"
+        if "vanessa" in n: return "16812"
+        if "ingrid" in n: return "16942"
+        if n.startswith("luiz") or n.startswith("luis"): return "38"
+        return None
+    out=[]
+    for p in r.get("resultados",[]):
+        vd=vk(p.get("vendedor"))
+        if not vd: continue
+        try: val=float(p.get("valor") or 0)
+        except: val=0.0
+        pipe=p.get("pipeline","") or ""
+        out.append({"vd":vd,"dt":(p.get("data","") or "")[:10],"valor":round(val,2),
+                    "grp":p.get("etapaGrupo",""),"etapa":p.get("etapaReal",""),
+                    "cat":"2" if "lightwall" in norm(pipe) else "0","num":p.get("numero","")})
+    return out, r.get("gruposEtapa",{})
 
 def build_funil(stages, sources, deals):
     """B.I Funil comercial: deals (por data-correta de cada métrica) + propostas (stagehistory)
@@ -389,28 +423,14 @@ def build_funil(stages, sources, deals):
     def vkey(uid):
         u=str(uid or "")
         return u if u in VEND_FUNIL else None   # só Patrícia/Thauany; resto ignorado
-    # etapa de proposta e 1ª etapa por pipeline
-    prop_stage={}; first_stage={}; stage_nome={}
+    # 1ª etapa e nomes de etapa por pipeline
+    first_stage={}; stage_nome={}
     for cat in FUNIL_CATS:
         lst=stages.get(cat) or []
         if not lst: continue
         first_stage[cat]=lst[0]["STATUS_ID"]
         for s in lst:
             stage_nome[(cat,s["STATUS_ID"])]=s["NAME"]
-            if "propost" in s["NAME"].lower(): prop_stage[cat]=s["STATUS_ID"]
-    # stagehistory: data que cada deal entrou na etapa de proposta
-    prop_date={}
-    for cat,sid in prop_stage.items():
-        start=0
-        while True:
-            res=call("crm.stagehistory.list",{"entityTypeId":2,"filter":{"STAGE_ID":sid},
-                     "order":{"ID":"ASC"},"start":start})
-            items=res.get("result",[]); items=items.get("items",items) if isinstance(items,dict) else items
-            for h in items or []:
-                did=str(h.get("OWNER_ID")); dt=(h.get("CREATED_TIME","") or "")[:10]
-                if did and (did not in prop_date or dt<prop_date[did]): prop_date[did]=dt
-            if res.get("next") is None: break
-            start=res["next"]
     # ligações (voximplant): tentativas (saída) + atendidas (CALL_FAILED_CODE 200)
     calls=[]; start=0
     while True:
@@ -433,31 +453,28 @@ def build_funil(stages, sources, deals):
         cat=str(d["CATEGORY_ID"])
         if cat not in FUNIL_CATS: continue
         vd=vkey(d.get("ASSIGNED_BY_ID"))
-        if not vd: continue                              # só Patrícia/Thauany
-        sem=d.get("STAGE_SEMANTIC_ID"); won=(sem=="S")
+        if not vd: continue                              # só as 6 vendedoras/vendedores
+        sem=d.get("STAGE_SEMANTIC_ID")
+        won=(sem=="F") if cat=="2" else (sem=="S")       # LightWall (cat 2) tem semântica invertida
+        lost=(sem=="S") if cat=="2" else (sem=="F")
         did=str(d["ID"])
         try: o=float(d.get("OPPORTUNITY") or 0)
         except: o=0.0
         cd=(d.get("CLOSEDATE","") or "")[:10]
         worked = d.get("STAGE_ID")!=first_stage.get(cat)   # saiu da 1ª etapa
         ds.append({"id":did,"dtc":(d.get("DATE_CREATE","") or "")[:10],
-                   "won":won,"dtw":cd if won else "","lost":(sem=="F"),"vd":vd,
+                   "won":won,"dtw":cd if won else "","lost":lost,"vd":vd,
                    "src":sources.get(str(d.get("SOURCE_ID")),"Sem fonte"),
                    "cat":cat,"cli":d.get("_CLI") or "— sem cliente","o":round(o,2),
-                   "worked":worked,"prop":did in prop_date,"dtp":prop_date.get(did,""),
+                   "worked":worked,
                    "stage":stage_nome.get((cat,d.get("STAGE_ID")),d.get("STAGE_ID"))})
-    # propostas comerciais do Tiny (API v3 / orçamentos)
-    tiny_props=[]
-    try:
-        import tiny_v3
-        tp=tiny_v3.propostas(desde="2025-01-01")
-        if tp is not None: tiny_props=tp
-    except Exception: import traceback; print("[BI] Tiny v3 propostas falhou:\n"+traceback.format_exc())
+    # propostas comerciais — BioHub (Bitrix)
+    props,grupos=build_propostas()
     vend_nomes={k:v[0] for k,v in VEND_FUNIL.items()}
     niveis={k:v[1] for k,v in VEND_FUNIL.items()}
-    return {"deals":ds,"calls":calls,"props":tiny_props,
+    return {"deals":ds,"calls":calls,"props":props,"gruposEtapa":grupos,"ordem":VEND_ORDER,
             "vend":vend_nomes,"niveis":niveis,
-            "pipelines":{c:CATS.get(c,c) for c in FUNIL_CATS if (stages.get(c))},
+            "pipelines":{c:FUNIL_CAT_NAMES.get(c,CATS.get(c,c)) for c in FUNIL_CATS if (stages.get(c))},
             "sources":sorted({x["src"] for x in ds})}
 
 def run():
