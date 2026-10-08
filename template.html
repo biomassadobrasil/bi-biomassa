@@ -1486,7 +1486,10 @@ function renderCmDyn(){
     <div class="tp-donut">${tpDonut(p||0,c,"conversão")}<div><div class="bn">${tpN(num)} ${TP_NOCMP?"":tpDelta(cur,prev)}</div><div class="bl">${lbl}</div><div class="bs">${b}</div></div></div></div>`;
   // situação atual dos negócios do período
   const sit=CM_G.map(([g,l,c])=>{const a=neg.filter(x=>x.g===g);return {g,l,c,n:a.length,o:sum(a,"o")};});
-  const outrasNomes=[...new Set(neg.filter(x=>x.g==="outras").map(x=>((CM.etapas[x.c]||[]).find(s=>s.id===x.st)||{}).nome).filter(Boolean))];
+  // detalhe das "outras etapas" (nomes iguais nas duas pipelines são somados)
+  const ordE=[];Object.values(CM.etapas).forEach(l=>l.forEach(s=>{const k=s.nome.toLowerCase();if(s.g==="outras"&&!ordE.some(e=>e.toLowerCase()===k))ordE.push(s.nome);}));
+  const nomeE=x=>((CM.etapas[x.c]||[]).find(s=>s.id===x.st)||{}).nome||x.st;
+  const outrasArr=ordE.map(e=>({label:e,n:neg.filter(x=>x.g==="outras"&&nomeE(x).toLowerCase()===e.toLowerCase()).length,color:"#9aa7bd"})).filter(x=>x.n);
   // motivos de perda (perdidos no período)
   const per=D.filter(x=>cmIn(x.lost,R)), mot={};per.forEach(x=>{const k=x.mot||"Sem motivo informado";mot[k]=(mot[k]||0)+1;});
   const outros=per.filter(x=>x.mot==="Outro"), om={};outros.forEach(x=>{const k=x.mo||"Sem descrição";om[k]=(om[k]||0)+1;});
@@ -1511,7 +1514,7 @@ function renderCmDyn(){
   <div class="tp-panel" style="margin-top:30px">${tpHead("bars","O que está sendo negociado",`Situação atual dos ${tpN(neg.length)} negócios criados no período`,"",TPC.blue)}
     <div class="tp-stack" style="height:26px">${sit.filter(s=>s.n).map(s=>`<i title="${s.l}: ${s.n}" style="width:${s.n/Math.max(1,neg.length)*100}%;background:${s.c}"></i>`).join("")}</div>
     <div class="cm-sit">${sit.map(s=>`<div style="--c:${s.c}"><div class="t"><i></i>${s.l}</div><div class="n">${tpN(s.n)}</div><div class="s">${tpPct(neg.length?s.n/neg.length*100:0)} · ${tpBRL(s.o,0)}</div></div>`).join("")}</div>
-    ${outrasNomes.length?tpInfo(`<b>Outras etapas abertas</b>: ${outrasNomes.map(tpEsc).join(", ")}.`):""}</div>
+    ${outrasArr.length?`<div class="tp-sep" style="margin:16px 0 8px"></div><div style="font-size:13.5px;font-weight:800">Outras etapas abertas, por etapa</div><div class="tp-note" style="margin:0 0 6px">Etapas do funil fora das 5 principais, na ordem do Bitrix (somando as duas pipelines)</div>${tpRows(outrasArr)}`:""}</div>
   <div class="cm-g cm-g2" style="margin-top:16px">
     <div class="tp-qc"><h4>Motivos de perda</h4><div class="d">${tpN(per.length)} negócios perdidos no período · ranking dos motivos</div>
       ${per.length?tpRows(motArr)+(outroArr.length?`<div class="tp-sep" style="margin:14px 0 10px"></div><div style="font-size:13.5px;font-weight:800;margin-bottom:2px">Dentro de “Outro”</div><div class="tp-note" style="margin:0 0 6px">Resumo do campo “Observações Desqualificação”, agrupado por tema</div>`+tpRows(outroArr)+tpInfo(`O principal motivo escondido em “Outro” é <b>${tpEsc(outroArr[0].label.toLowerCase())}</b>: ${tpPct(outroArr[0].n/outros.length*100)} desses casos.`):""):'<div class="tp-empty">Nenhum negócio perdido no período.</div>'}</div>
