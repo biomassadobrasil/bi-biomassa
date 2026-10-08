@@ -643,6 +643,17 @@
   .tp-ai2 li b{color:var(--ink)}
   :is(#view-trafego,#view-comercial) .tp-camp{border-radius:20px}
   /* ===== Comercial ===== */
+  .cm-wl{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  @media(max-width:900px){.cm-wl{grid-template-columns:1fr}}
+  .cm-wl>div{border-radius:18px;padding:18px 20px;color:#fff;position:relative;overflow:hidden}
+  .cm-wl .w{background:linear-gradient(140deg,#22c55e,#15803d);box-shadow:0 10px 24px rgba(22,163,74,.25)}
+  .cm-wl .l{background:linear-gradient(140deg,#f87171,#b91c1c);box-shadow:0 10px 24px rgba(220,38,38,.22)}
+  .cm-wl .a{background:color-mix(in srgb,var(--brand-soft) 70%,var(--panel));color:var(--ink);border:1px solid var(--line)}
+  .cm-wl .t{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;opacity:.95}
+  .cm-wl .t svg{width:18px;height:18px}
+  .cm-wl .v{font-size:32px;font-weight:800;letter-spacing:-.03em;margin-top:8px;font-variant-numeric:tabular-nums}
+  .cm-wl .s{font-size:13px;opacity:.9;margin-top:2px}
+  .cm-wl .a .s{color:var(--muted);opacity:1} .cm-wl .a .s b{color:var(--ink)}
   .cm-top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:6px 0 16px}
   .cm-tl{display:flex;gap:16px;align-items:center}
   .cm-logo{width:60px;height:60px;border-radius:17px;background:linear-gradient(150deg,#3b7cf0,#1d4fc4);color:#fff;display:grid;place-items:center;box-shadow:0 10px 24px rgba(37,99,235,.28);flex:0 0 auto}
@@ -719,12 +730,13 @@
   #view-comercial .tp-big .bd{max-width:100%}
   .cm-g{display:grid;gap:16px}.cm-g3{grid-template-columns:repeat(3,1fr)}.cm-g2{grid-template-columns:repeat(2,1fr)}
   @media(max-width:1000px){.cm-g3,.cm-g2{grid-template-columns:1fr}}
-  .cm-sit{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:6px}
+  .cm-sit{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:6px}
   @media(max-width:1000px){.cm-sit{grid-template-columns:repeat(3,1fr)}} @media(max-width:560px){.cm-sit{grid-template-columns:repeat(2,1fr)}}
   .cm-sit>div{border:1px solid var(--line2);border-radius:14px;padding:12px 14px;background:color-mix(in srgb,var(--c) 6%,var(--panel))}
   .cm-sit .t{font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:7px}
   .cm-sit .t i{width:9px;height:9px;border-radius:50%;background:var(--c)}
-  .cm-sit .n{font-size:26px;font-weight:800;letter-spacing:-.02em;margin-top:6px}
+  .cm-sit .n{font-size:21px;font-weight:800;letter-spacing:-.02em;margin-top:6px}
+  .cm-sit .s b{color:var(--ink)}
   .cm-sit .s{font-size:12px;color:var(--muted)}
   .cm-src .r{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(50px,1fr) 64px 92px;gap:12px;align-items:center;padding:8px 0;font-size:13.5px}
   .cm-src .r+.r{border-top:1px solid var(--line2)}
@@ -1594,8 +1606,15 @@ function renderCmDyn(){
   </div>
   <div class="tp-panel" style="margin-top:16px" id="cm-evol"></div>
   <div class="tp-panel" style="margin-top:30px">${tpHead("bars","O que está sendo negociado",`Situação atual dos ${tpN(neg.length)} negócios criados no período`,"",TPC.blue)}
-    <div class="tp-stack" style="height:26px">${sit.filter(s=>s.n).map(s=>`<i title="${s.l}: ${s.n}" style="width:${s.n/Math.max(1,neg.length)*100}%;background:${s.c}"></i>`).join("")}</div>
-    <div class="cm-sit">${sit.map(s=>`<div style="--c:${s.c}"><div class="t"><i></i>${s.l}</div><div class="n">${tpN(s.n)}</div><div class="s">${tpPct(neg.length?s.n/neg.length*100:0)} · ${tpBRL(s.o,0)}</div></div>`).join("")}</div>
+    ${(()=>{const totO=sit.reduce((a,x)=>a+x.o,0)||1, gan=sit.find(x=>x.l==="Ganho")||{n:0,o:0}, per=sit.find(x=>x.l==="Perdido")||{n:0,o:0}, abertas=sit.filter(x=>x.l!=="Ganho"&&x.l!=="Perdido"), abO=abertas.reduce((a,x)=>a+x.o,0), abN=abertas.reduce((a,x)=>a+x.n,0);
+      return `<div class="cm-wl">
+        <div class="w"><div class="t">${tpSvg("check")}Ganho</div><div class="v">${tpBRL(gan.o,0)}</div><div class="s"><b>${tpN(gan.n)}</b> negócio${gan.n===1?"":"s"} · ${tpPct(gan.o/totO*100)} do valor</div></div>
+        <div class="l"><div class="t">${tpSvg("tool")}Perdido</div><div class="v">${tpBRL(per.o,0)}</div><div class="s"><b>${tpN(per.n)}</b> negócio${per.n===1?"":"s"} · ${tpPct(per.o/totO*100)} do valor</div></div>
+        <div class="a"><div class="t">${tpSvg("clock")}Em aberto</div><div class="v">${tpBRL(abO,0)}</div><div class="s"><b>${tpN(abN)}</b> negócio${abN===1?"":"s"} · ${tpPct(abO/totO*100)} do valor</div></div>
+      </div>
+      <div class="tp-stack" style="height:22px;margin-top:18px" title="Proporcional ao valor">${sit.filter(x=>x.o).map(x=>`<i title="${x.l}: ${tpBRL(x.o,0)}" style="width:${x.o/totO*100}%;background:${x.c}"></i>`).join("")}</div>
+      <div class="tp-note" style="margin:-4px 0 10px">Barra: todas as etapas, proporcional ao valor · abaixo, as etapas em aberto</div>
+      <div class="cm-sit">${abertas.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> negócio${x.n===1?"":"s"} · ${tpPct(x.o/totO*100)} do valor</div></div>`).join("")}</div>`;})()}
   </div>
   <div id="cm-origem"></div>
   ${tpHead("tool","Motivos de perda",`${tpN(per.length)} negócios perdidos no período · ranking dos motivos informados no Bitrix`,"",TPC.pink)}
