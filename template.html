@@ -679,8 +679,10 @@
   .cm-evleg>div+div{border-top:1px solid var(--line2)}
   .cm-evleg i{width:11px;height:11px;border-radius:50%} .cm-evleg b{font-weight:800;font-variant-numeric:tabular-nums}
   .cm-evleg .off{opacity:.4}
-  .cm-ods{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-  @media(max-width:1000px){.cm-ods{grid-template-columns:1fr}}
+  .cm-ods{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:1200px){.cm-ods{grid-template-columns:repeat(2,1fr)}} @media(max-width:640px){.cm-ods{grid-template-columns:1fr}}
+  .cm-og .tp-qc svg[viewBox='0 0 120 120']{width:140px!important;height:140px!important}
+  .cm-og .cm-rk{grid-template-columns:24px minmax(0,1.2fr) minmax(40px,.8fr) 96px}
   .cm-od{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:16px 18px;display:flex;gap:14px;align-items:center;border-left:5px solid var(--c)}
   .cm-od .i{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c);flex:0 0 auto}
   .cm-od .i svg{width:22px;height:22px}
@@ -1681,6 +1683,8 @@ function renderCmOrigem(D,r){
   const arr=Object.entries(by).map(([k,o])=>({k,...o,conv:tpDiv(o.w*100,o.n),c:corF[k]})).sort((a,b)=>b.n-a.n);
   const vby={};ven.forEach(x=>{const o=vby[x.src]=vby[x.src]||{n:0,o:0};o.n++;o.o+=x.o;});
   const varr=Object.entries(vby).map(([k,o])=>({k,...o,c:corF[k]})).sort((a,b)=>b.o-a.o);
+  const pby={};D.filter(x=>cmIn(x.pd,R)).forEach(x=>{const o=pby[x.src]=pby[x.src]||{n:0,o:0};o.n++;o.o+=x.pv;});
+  const parr=Object.entries(pby).map(([k,o])=>({k,...o,c:corF[k]})).sort((a,b)=>b.o-a.o), topP=parr[0];
   const head=tpHead("radar","Origem dos negócios",`De onde vêm os negócios (campo “Fonte” do Bitrix) · ${tpPerTxt({p:CMF.p},r)}${filtroTxt?" · "+tpEsc(filtroTxt):""}`,"",TPC.orange);
   if(!neg.length&&!ven.length){el.innerHTML=head+`<div class="tp-panel"><div class="tp-empty">Nenhum negócio criado e nenhuma venda ${CMF.p==="hoje"?"hoje":"no período"}${filtroTxt?" para "+tpEsc(filtroTxt):""}. Tente um período maior ou tire o filtro de vendedor.</div></div>`;return;}
   const top=arr[0], topV=varr[0], topC=arr.filter(x=>x.n>=5&&x.w>0).sort((a,b)=>b.conv-a.conv)[0];
@@ -1689,17 +1693,21 @@ function renderCmOrigem(D,r){
   const top6=arr.slice(0,6), resto=arr.slice(6).reduce((s,x)=>s+x.n,0);
   const parts=top6.map(x=>({l:x.k,n:x.n,c:x.c})).concat(resto?[{l:"Outras fontes",n:resto,c:"#cbd5e1"}]:[]);
   const vmx=Math.max(1,...varr.map(x=>x.o));
+  const rankF=(arr,un)=>{const mx=Math.max(1,...arr.map(x=>x.o));return arr.map((x,i)=>`<div class="cm-rk"><span class="p">${i+1}º</span><span class="nm"><i style="background:${x.c}"></i>${tpEsc(x.k)}</span><span class="rt"><i style="width:${x.o/mx*100}%;background:${x.c}"></i></span><span class="vv">${tpBRL(x.o,0)}<small style="display:block;font-size:10.5px;color:var(--muted);font-weight:600">${tpN(x.n)} ${un}${x.n===1?"":"s"}</small></span></div>`).join("");};
   el.innerHTML=head+`
   <div class="cm-ods">
     ${top?dest("users",top.c,"Fonte que mais traz negócios",tpEsc(top.k),`${tpN(top.n)} negócios · ${tpPct(top.n/neg.length*100)} do total`):""}
+    ${topP?dest("form",topP.c,"Fonte que mais gerou propostas",tpEsc(topP.k),`${tpBRL(topP.o,0)} · ${tpN(topP.n)} proposta${topP.n===1?"":"s"}`):dest("form","#9aa7bd","Fonte que mais gerou propostas","—","nenhuma proposta no período")}
     ${topV?dest("check",topV.c,"Fonte que mais vendeu no período",tpEsc(topV.k),`${tpBRL(topV.o,0)} · ${tpN(topV.n)} venda${topV.n===1?"":"s"}`):dest("check","#9aa7bd","Fonte que mais vendeu no período","—","nenhuma venda no período")}
     ${topC?dest("trend",topC.c,"Melhor conversão (mín. 5 negócios)",tpEsc(topC.k),`${tpPct(topC.conv,1)} viraram venda · ${tpN(topC.w)} de ${tpN(topC.n)}`):dest("trend","#9aa7bd","Melhor conversão (mín. 5 negócios)","—","nenhuma fonte com venda e 5+ negócios")}
   </div>
-  <div class="cm-g cm-g2" style="margin-top:16px">
+  <div class="cm-g cm-g3 cm-og" style="margin-top:16px">
     <div class="tp-qc"><h4>Participação nos negócios</h4><div class="d">Negócios criados no período, por fonte</div>
       ${neg.length?`<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">${cmDonutMulti(parts,neg.length,"negócios")}<div style="flex:1;min-width:200px">${parts.map(p=>`<div class="cm-lg"><i style="background:${p.c}"></i><span>${tpEsc(p.l)}</span><b>${tpPct(p.n/neg.length*100)}</b><small>${tpN(p.n)}</small></div>`).join("")}</div></div>`:'<div class="tp-empty">Nenhum negócio criado no período.</div>'}</div>
+    <div class="tp-qc"><h4>Propostas feitas no período, por fonte</h4><div class="d">Valor da última proposta de cada card (inclui cards criados antes)</div>
+      ${parr.length?rankF(parr,"proposta"):'<div class="tp-empty">Nenhuma proposta no período.</div>'}</div>
     <div class="tp-qc"><h4>Vendas fechadas no período, por fonte</h4><div class="d">Valor vendido no período (inclui cards criados antes)</div>
-      ${varr.length?varr.map((x,i)=>`<div class="cm-rk"><span class="p">${i+1}º</span><span class="nm"><i style="background:${x.c}"></i>${tpEsc(x.k)}</span><span class="rt"><i style="width:${x.o/vmx*100}%;background:${x.c}"></i></span><span class="vv">${tpBRL(x.o,0)}<small style="display:block;font-size:10.5px;color:var(--muted);font-weight:600">${tpN(x.n)} venda${x.n===1?"":"s"}</small></span></div>`).join(""):'<div class="tp-empty">Nenhuma venda no período.</div>'}</div>
+      ${varr.length?rankF(varr,"venda"):'<div class="tp-empty">Nenhuma venda no período.</div>'}</div>
   </div>
   ${arr.length?`<div class="tp-panel" style="margin-top:16px">${tpHead("bars","Desempenho por fonte","Negócios criados no período e o que aconteceu com eles até hoje","",TPC.orange)}
     <div class="tp-tblw"><table class="tp-tbl2"><thead><tr><th>Fonte</th><th>Negócios</th><th>% do total</th><th>Valor</th><th>Com proposta</th><th>Viraram venda</th><th>Conversão</th><th>Valor vendido</th><th>Ticket médio</th></tr></thead><tbody>
