@@ -643,6 +643,29 @@
   .tp-ai2 li b{color:var(--ink)}
   :is(#view-trafego,#view-comercial) .tp-camp{border-radius:20px}
   /* ===== Comercial ===== */
+  .cm-ffs{display:flex;flex-direction:column}
+  .cm-ff{display:grid;grid-template-columns:minmax(150px,210px) minmax(0,1fr) 108px 108px 120px;gap:18px;align-items:center;padding:12px 4px}
+  .cm-ff+.cm-ff{border-top:1px solid var(--line2)}
+  .cm-ff.out{opacity:.8}
+  .cm-ff .nm{display:flex;gap:10px;align-items:center;min-width:0}
+  .cm-ff .nm i{width:11px;height:11px;border-radius:50%;flex:0 0 auto}
+  .cm-ff .nm b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cm-ff .nm small{font-size:11.5px;color:var(--muted)}
+  .cm-ff .fb{display:flex;flex-direction:column;gap:4px}
+  .cm-ff .ln{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:10px;align-items:center}
+  .cm-ff .ln .tr{height:8px;border-radius:999px;background:var(--line2);overflow:hidden}
+  .cm-ff .ln .tr i{display:block;height:100%;border-radius:999px}
+  .cm-ff .ln .q{font-size:11.5px;color:var(--muted);white-space:nowrap}.cm-ff .ln .q b{color:var(--ink);font-size:12.5px}
+  .cm-ff .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px}
+  .cm-ff .nums{display:flex;gap:14px;font-size:11.5px;color:var(--muted);margin-top:6px;flex-wrap:wrap}
+  .cm-ff .nums b{color:var(--ink);font-size:12.5px}
+  .cm-ff .cv,.cm-ff .vd{text-align:right}
+  .cm-ff .cv b{display:block;font-size:17px;font-weight:800;color:#7c3aed}
+  .cm-ff .vd b{display:block;font-size:16px;font-weight:800;color:var(--good)}
+  .cm-ff small{font-size:11px;color:var(--muted)}
+  @media(max-width:900px){.cm-ff{grid-template-columns:1fr 1fr;}.cm-ff .fb{grid-column:1/-1;order:2}}
+  .cm-fft{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:6px;padding-top:12px;font-size:13px;color:var(--muted)}
+  .cm-fft b{color:var(--ink)}
   .cm-wl{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
   @media(max-width:900px){.cm-wl{grid-template-columns:1fr}}
   .cm-wl>div{border-radius:18px;padding:18px 20px;color:#fff;position:relative;overflow:hidden}
@@ -1679,7 +1702,7 @@ function renderCmOrigem(D,r){
   // cor fixa por fonte (pela ordem de volume no histórico inteiro, p/ não trocar de cor a cada filtro)
   const tot={};CM.deals.forEach(x=>{tot[x.src]=(tot[x.src]||0)+1;});
   const corF={};Object.entries(tot).sort((a,b)=>b[1]-a[1]).forEach(([k],i)=>{corF[k]=CM_SRC_COR[i%CM_SRC_COR.length];});
-  const by={};neg.forEach(x=>{const o=by[x.src]=by[x.src]||{n:0,o:0,p:0,w:0,wo:0};o.n++;o.o+=x.o;if(x.np>0)o.p++;if(x.won){o.w++;o.wo+=x.o;}});
+  const by={};neg.forEach(x=>{const o=by[x.src]=by[x.src]||{n:0,o:0,p:0,w:0,wo:0,pw:0};o.n++;o.o+=x.o;if(x.np>0)o.p++;if(x.won){o.w++;o.wo+=x.o;if(x.np>0)o.pw++;}});
   const arr=Object.entries(by).map(([k,o])=>({k,...o,conv:tpDiv(o.w*100,o.n),c:corF[k]})).sort((a,b)=>b.n-a.n);
   const vby={};ven.forEach(x=>{const o=vby[x.src]=vby[x.src]||{n:0,o:0};o.n++;o.o+=x.o;});
   const varr=Object.entries(vby).map(([k,o])=>({k,...o,c:corF[k]})).sort((a,b)=>b.o-a.o);
@@ -1709,13 +1732,29 @@ function renderCmOrigem(D,r){
     <div class="tp-qc"><h4>Vendas fechadas no período, por fonte</h4><div class="d">Valor vendido no período (inclui cards criados antes)</div>
       ${varr.length?rankF(varr,"venda"):'<div class="tp-empty">Nenhuma venda no período.</div>'}</div>
   </div>
-  ${arr.length?`<div class="tp-panel" style="margin-top:16px">${tpHead("bars","Desempenho por fonte","Negócios criados no período e o que aconteceu com eles até hoje","",TPC.orange)}
-    <div class="tp-tblw"><table class="tp-tbl2"><thead><tr><th>Fonte</th><th>Negócios</th><th>% do total</th><th>Valor</th><th>Com proposta</th><th>Viraram venda</th><th>Conversão</th><th>Valor vendido</th><th>Ticket médio</th></tr></thead><tbody>
-    ${arr.map(x=>`<tr class="${x===topC?"best":""}"><td><div class="cn"><i style="background:${x.c}"></i><div>${tpEsc(x.k)}${x===top||x===topC?`<div class="tags">${x===top?"<span>Mais negócios</span>":""}${x===topC?"<span>Melhor conversão</span>":""}</div>`:""}</div></div></td>
-      <td><b>${tpN(x.n)}</b></td><td>${tpPct(x.n/neg.length*100,1)}</td><td>${tpBRL(x.o,0)}</td><td>${tpN(x.p)}</td><td>${tpN(x.w)}</td><td><b>${tpPct(x.conv,1)}</b></td><td>${tpBRL(x.wo,0)}</td><td>${x.w?tpBRL(x.wo/x.w,0):"—"}</td></tr>`).join("")}
-    <tr class="tot"><td>Total</td><td>${tpN(neg.length)}</td><td>100%</td><td>${tpBRL(arr.reduce((s,x)=>s+x.o,0),0)}</td><td>${tpN(arr.reduce((s,x)=>s+x.p,0))}</td><td>${tpN(arr.reduce((s,x)=>s+x.w,0))}</td><td>${tpPct(tpDiv(arr.reduce((s,x)=>s+x.w,0)*100,neg.length),1)}</td><td>${tpBRL(arr.reduce((s,x)=>s+x.wo,0),0)}</td><td>—</td></tr>
-    </tbody></table></div></div>`:""}
+  ${arr.length?(()=>{
+    const TOPN=8, todas=!!CMF.srcAll, vis=todas?arr:arr.slice(0,TOPN), rest=todas?[]:arr.slice(TOPN);
+    const linhas=vis.map(x=>({...x})), rs=rest.reduce((a,x)=>({n:a.n+x.n,p:a.p+x.p,w:a.w+x.w,wo:a.wo+x.wo,pw:a.pw+x.pw}),{n:0,p:0,w:0,wo:0,pw:0});
+    if(rest.length) linhas.push({k:`Outras fontes (${rest.length})`,c:"#94a3b8",...rs,outras:1});
+    const mx=Math.max(1,...linhas.map(x=>x.n));
+    const pc=(a,b,min)=>b>=(min||1)?tpPct(a/b*100,1):"—";
+    const row=x=>`<div class="cm-ff${x.outras?" out":""}">
+      <div class="nm"><i style="background:${x.c}"></i><div><b>${tpEsc(x.k)}</b><small>${tpPct(x.n/neg.length*100,1)} dos negócios</small></div></div>
+      <div class="fb">${[["n","negócios",.28],["p","com proposta",.6],["w",x.w===1?"venda":"vendas",1]].map(([k,l,op])=>`<div class="ln"><span class="tr"><i style="width:${x[k]/mx*100}%;background:${x.c};opacity:${op}"></i></span><span class="q"><b>${tpN(x[k])}</b> ${l}</span></div>`).join("")}</div>
+      <div class="cv"><b>${pc(x.p,x.n,3)}</b><small>negócio → proposta</small></div>
+      <div class="cv"><b>${pc(x.pw,x.p,2)}</b><small>proposta → venda</small></div>
+      <div class="vd"><b>${tpBRL(x.wo,0)}</b><small>vendido</small></div>
+    </div>`;
+    const T=arr.reduce((a,x)=>({n:a.n+x.n,p:a.p+x.p,w:a.w+x.w,wo:a.wo+x.wo,pw:a.pw+x.pw}),{n:0,p:0,w:0,wo:0,pw:0});
+    return `<div class="tp-panel" style="margin-top:16px">${tpHead("bars","Funil por fonte","Negócios criados no período e quanto deles virou proposta e venda (até hoje)",
+        `<div class="tp-legend"><span><i style="background:#64748b;opacity:.28"></i>Negócios</span><span><i style="background:#64748b;opacity:.6"></i>Com proposta</span><span><i style="background:#64748b"></i>Vendas</span></div>`,TPC.orange)}
+      <div class="cm-ffs">${linhas.map(row).join("")}</div>
+      <div class="cm-fft"><span>Total: <b>${tpN(T.n)}</b> negócios · <b>${tpN(T.p)}</b> com proposta (${pc(T.p,T.n)}) · <b>${tpN(T.w)}</b> vendas · proposta → venda ${pc(T.pw,T.p)} · <b>${tpBRL(T.wo,0)}</b> vendido</span>
+        ${arr.length>TOPN?`<button class="tp-btn" id="cm-src-all">${todas?"Mostrar só as 8 maiores":`Ver todas as ${arr.length} fontes`}</button>`:""}</div>
+      ${tpInfo("Proposta → venda considera só as vendas que tiveram proposta gerada no Bitrix (parte das vendas do LightWall entra pela planilha, sem proposta). Conversões só aparecem com volume mínimo (3 negócios / 2 propostas). Vendas aqui são dos negócios criados no período; o ranking “Vendas fechadas no período” acima inclui cards criados antes.")}
+    </div>`;})():""}
 `;
+  const ba=document.getElementById("cm-src-all"); if(ba) ba.onclick=()=>{CMF.srcAll=!CMF.srcAll;renderCmOrigem(D,r);};
 }
 
 function renderCmVend(){
