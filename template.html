@@ -647,7 +647,7 @@
   #view-comercial .tp-big .bd{max-width:100%}
   .cm-g{display:grid;gap:16px}.cm-g3{grid-template-columns:repeat(3,1fr)}.cm-g2{grid-template-columns:repeat(2,1fr)}
   @media(max-width:1000px){.cm-g3,.cm-g2{grid-template-columns:1fr}}
-  .cm-sit{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:6px}
+  .cm-sit{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:6px}
   @media(max-width:1000px){.cm-sit{grid-template-columns:repeat(3,1fr)}} @media(max-width:560px){.cm-sit{grid-template-columns:repeat(2,1fr)}}
   .cm-sit>div{border:1px solid var(--line2);border-radius:14px;padding:12px 14px;background:color-mix(in srgb,var(--c) 6%,var(--panel))}
   .cm-sit .t{font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:7px}
@@ -1422,7 +1422,7 @@ function renderTpGoogleDyn(){
 // Conversões usam a "safra": negócios criados no período e o que aconteceu com eles até hoje.
 let CM=null, CM_EM=0;
 const CMF={p:"mes",ini:"",fim:"",v:"",c:"",vp:"mes",vini:"",vfim:""};
-const CM_G=[["negociacao","Em negociação","#2563eb"],["semretorno","Sem retorno","#f59e0b"],["renutricao","Renutrição","#7c3aed"],["ganho","Ganhos","#16a34a"],["perdido","Perdidos","#dc2626"],["outras","Outras etapas abertas","#9aa7bd"]];
+const CM_G_OLD=[["negociacao","Em negociação","#2563eb"],["semretorno","Sem retorno","#f59e0b"],["renutricao","Renutrição","#7c3aed"],["ganho","Ganhos","#16a34a"],["perdido","Perdidos","#dc2626"],["outras","Outras etapas abertas","#9aa7bd"]];
 const CM_PER=[["hoje","Hoje"],["ontem","Ontem"],["7d","7 dias"],["mes","Este mês"],["mesant","Mês anterior"],["custom","Personalizado"]];
 function abrirComercial(){
   const box=document.getElementById("view-comercial");
@@ -1484,12 +1484,13 @@ function renderCmDyn(){
     <div class="bd"><div class="lb">${o.l}</div><div class="vl">${o.v}</div><div class="sub">${o.sub}</div><div class="cmp">${TP_NOCMP?"<span>dia em andamento</span>":tpDelta(o.cur,o.prev)+"<span>valor vs. período anterior</span>"}</div></div><div class="spark">${o.spark}</div></div>`;
   const ring=(t,p,a,num,lbl,b,cur,prev,c)=>`<div class="tp-qc"><h4>${t}</h4><div class="d">${a}</div>
     <div class="tp-donut">${tpDonut(p||0,c,"conversão")}<div><div class="bn">${tpN(num)} ${TP_NOCMP?"":tpDelta(cur,prev)}</div><div class="bl">${lbl}</div><div class="bs">${b}</div></div></div></div>`;
-  // situação atual dos negócios do período
-  const sit=CM_G.map(([g,l,c])=>{const a=neg.filter(x=>x.g===g);return {g,l,c,n:a.length,o:sum(a,"o")};});
-  // detalhe das "outras etapas" (nomes iguais nas duas pipelines são somados)
-  const ordE=[];Object.values(CM.etapas).forEach(l=>l.forEach(s=>{const k=s.nome.toLowerCase();if(s.g==="outras"&&!ordE.some(e=>e.toLowerCase()===k))ordE.push(s.nome);}));
-  const nomeE=x=>((CM.etapas[x.c]||[]).find(s=>s.id===x.st)||{}).nome||x.st;
-  const outrasArr=ordE.map(e=>({label:e,n:neg.filter(x=>x.g==="outras"&&nomeE(x).toLowerCase()===e.toLowerCase()).length,color:"#9aa7bd"})).filter(x=>x.n);
+  // situação atual dos negócios do período: TODAS as etapas, na ordem do funil (nomes iguais nas 2 pipelines somam)
+  const canE=st=>st.g==="ganho"?"Ganho":st.g==="perdido"?"Perdido":st.nome;   // "Negócio Ganho" (Vendas Internas) = "Ganho" (LightWall)
+  const ordE=[];Object.values(CM.etapas).forEach(l=>l.forEach(st=>{const n=canE(st);if(!ordE.some(e=>e.toLowerCase()===n.toLowerCase()))ordE.push(n);}));
+  const nomeE=x=>{const st=(CM.etapas[x.c]||[]).find(st=>st.id===x.st);return st?canE(st):x.st;};
+  const corE=n=>{const t=n.toLowerCase();return t.includes("ganho")?"#16a34a":t.includes("perdido")?"#dc2626":t.includes("negocia")?"#2563eb":t.includes("sem retorno")?"#f59e0b":t.includes("renutri")?"#7c3aed":
+    t.includes("novo")?"#64748b":t.includes("tentativa")?"#0ea5e9":t.includes("apresenta")?"#6366f1":t.includes("proposta")?"#3b82f6":t.includes("obra")?"#14b8a6":"#9aa7bd";};
+  const sit=ordE.map(e=>{const a=neg.filter(x=>nomeE(x).toLowerCase()===e.toLowerCase());return {l:e,c:corE(e),n:a.length,o:sum(a,"o")};});
   // motivos de perda (perdidos no período)
   const per=D.filter(x=>cmIn(x.lost,R)), mot={};per.forEach(x=>{const k=x.mot||"Sem motivo informado";mot[k]=(mot[k]||0)+1;});
   const outros=per.filter(x=>x.mot==="Outro"), om={};outros.forEach(x=>{const k=x.mo||"Sem descrição";om[k]=(om[k]||0)+1;});
@@ -1514,7 +1515,7 @@ function renderCmDyn(){
   <div class="tp-panel" style="margin-top:30px">${tpHead("bars","O que está sendo negociado",`Situação atual dos ${tpN(neg.length)} negócios criados no período`,"",TPC.blue)}
     <div class="tp-stack" style="height:26px">${sit.filter(s=>s.n).map(s=>`<i title="${s.l}: ${s.n}" style="width:${s.n/Math.max(1,neg.length)*100}%;background:${s.c}"></i>`).join("")}</div>
     <div class="cm-sit">${sit.map(s=>`<div style="--c:${s.c}"><div class="t"><i></i>${s.l}</div><div class="n">${tpN(s.n)}</div><div class="s">${tpPct(neg.length?s.n/neg.length*100:0)} · ${tpBRL(s.o,0)}</div></div>`).join("")}</div>
-    ${outrasArr.length?`<div class="tp-sep" style="margin:16px 0 8px"></div><div style="font-size:13.5px;font-weight:800">Outras etapas abertas, por etapa</div><div class="tp-note" style="margin:0 0 6px">Etapas do funil fora das 5 principais, na ordem do Bitrix (somando as duas pipelines)</div>${tpRows(outrasArr)}`:""}</div>
+  </div>
   <div class="cm-g cm-g2" style="margin-top:16px">
     <div class="tp-qc"><h4>Motivos de perda</h4><div class="d">${tpN(per.length)} negócios perdidos no período · ranking dos motivos</div>
       ${per.length?tpRows(motArr)+(outroArr.length?`<div class="tp-sep" style="margin:14px 0 10px"></div><div style="font-size:13.5px;font-weight:800;margin-bottom:2px">Dentro de “Outro”</div><div class="tp-note" style="margin:0 0 6px">Resumo do campo “Observações Desqualificação”, agrupado por tema</div>`+tpRows(outroArr)+tpInfo(`O principal motivo escondido em “Outro” é <b>${tpEsc(outroArr[0].label.toLowerCase())}</b>: ${tpPct(outroArr[0].n/outros.length*100)} desses casos.`):""):'<div class="tp-empty">Nenhum negócio perdido no período.</div>'}</div>
