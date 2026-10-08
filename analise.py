@@ -66,8 +66,9 @@ def resumo(dados):
                      "top_palavras_30d": c["palavras"][:12]}
             for nome, (ini, fim) in (("ultimos_7d", r7), ("7d_anteriores", p7), ("ultimos_30d", r30)):
                 s = _soma(g["diario"], ini, fim, c["id"])
-                linha[nome] = {"investimento": round(s["g"], 2), "conversoes": round(s["cv"], 1), "whatsapp": round(s["w"], 1),
-                               "formulario": round(s["f"], 1), "cpl": _div(s["g"], s["cv"]), "impressoes": s["i"],
+                cv = round(s["cv"])   # Google divide conversões entre campanhas; painel usa número cheio
+                linha[nome] = {"investimento": round(s["g"], 2), "conversoes": cv, "whatsapp": round(s["w"]),
+                               "formulario": round(s["f"]), "cpl": _div(s["g"], cv), "impressoes": s["i"],
                                "cliques": s["k"], "ctr_pct": _div(100 * s["k"], s["i"]), "cpc": _div(s["g"], s["k"])}
             camps.append(linha)
         termos = (g.get("termos") or {}).get("30d", [])

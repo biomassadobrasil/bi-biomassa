@@ -386,7 +386,12 @@
   #view-trafego{--meta:#1877f2;--ig:#d62976;--gg:#1a73e8;--b2b:var(--brand);--pf:#9aa7bd}
   .tp-nav{position:sticky;top:0;z-index:35;display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:10px 0 12px;
     background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px)}
-  .tp-nav a{font-size:13px;font-weight:700;color:var(--muted);text-decoration:none;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel)}
+  .tp-nav a{font-size:13px;font-weight:700;color:var(--muted);text-decoration:none;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);display:inline-flex;align-items:center;gap:8px}
+  .tp-nav a .lg{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;flex:0 0 auto}
+  .tp-nav a .lg svg{width:14px;height:14px}
+  .tp-nav a .lg.meta{background:linear-gradient(135deg,#0866ff,#7b3fe4 55%,#d62976)}
+  .tp-nav a .lg.google{background:#fff;border:1px solid var(--line)}
+  .tp-nav a .lg.geral{background:var(--brand)}
   .tp-nav a:hover{color:var(--brand);border-color:var(--brand)}
   .tp-nav .tp-upd{margin-left:auto;font-size:12px;color:var(--muted)}
   .tp-sec{scroll-margin-top:64px}
@@ -471,6 +476,7 @@
   .tp-per{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600}
   /* KPIs */
   .tp-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+  @media(min-width:900px){.tp-kpis.k4{grid-template-columns:repeat(4,1fr)}}
   .tp-kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
   .tp-kpi .l{font-size:12px;color:var(--muted);font-weight:650;display:flex;align-items:center;gap:7px}
   .tp-kpi .l svg{width:15px;height:15px;color:var(--brand)}
@@ -551,8 +557,7 @@
   .tp-big .cmp{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:12px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
   .tp-big .cmp .tp-delta{font-size:12px;padding:3px 9px}
   .tp-big .sub{font-size:12.5px;color:var(--muted);margin-top:6px}
-  .tp-big .spark{position:absolute;right:0;bottom:0;width:44%;height:42%;pointer-events:none;opacity:.9;
-    -webkit-mask-image:linear-gradient(to right,transparent,#000 40%);mask-image:linear-gradient(to right,transparent,#000 40%)}
+  .tp-big .spark{position:absolute;right:18px;bottom:18px;width:min(30%,150px);height:44px;pointer-events:none;opacity:.85}
   .tp-big .spark svg{width:100%;height:100%;display:block}
   .tp-big.hl{background:radial-gradient(120% 140% at 100% 0%,#2f63c4 0%,transparent 55%),linear-gradient(150deg,#22489a,#142f66);border-color:transparent;color:#fff}
   .tp-big.hl .lb,.tp-big.hl .vl{color:#fff}
@@ -1444,6 +1449,8 @@ function tpRange(f,hoje){
   let ini=f.ini||tpAdd(hoje,-29), fim=f.fim||hoje; if(ini>fim)[ini,fim]=[fim,ini];
   const n=tpDays(ini,fim); return {ini,fim,pini:tpAdd(ini,-n),pfim:tpAdd(ini,-1),key:null};
 }
+// Google divide conversões (atribuição baseada em dados) -> painel mostra número cheio
+const tpRG=t=>{t.cv=Math.round(t.cv);t.w=Math.round(t.w);t.f=Math.round(t.f);return t;};
 function tpSum(rows,ini,fim,camp){
   const t={g:0,i:0,k:0,l:0,cv:0,w:0,f:0};
   for(const r of rows||[]){ if(r.d<ini||r.d>fim||(camp&&r.c!==camp)) continue; for(const k in t) t[k]+=r[k]||0; }
@@ -1532,7 +1539,7 @@ function tpWarn(B,nome){
 function renderTrafego(){
   const box=document.getElementById("view-trafego"), M=TP.meta||{}, G=TP.google||{};
   box.innerHTML=`
-  <nav class="tp-nav"><a href="#tp-geral">Resumo geral</a><a href="#tp-meta">Meta Ads</a><a href="#tp-google">Google Ads</a></nav>
+  <nav class="tp-nav"><a href="#tp-geral"><span class="lg geral">${TP_LOGO.geral}</span>Resumo geral</a><a href="#tp-meta"><span class="lg meta">${TP_LOGO.meta}</span>Meta Ads</a><a href="#tp-google"><span class="lg google">${TP_LOGO.google}</span>Google Ads</a></nav>
   <section id="tp-geral" class="tp-sec"></section>
   <section id="tp-meta" class="tp-sec"></section>
   <section id="tp-google" class="tp-sec"></section>`;
@@ -1578,7 +1585,7 @@ function renderTpGeral(){
   const rm=mOk?tpRange(f,M.hoje):null, rg=G.hoje?tpRange(f,G.hoje):null;
   const z={g:0,l:0,cv:0};
   const mc=rm?tpSum(M.diario,rm.ini,rm.fim):z, mp=rm?tpSum(M.diario,rm.pini,rm.pfim):z;
-  const gc=gOk?tpSum(G.diario,rg.ini,rg.fim):z, gp=gOk?tpSum(G.diario,rg.pini,rg.pfim):z;
+  const gc=gOk?tpRG(tpSum(G.diario,rg.ini,rg.fim)):z, gp=gOk?tpRG(tpSum(G.diario,rg.pini,rg.pfim)):z;
   const L=mc.l+gc.cv, Lp=mp.l+gp.cv, I=mc.g+gc.g, Ip=mp.g+gp.g, C=tpDiv(I,L), Cp=tpDiv(Ip,Lp);
   // mini-gráficos: dias do período (mín. 14 para ter tendência)
   const ref=rm||rg, fim=ref?ref.fim:"", nd=ref?Math.max(14,tpDays(ref.ini,ref.fim)):0, dias=[];
@@ -1601,20 +1608,20 @@ function renderTpGeral(){
       <span class="tp-live"><i></i>Dados atualizados às ${tpHora(TP.gerado_em).slice(-5)} · de hora em hora</span></div></div>
   ${gOk?"":`<div class="tp-note" style="color:var(--bad);font-weight:650">⚠ Google Ads fora do resumo: a plataforma não está atualizando (veja a seção do Google).</div>`}
   <div class="tp-bigs">
-    ${big({hl:1,ic:"users",l:"Leads totais",v:tpN(L),sub:gOk?`${tpN(mc.l)} Meta · ${tpN1(gc.cv)} Google`:"só Meta",cmp:cmp(L,Lp),spark:tpSpark(sL,"rgba(255,255,255,.75)",true)})}
+    ${big({hl:1,ic:"users",l:"Leads totais",v:tpN(L),sub:gOk?`${tpN(mc.l)} Meta · ${tpN(gc.cv)} Google`:"só Meta",cmp:cmp(L,Lp),spark:tpSpark(sL,"rgba(255,255,255,.75)",true)})}
     ${big({ic:"money",ic2:"ic-blue",l:"Investimento total",v:tpBRL(I),sub:gOk?`${tpBRL(mc.g,0)} Meta · ${tpBRL(gc.g,0)} Google`:"",cmp:cmp(I,Ip),spark:tpSpark(sI,good(I,Ip))})}
     ${big({ic:"tag",ic2:"ic-green",l:"Custo por lead médio",v:tpBRL(C),sub:gOk?`Meta ${tpBRL(tpDiv(mc.g,mc.l))} · Google ${tpBRL(tpDiv(gc.g,gc.cv))}`:"",cmp:cmp(C,Cp,true),spark:tpSpark(sC,good(C,Cp,true))})}
   </div>
   ${gOk?`<div class="tp-div">
     <div class="tp-div-h"><div><h4>Divisão entre plataformas</h4><div class="d">Quanto cada uma recebe de verba e entrega de leads (${TPG_LBL[f.p].toLowerCase()})</div></div>
-      <div class="tp-div-leg"><span><i style="background:var(--meta)"></i>Meta Ads</span><span><i style="background:#34a853"></i>Google Ads</span></div></div>
+      <div class="tp-div-leg tp-nav" style="position:static;padding:0;background:none;backdrop-filter:none"><a href="#tp-meta"><span class="lg meta">${TP_LOGO.meta}</span>Meta Ads</a><a href="#tp-google"><span class="lg google">${TP_LOGO.google}</span>Google Ads</a></div></div>
     <div class="tp-div-grid">
       <div class="tp-div-box"><div class="top"><b>Investimento</b><span>Total: <b>${tpBRL(I)}</b></span></div>
         <div class="tp-div-bar"><i style="width:${pct(mc.g,gc.g)}%;background:var(--meta)"></i><i style="width:${pct(gc.g,mc.g)}%;background:#34a853"></i></div>
         <div class="tp-div-cols">${col("Meta Ads","var(--meta)",pct(mc.g,gc.g),tpBRL(mc.g))}${col("Google Ads","#34a853",pct(gc.g,mc.g),tpBRL(gc.g))}</div></div>
       <div class="tp-div-box"><div class="top"><b>Leads</b><span>Total: <b>${tpN(L)}</b></span></div>
         <div class="tp-div-bar"><i style="width:${pct(mc.l,gc.cv)}%;background:var(--meta)"></i><i style="width:${pct(gc.cv,mc.l)}%;background:#34a853"></i></div>
-        <div class="tp-div-cols">${col("Meta Ads","var(--meta)",pct(mc.l,gc.cv),tpN(mc.l)+" leads")}${col("Google Ads","#34a853",pct(gc.cv,mc.l),tpN1(gc.cv)+" leads")}</div></div>
+        <div class="tp-div-cols">${col("Meta Ads","var(--meta)",pct(mc.l,gc.cv),tpN(mc.l)+" leads")}${col("Google Ads","#34a853",pct(gc.cv,mc.l),tpN(gc.cv)+" leads")}</div></div>
     </div></div>`:""}`;
   document.getElementById("tp-geral-per").onchange=e=>{TPF.geral.p=e.target.value;renderTpGeral();};
 }
@@ -1705,6 +1712,11 @@ function renderTpMetaDyn(){
   const ordM=["Até 100 m²","100 a 500 m²","500 a 1.000 m²","Acima de 1.000 m²"];
   const metr=ordM.map(k=>({label:k,n:L.filter(x=>x.m===k).length,color:"#0ea5a4"}));
   const metrB=ordM.map(k=>({label:k,n:empresas.filter(x=>x.m===k).length,color:"#0ea5a4"}));
+  const ordO=["Obra em andamento","Começa em 30 dias","Começa em 60 dias","Começa em 90 dias+","Sem obra no momento"];
+  const obraUlt=M.leads.filter(x=>x.ob&&(!camp||x.c===camp)).map(x=>x.d).sort().pop();
+  const obraResp=L.filter(x=>x.ob),obraAnd=obraResp.filter(x=>x.ob==="Obra em andamento").length;
+  const obraLogo=obraResp.filter(x=>x.ob==="Começa em 30 dias"||x.ob==="Começa em 60 dias").length;
+  const obra=ordO.map(k=>({label:k,n:obraResp.filter(x=>x.ob===k).length,color:k==="Sem obra no momento"?"var(--pf)":"#f59e0b"}));
   document.getElementById("tp-meta-q").innerHTML=`
     <div class="tp-card"><h4>Perfil</h4><div class="d">Resposta a "Qual é o seu perfil?" · azul = B2B</div>
       <div class="tp-ring">${tpRing(L.length?b2b/L.length*100:0,"var(--b2b)")}<div class="t"><b>${tpN(b2b)}</b> de ${tpN(L.length)} leads são B2B<br>Pessoa Física: ${tpN(L.filter(x=>x.pf==="Pessoa Física").length)}</div></div>
@@ -1715,7 +1727,11 @@ function renderTpMetaDyn(){
       <div class="tp-split">${plat.map(x=>`<i style="width:${L.length?x.n/L.length*100:0}%;background:${x.k==="Instagram"?"var(--ig)":"var(--meta)"}"></i>`).join("")}</div>
       <div class="tp-src">${plat.map(x=>`<div><div class="nm"><i style="background:${x.k==="Instagram"?"var(--ig)":"var(--meta)"}"></i>${x.k}</div><div class="big">${tpN(x.n)}</div><div class="sm">${tpPct(L.length?x.n/L.length*100:0)} dos leads<br><b style="color:var(--ink)">${tpPct(x.n?x.b/x.n*100:0)} B2B</b> (${tpN(x.b)})</div></div>`).join("")}</div></div>
     <div class="tp-card"><h4>Tamanho da obra</h4><div class="d">Metragem de alvenaria informada · todos os leads / só B2B</div>
-      ${tpHBars(metr)}<div class="tp-note" style="margin:10px 0 4px;font-weight:700">Só B2B</div>${tpHBars(metrB)}</div>`;
+      ${tpHBars(metr)}<div class="tp-note" style="margin:10px 0 4px;font-weight:700">Só B2B</div>${tpHBars(metrB)}</div>
+    <div class="tp-card"><h4>Obra em andamento</h4><div class="d">Resposta a "Tem obra em andamento?"</div>
+      ${obraResp.length?`<div class="tp-ring">${tpRing(obraResp.length?obraAnd/obraResp.length*100:0,"#f59e0b")}<div class="t"><b>${tpN(obraAnd)}</b> de ${tpN(obraResp.length)} que responderam já têm obra em andamento<br>${tpN(obraLogo)} começam em até 60 dias</div></div>
+      ${tpHBars(obra)}<div class="tp-note">${tpN(obraResp.length)} de ${tpN(L.length)} leads responderam (a pergunta não aparece em todos os formulários). Só B2B: ${tpN(obraResp.filter(x=>x.b2b&&x.ob==="Obra em andamento").length)} com obra em andamento.</div>`
+      :`<div class="tp-empty">Ninguém respondeu essa pergunta no período.${obraUlt?` A última resposta foi em <b>${tpBrY(obraUlt)}</b>: parece que a pergunta saiu dos formulários atuais. Use o período Personalizado para ver as respostas antigas.`:""}</div>`}</div>`;
   // tabela por campanha
   const rows=C.map(c=>{const t=tpSum(M.diario,r.ini,r.fim,c.id), lc=M.leads.filter(x=>x.c===c.id&&x.d>=r.ini&&x.d<=r.fim), b=lc.filter(x=>x.b2b).length;
     return {c,t,n:lc.length,b,cpl:tpDiv(t.g,t.l),cplb:tpDiv(t.g,b),reach:r.key&&M.alcance[r.key]?M.alcance[r.key].camp[c.id]:null};});
@@ -1769,7 +1785,7 @@ function renderTpGoogle(){
       <div class="tp-body g"><div class="tp-pub">
           <div class="row"><span class="k">Regiões</span>${tpTags(c.locais,10)}</div>
           <div class="tp-seg"><div class="lbl">Palavras-chave (${c.palavras.length}) · mais clicadas em 30 dias primeiro</div>
-            <div class="tp-kw">${c.palavras.slice(0,14).map(k=>`<span title="${tpN(k.cl)} cliques · ${tpN1(k.cv)} conv. · ${tpBRL(k.g)} em 30 dias${k.qs?" · índice de qualidade "+k.qs+"/10":""}">${tpEsc(k.t)}<i>${tpEsc(k.m||"")}</i></span>`).join("")}${c.palavras.length>14?`<span class="tp-tag more" data-more='${tpEsc(JSON.stringify(c.palavras.slice(14).map(k=>k.t)))}'>+${c.palavras.length-14}</span>`:""}</div></div>
+            <div class="tp-kw">${c.palavras.slice(0,14).map(k=>`<span title="${tpN(k.cl)} cliques · ${tpN(k.cv)} conv. · ${tpBRL(k.g)} em 30 dias${k.qs?" · índice de qualidade "+k.qs+"/10":""}">${tpEsc(k.t)}<i>${tpEsc(k.m||"")}</i></span>`).join("")}${c.palavras.length>14?`<span class="tp-tag more" data-more='${tpEsc(JSON.stringify(c.palavras.slice(14).map(k=>k.t)))}'>+${c.palavras.length-14}</span>`:""}</div></div>
           <div class="row" style="margin-top:8px"><span class="k">Negativas</span><span>${tpN(c.negativas)} palavras negativas</span></div>
         </div>
         <div>${tpGoogleAd(c.anuncios[0],c.anuncios.length)}</div></div>
@@ -1785,13 +1801,13 @@ function renderTpGoogleDyn(){
   const camp=f.camp||null, C=G.campanhas;
   TP_NOCMP=f.p==="hoje";
   document.getElementById("tp-google-per").textContent=f.p==="hoje"?`${tpBr(r.ini)} · dia em andamento (sem comparação)`:`${tpBr(r.ini)}${r.fim!==r.ini?" → "+tpBr(r.fim):""} · comparado com ${tpBr(r.pini)}${r.pfim!==r.pini?" → "+tpBr(r.pfim):""}`;
-  const s=tpSum(G.diario,r.ini,r.fim,camp), p=tpSum(G.diario,r.pini,r.pfim,camp);
+  const s=tpRG(tpSum(G.diario,r.ini,r.fim,camp)), p=tpRG(tpSum(G.diario,r.pini,r.pfim,camp));
   const outros=Math.max(0,s.cv-s.w-s.f);
   el.innerHTML=`
-  <div class="tp-kpis">
-    ${tpKpi({ic:"users",l:"Conversões",v:tpN1(s.cv),d:tpDelta(s.cv,p.cv),hl:1,f:outros>=0.5?`${tpN1(outros)} de outras ações`:""})}
-    ${tpKpi({ic:"wpp",l:"WhatsApp",v:tpN1(s.w),d:tpDelta(s.w,p.w),f:s.cv?tpPct(s.w/s.cv*100)+" das conversões":""})}
-    ${tpKpi({ic:"form",l:"Formulário",v:tpN1(s.f),d:tpDelta(s.f,p.f),f:s.cv?tpPct(s.f/s.cv*100)+" das conversões":""})}
+  <div class="tp-kpis k4">
+    ${tpKpi({ic:"users",l:"Conversões",v:tpN(s.cv),d:tpDelta(s.cv,p.cv),hl:1,f:outros>=1?`${tpN(outros)} de outras ações`:`<span title="O Google às vezes divide uma conversão entre campanhas (atribuição baseada em dados). Aqui o total é arredondado.">número arredondado ⓘ</span>`})}
+    ${tpKpi({ic:"wpp",l:"WhatsApp",v:tpN(s.w),d:tpDelta(s.w,p.w),f:s.cv?tpPct(s.w/s.cv*100)+" das conversões":""})}
+    ${tpKpi({ic:"form",l:"Formulário",v:tpN(s.f),d:tpDelta(s.f,p.f),f:s.cv?tpPct(s.f/s.cv*100)+" das conversões":""})}
     ${tpKpi({ic:"money",l:"Investimento",v:tpBRLc(s.g),d:tpDelta(s.g,p.g)})}
     ${tpKpi({ic:"tag",l:"Custo por lead",v:tpBRL(tpDiv(s.g,s.cv)),d:tpDelta(tpDiv(s.g,s.cv),tpDiv(p.g,p.cv),true)})}
     ${tpKpi({ic:"eye",l:"Impressões",v:tpN(s.i),d:tpDelta(s.i,p.i)})}
@@ -1810,14 +1826,14 @@ function renderTpGoogleDyn(){
   const nomeC=id=>(C.find(c=>c.id===id)||{}).nome||"";
   const termos=((G.termos||{})[tk]||[]).filter(t=>!camp||t.c===camp).slice(0,25);
   document.getElementById("tp-google-termos").innerHTML=termos.length?`<table class="tp-tbl"><thead><tr><th>O que a pessoa pesquisou</th><th>Campanha</th><th>Cliques</th><th>Impressões</th><th>Conversões</th><th>Custo</th></tr></thead><tbody>
-    ${termos.map(t=>`<tr><td>${tpEsc(t.t)}${t.cv===0&&t.g>=10?'<span class="tp-crown" style="color:var(--bad);background:var(--bad-soft)">gasto sem conversão</span>':""}</td><td style="text-align:right;white-space:normal;font-size:11.5px;color:var(--muted)">${tpEsc(nomeC(t.c))}</td><td>${tpN(t.k)}</td><td>${tpN(t.i)}</td><td>${tpN1(t.cv)}</td><td>${tpBRL(t.g)}</td></tr>`).join("")}
+    ${termos.map(t=>`<tr><td>${tpEsc(t.t)}${t.cv===0&&t.g>=10?'<span class="tp-crown" style="color:var(--bad);background:var(--bad-soft)">gasto sem conversão</span>':""}</td><td style="text-align:right;white-space:normal;font-size:11.5px;color:var(--muted)">${tpEsc(nomeC(t.c))}</td><td>${tpN(t.k)}</td><td>${tpN(t.i)}</td><td>${tpN(t.cv)}</td><td>${tpBRL(t.g)}</td></tr>`).join("")}
     </tbody></table><div class="tp-note">Mostrando os termos dos últimos ${tk==="7d"?"7":"30"} dias (o Google não libera termos por dia). Termos marcados gastaram R$ 10+ sem converter: candidatos a palavra negativa.</div>`:'<div class="tp-empty">Sem termos de pesquisa no período.</div>';
-  const rows=C.map(c=>{const t=tpSum(G.diario,r.ini,r.fim,c.id);return {c,t,cpl:tpDiv(t.g,t.cv)};});
+  const rows=C.map(c=>{const t=tpRG(tpSum(G.diario,r.ini,r.fim,c.id));return {c,t,cpl:tpDiv(t.g,t.cv)};});
   const ok=rows.filter(x=>x.cpl!=null), best=ok.length>1?ok.reduce((a,b)=>a.cpl<=b.cpl?a:b):null;
-  const T=tpSum(G.diario,r.ini,r.fim);
+  const T=tpRG(tpSum(G.diario,r.ini,r.fim));
   document.getElementById("tp-google-tbl").innerHTML=`<table class="tp-tbl"><thead><tr><th>Campanha</th><th>Investimento</th><th>Conversões</th><th>WhatsApp</th><th>Formulário</th><th>Custo/lead</th><th>Cliques</th><th>CTR</th><th>CPC</th></tr></thead><tbody>
-    ${rows.map(x=>`<tr class="${x===best?"best":""}"><td>${tpEsc(x.c.nome)}${x===best?'<span class="tp-crown">menor custo/lead</span>':""}</td><td>${tpBRL(x.t.g)}</td><td>${tpN1(x.t.cv)}</td><td>${tpN1(x.t.w)}</td><td>${tpN1(x.t.f)}</td><td><b>${tpBRL(x.cpl)}</b></td><td>${tpN(x.t.k)}</td><td>${tpPct(tpDiv(x.t.k,x.t.i)*100,2)}</td><td>${tpBRL(tpDiv(x.t.g,x.t.k))}</td></tr>`).join("")}
-    <tr class="tr-tot"><td>Total</td><td>${tpBRL(T.g)}</td><td>${tpN1(T.cv)}</td><td>${tpN1(T.w)}</td><td>${tpN1(T.f)}</td><td>${tpBRL(tpDiv(T.g,T.cv))}</td><td>${tpN(T.k)}</td><td>${tpPct(tpDiv(T.k,T.i)*100,2)}</td><td>${tpBRL(tpDiv(T.g,T.k))}</td></tr></tbody></table>`;
+    ${rows.map(x=>`<tr class="${x===best?"best":""}"><td>${tpEsc(x.c.nome)}${x===best?'<span class="tp-crown">menor custo/lead</span>':""}</td><td>${tpBRL(x.t.g)}</td><td>${tpN(x.t.cv)}</td><td>${tpN(x.t.w)}</td><td>${tpN(x.t.f)}</td><td><b>${tpBRL(x.cpl)}</b></td><td>${tpN(x.t.k)}</td><td>${tpPct(tpDiv(x.t.k,x.t.i)*100,2)}</td><td>${tpBRL(tpDiv(x.t.g,x.t.k))}</td></tr>`).join("")}
+    <tr class="tr-tot"><td>Total</td><td>${tpBRL(T.g)}</td><td>${tpN(T.cv)}</td><td>${tpN(T.w)}</td><td>${tpN(T.f)}</td><td>${tpBRL(tpDiv(T.g,T.cv))}</td><td>${tpN(T.k)}</td><td>${tpPct(tpDiv(T.k,T.i)*100,2)}</td><td>${tpBRL(tpDiv(T.g,T.k))}</td></tr></tbody></table>`;
   TP_NOCMP=false;
 }
 </script>
