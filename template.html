@@ -1607,7 +1607,7 @@ function renderCmDyn(){
   const conv=(a)=>{const n=a.length,p=a.filter(x=>x.np>0).length,pw=a.filter(x=>x.np>0&&x.won).length,w=a.filter(x=>x.won).length;return {n,p,pw,w,np:tpDiv(p*100,n),pv:tpDiv(pw*100,p),nv:tpDiv(w*100,n)};};
   const C=conv(neg), Cp=conv(negP);
   const big=(o)=>`<div class="tp-big cm-big${o.hl?" hl":""}${o.cls?" "+o.cls:""}"><div class="ic ${o.ic2||""}">${tpSvg(o.ic)}</div>
-    <div class="bd"><div class="lb">${o.l}</div><div class="vl">${o.v}</div><div class="sub">${o.sub}</div><div class="cmp">${TP_NOCMP?"<span>dia em andamento</span>":tpDelta(o.cur,o.prev)+"<span>valor vs. período anterior</span>"}</div></div><div class="spark">${o.spark}</div></div>`;
+    <div class="bd"><div class="lb">${o.l}</div><div class="vl">${o.v}</div><div class="sub">${o.sub}</div><div class="cmp">${TP_NOCMP?"<span>dia em andamento</span>":tpDelta(o.cur,o.prev)+`<span>${o.cmpl||"valor vs. período anterior"}</span>`}</div></div><div class="spark">${o.spark}</div></div>`;
   const ring=(t,p,a,num,lbl,b,cur,prev,c)=>`<div class="tp-qc"><h4>${t}</h4><div class="d">${a}</div>
     <div class="tp-donut">${tpDonut(p||0,c,"conversão")}<div><div class="bn">${tpN(num)} ${TP_NOCMP?"":tpDelta(cur,prev)}</div><div class="bl">${lbl}</div><div class="bs">${b}</div></div></div></div>`;
   // situação atual dos negócios do período: TODAS as etapas, na ordem do funil (nomes iguais nas 2 pipelines somam)
@@ -1641,7 +1641,7 @@ function renderCmDyn(){
       <div class="cm-sit">${abertas.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> negócio${x.n===1?"":"s"} · ${tpPct(x.o/totO*100)} do valor em aberto</div></div>`).join("")}</div>`;})()}
   </div>
   <div class="tp-bigs">
-    ${big({hl:1,ic:"users",l:"Negócios",v:tpBRL(sum(neg,"o"),0),sub:`<b>${tpN(neg.length)}</b> negócio${neg.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(neg.length,negP.length)}`,cur:sum(neg,"o"),prev:sum(negP,"o"),spark:tpSpark(conta(D,"dc"),"rgba(255,255,255,.75)",true)})}
+    ${big({hl:1,ic:"users",l:"Negócios",v:tpN(neg.length),sub:`negócio${neg.length===1?"":"s"} criado${neg.length===1?"":"s"} no período`,cur:neg.length,prev:negP.length,cmpl:"vs. período anterior",spark:tpSpark(conta(D,"dc"),"rgba(255,255,255,.75)",true)})}
     ${big({cls:"yl",ic:"form",l:"Propostas",v:tpBRL(sum(pro,"pv"),0),sub:`<b>${tpN(pro.length)}</b> proposta${pro.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(pro.length,proP.length)} · só a última de cada card`,cur:sum(pro,"pv"),prev:sum(proP,"pv"),spark:tpSpark(conta(D,"pd"),"rgba(255,255,255,.85)")})}
     ${big({cls:"gr",ic:"check",l:"Vendas",v:tpBRL(sum(ven,"o"),0),sub:`<b>${tpN(ven.length)}</b> venda${ven.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(ven.length,venP.length)} · ticket médio ${tpBRL(tpDiv(sum(ven,"o"),ven.length),0)}`,cur:sum(ven,"o"),prev:sum(venP,"o"),spark:tpSpark(conta(D,"won"),"rgba(255,255,255,.85)")})}
   </div>
@@ -1689,11 +1689,10 @@ function renderCmEvol(D,r){
   const cd=tpChartDays(r), R=[r.ini,r.fim];
   const soma=(k,val)=>{const o={};D.forEach(x=>{if(x[k])o[x[k]]=(o[x[k]]||0)+(x[val]||0);});return cd.days.map(d=>o[d]||0);};
   const tot=(k,val)=>D.filter(x=>cmIn(x[k],R)).reduce((s,x)=>s+(x[val]||0),0);
-  const S=[{k:"neg",name:"Negócios",color:"#2563eb",v:soma("dc","o"),t:tot("dc","o")},
-           {k:"pro",name:"Propostas",color:"#7c3aed",v:soma("pd","pv"),t:tot("pd","pv")},
+  const S=[{k:"pro",name:"Propostas",color:"#7c3aed",v:soma("pd","pv"),t:tot("pd","pv")},
            {k:"ven",name:"Vendas",color:"#16a34a",v:soma("won","o"),t:tot("won","o")}];
   const f=CMF.evol||"";
-  el.innerHTML=`${tpHead("bars","Evolução de resultados","Negócios, propostas e vendas (R$) ao longo do período"+(cd.sel?" · mostrando 14 dias, com o período destacado":""),
+  el.innerHTML=`${tpHead("bars","Evolução de resultados","Valor das propostas e das vendas (R$) ao longo do período"+(cd.sel?" · mostrando 14 dias, com o período destacado":""),
       `<span class="tp-seg2 cm-evtog">${[["","Todos"],...S.map(s=>[s.k,s.name])].map(([k,l])=>`<button data-ev="${k}" class="${f===k?"on":""}">${l}</button>`).join("")}</span>`,TPC.blue)}
     <div class="cm-evo"><div class="tp-chart">${cmLines(cd.days,S,f)}</div>
       <div class="cm-evleg">${S.map(s=>`<div class="${f&&f!==s.k?"off":""}"><i style="background:${s.color}"></i><span>${s.name}</span><b>${tpBRL(s.t,0)}</b></div>`).join("")}<div class="tp-note" style="margin:6px 0 0">Totais do período</div></div></div>`;
@@ -1794,7 +1793,7 @@ function renderCmVend(){
     return `<div class="cm-vc${vazio?" vazio":""}" style="--c:${x.cor}">
       <div class="h"><span class="av">${x.nome[0]}</span><div><div class="nm">${x.nome}</div>${tg.length?`<div class="tags">${tg.map(t=>`<span>${t}</span>`).join("")}</div>`:`<div class="sb">${vazio?"sem movimento no período":"&nbsp;"}</div>`}</div></div>
       <div class="ms">
-        <div><div class="k">Negócios</div><div class="n">${tpN(x.neg)}</div><div class="s">${tpBRL(x.negO,0)}</div></div>
+        <div><div class="k">Negócios</div><div class="n">${tpN(x.neg)}</div><div class="s">criados no período</div></div>
         <div><div class="k">Propostas</div><div class="n">${tpN(x.pro)}</div><div class="s">${tpBRL(x.proO,0)}</div></div>
         <div class="hv"><div class="k">Vendas</div><div class="n">${tpBRL(x.venO,0)}</div><div class="s">${tpN(x.ven)} venda${x.ven===1?"":"s"}</div></div>
       </div>
