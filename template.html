@@ -532,6 +532,52 @@
   .tp-ai ul{margin:0;padding-left:17px;font-size:13px;line-height:1.55}
   .tp-ai li+li{margin-top:7px}
   .tp-empty{color:var(--muted);font-size:13px;padding:6px 0}
+  /* resumo geral */
+  .tp-hero .tp-right{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+  .tp-pick{font:inherit;font-size:13.5px;font-weight:650;color:var(--ink);background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;padding:10px 38px 10px 14px;box-shadow:var(--shadow);cursor:pointer;appearance:none;-webkit-appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%235c6b85' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 14px center}
+  .tp-live{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .tp-live i{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px var(--good-soft)}
+  .tp-bigs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-top:16px}
+  .tp-big{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:20px;
+    box-shadow:var(--shadow);padding:22px 22px 20px;display:flex;gap:16px;min-height:168px}
+  .tp-big .ic{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;position:relative;z-index:1}
+  .tp-big .ic svg{width:26px;height:26px}
+  .tp-big .bd{position:relative;z-index:1;min-width:0;display:flex;flex-direction:column}
+  .tp-big .lb{font-size:14px;font-weight:700;color:var(--ink);margin-top:4px}
+  .tp-big .vl{font-size:clamp(30px,3.2vw,42px);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-top:8px;font-variant-numeric:tabular-nums}
+  .tp-big .cmp{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:12px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+  .tp-big .cmp .tp-delta{font-size:12px;padding:3px 9px}
+  .tp-big .sub{font-size:12.5px;color:var(--muted);margin-top:6px}
+  .tp-big .spark{position:absolute;right:0;bottom:0;width:44%;height:42%;pointer-events:none;opacity:.9;
+    -webkit-mask-image:linear-gradient(to right,transparent,#000 40%);mask-image:linear-gradient(to right,transparent,#000 40%)}
+  .tp-big .spark svg{width:100%;height:100%;display:block}
+  .tp-big.hl{background:radial-gradient(120% 140% at 100% 0%,#2f63c4 0%,transparent 55%),linear-gradient(150deg,#22489a,#142f66);border-color:transparent;color:#fff}
+  .tp-big.hl .lb,.tp-big.hl .vl{color:#fff}
+  .tp-big.hl .cmp,.tp-big.hl .sub{color:rgba(255,255,255,.78)}
+  .tp-big.hl .ic{background:rgba(255,255,255,.14);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+  .tp-big.hl .tp-delta.up{background:#1f9d6b;color:#fff}.tp-big.hl .tp-delta.dn{background:#d64550;color:#fff}.tp-big.hl .tp-delta.eq{background:rgba(255,255,255,.18);color:#fff}
+  .ic-blue{background:var(--brand-soft);color:var(--brand)} .ic-green{background:var(--good-soft);color:var(--good)}
+  .tp-div{background:var(--panel);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:22px 24px;margin-top:16px}
+  .tp-div-h{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap}
+  .tp-div-h h4{margin:0;font-size:18px;font-weight:800;letter-spacing:-.01em}
+  .tp-div-h .d{font-size:13px;color:var(--muted);margin-top:3px}
+  .tp-div-leg{margin-left:auto;display:flex;gap:16px;font-size:13px;color:var(--ink);font-weight:600}
+  .tp-div-leg i,.tp-div-col .nm i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;vertical-align:0}
+  .tp-div-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px;margin-top:18px}
+  .tp-div-box{border:1px solid var(--line2);background:color-mix(in srgb,var(--bg) 55%,var(--panel));border-radius:16px;padding:18px 20px}
+  .tp-div-box .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .tp-div-box .top b{font-size:15px;font-weight:800}
+  .tp-div-box .top span{font-size:12.5px;color:var(--muted)} .tp-div-box .top span b{font-size:13px;color:var(--ink)}
+  .tp-div-bar{display:flex;height:14px;border-radius:999px;overflow:hidden;background:var(--line2);margin:14px 0 16px;gap:2px}
+  .tp-div-bar i{display:block;height:100%}
+  .tp-div-cols{display:grid;grid-template-columns:1fr 1fr}
+  .tp-div-col+.tp-div-col{border-left:1px solid var(--line);padding-left:18px}
+  .tp-div-col .nm{font-size:13px;font-weight:600}
+  .tp-div-col .pc{font-size:26px;font-weight:800;letter-spacing:-.02em;margin-top:4px}
+  .tp-div-col .vv{font-size:12.5px;color:var(--muted);margin-top:2px}
   .tp-loading{padding:60px 0;text-align:center;color:var(--muted)}
 </style>
 
@@ -1342,7 +1388,7 @@ refresh();
 // ================= Tráfego Pago (Meta Ads + Google Ads) =================
 // Dados vêm de /trafego.json (atualizado de hora em hora pelo servidor), separado do resto do BI.
 let TP=null, TP_EM=0;
-const TPF={meta:{p:"7d",ini:"",fim:"",camp:""},google:{p:"7d",ini:"",fim:"",camp:""}};
+const TPF={geral:{p:"7d"},meta:{p:"7d",ini:"",fim:"",camp:""},google:{p:"7d",ini:"",fim:"",camp:""}};
 const tpEsc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const tpOk=n=>n!=null&&isFinite(n);
 const tpBRL=(n,d=2)=>tpOk(n)?"R$ "+n.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
@@ -1394,6 +1440,7 @@ function tpRange(f,hoje){
   if(f.p==="hoje") return {ini:hoje,fim:hoje,pini:tpAdd(hoje,-1),pfim:tpAdd(hoje,-1),key:"hoje"};
   if(f.p==="ontem"){const o=tpAdd(hoje,-1);return {ini:o,fim:o,pini:tpAdd(hoje,-2),pfim:tpAdd(hoje,-2),key:"ontem"};}
   if(f.p==="7d") return {ini:tpAdd(hoje,-6),fim:hoje,pini:tpAdd(hoje,-13),pfim:tpAdd(hoje,-7),key:"7d"};
+  if(f.p==="30d") return {ini:tpAdd(hoje,-29),fim:hoje,pini:tpAdd(hoje,-59),pfim:tpAdd(hoje,-30),key:"30d"};
   let ini=f.ini||tpAdd(hoje,-29), fim=f.fim||hoje; if(ini>fim)[ini,fim]=[fim,ini];
   const n=tpDays(ini,fim); return {ini,fim,pini:tpAdd(ini,-n),pfim:tpAdd(ini,-1),key:null};
 }
@@ -1485,8 +1532,7 @@ function tpWarn(B,nome){
 function renderTrafego(){
   const box=document.getElementById("view-trafego"), M=TP.meta||{}, G=TP.google||{};
   box.innerHTML=`
-  <nav class="tp-nav"><a href="#tp-geral">Resumo geral</a><a href="#tp-meta">Meta Ads</a><a href="#tp-google">Google Ads</a>
-    <span class="tp-upd">Dados de ${tpHora(TP.gerado_em)} · atualiza de hora em hora</span></nav>
+  <nav class="tp-nav"><a href="#tp-geral">Resumo geral</a><a href="#tp-meta">Meta Ads</a><a href="#tp-google">Google Ads</a></nav>
   <section id="tp-geral" class="tp-sec"></section>
   <section id="tp-meta" class="tp-sec"></section>
   <section id="tp-google" class="tp-sec"></section>`;
@@ -1513,28 +1559,64 @@ function renderTrafego(){
   };
 }
 
-// ---------- Resumo geral (fixo: últimos 7 dias vs 7 anteriores) ----------
+// ---------- Resumo geral (período próprio: hoje / ontem / 7 / 30 dias) ----------
+const TPG_LBL={hoje:"Hoje",ontem:"Ontem","7d":"Últimos 7 dias","30d":"Últimos 30 dias"};
+const TPG_VS={hoje:"",ontem:"vs. anteontem","7d":"vs. 7 dias anteriores","30d":"vs. 30 dias anteriores"};
+function tpSpark(vals,color,bars){
+  const W=200,H=90,n=vals.length,mx=Math.max(1e-9,...vals),mn=bars?0:Math.min(...vals);
+  if(n<2) return "";
+  const x=i=>i*(W/(n-1)), y=v=>H-6-(H-14)*((v-mn)/((mx-mn)||1));
+  if(bars){const bw=W/n;return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${vals.map((v,i)=>`<rect x="${i*bw+bw*.22}" y="${y(v)}" width="${bw*.56}" height="${H-y(v)}" rx="2" fill="${color}" opacity="${.35+.65*(i+1)/n}"/>`).join("")}</svg>`;}
+  const pts=vals.map((v,i)=>`${x(i)},${y(v)}`).join(" "), id="g"+Math.random().toString(36).slice(2,8);
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".28"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+    <polygon points="0,${H} ${pts} ${W},${H}" fill="url(#${id})"/><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
+}
 function renderTpGeral(){
-  const M=TP.meta||{}, G=TP.google||{}, el=document.getElementById("tp-geral");
-  const per=(B,a,b)=>B.hoje?[tpAdd(B.hoje,-a),tpAdd(B.hoje,-b)]:null;
-  const mc=M.hoje?tpSum(M.diario,...per(M,6,0)):{g:0,l:0}, mp=M.hoje?tpSum(M.diario,...per(M,13,7)):{g:0,l:0};
-  const gc=G.hoje?tpSum(G.diario,...per(G,6,0)):{g:0,cv:0}, gp=G.hoje?tpSum(G.diario,...per(G,13,7)):{g:0,cv:0};
-  const L=mc.l+gc.cv, Lp=mp.l+gp.cv, I=mc.g+gc.g, Ip=mp.g+gp.g;
-  const gOk=G.ok&&G.campanhas&&G.campanhas.length;
-  const share=(a,b)=>a+b?a/(a+b)*100:0;
+  TP_NOCMP=false;
+  const M=TP.meta||{}, G=TP.google||{}, el=document.getElementById("tp-geral"), f=TPF.geral;
+  const gOk=!!(G.ok&&G.campanhas&&G.campanhas.length), mOk=!!M.hoje;
+  const rm=mOk?tpRange(f,M.hoje):null, rg=G.hoje?tpRange(f,G.hoje):null;
+  const z={g:0,l:0,cv:0};
+  const mc=rm?tpSum(M.diario,rm.ini,rm.fim):z, mp=rm?tpSum(M.diario,rm.pini,rm.pfim):z;
+  const gc=gOk?tpSum(G.diario,rg.ini,rg.fim):z, gp=gOk?tpSum(G.diario,rg.pini,rg.pfim):z;
+  const L=mc.l+gc.cv, Lp=mp.l+gp.cv, I=mc.g+gc.g, Ip=mp.g+gp.g, C=tpDiv(I,L), Cp=tpDiv(Ip,Lp);
+  // mini-gráficos: dias do período (mín. 14 para ter tendência)
+  const ref=rm||rg, fim=ref?ref.fim:"", nd=ref?Math.max(14,tpDays(ref.ini,ref.fim)):0, dias=[];
+  for(let i=nd-1;i>=0;i--) dias.push(tpAdd(fim,-i));
+  const por=(rows,k)=>{const o={};(rows||[]).forEach(r=>{o[r.d]=(o[r.d]||0)+(r[k]||0);});return o;};
+  const ml=por(M.diario,"l"), mg=por(M.diario,"g"), gl=gOk?por(G.diario,"cv"):{}, gg=gOk?por(G.diario,"g"):{};
+  const sL=dias.map(d=>(ml[d]||0)+(gl[d]||0)), sI=dias.map(d=>(mg[d]||0)+(gg[d]||0)), sC=dias.map((d,i)=>sL[i]?sI[i]/sL[i]:0);
+  const hoje=f.p==="hoje";
+  const cmp=(cur,prev,lb)=>hoje?`<span>dia em andamento · sem comparação</span>`:`${tpDelta(cur,prev,lb)}<span>${TPG_VS[f.p]}</span>`;
+  const good=(cur,prev,lb)=>!tpOk(cur)||!tpOk(prev)||hoje?"var(--brand)":((lb?cur<=prev:cur>=prev)?"#1f9d6b":"#d64550");
+  const pct=(a,b)=>a+b?a/(a+b)*100:0;
+  const big=(o)=>`<div class="tp-big${o.hl?" hl":""}"><div class="ic ${o.ic2||""}">${tpSvg(o.ic)}</div>
+    <div class="bd"><div class="lb">${o.l}</div><div class="vl">${o.v}</div>${o.sub?`<div class="sub">${o.sub}</div>`:""}<div class="cmp">${o.cmp}</div></div>
+    <div class="spark">${o.spark}</div></div>`;
+  const col=(nm,cor,p,v)=>`<div class="tp-div-col"><div class="nm"><i style="background:${cor}"></i>${nm}</div><div class="pc">${tpPct(p)}</div><div class="vv">${v}</div></div>`;
   el.innerHTML=`
-  <div class="tp-hero"><div class="tp-logo geral">${TP_LOGO.geral}</div><div><h2>Resumo geral</h2><div class="tp-sub">Meta + Google somados · últimos 7 dias comparados com os 7 anteriores</div></div></div>
-  ${gOk?"":`<div class="tp-note" style="color:var(--bad);font-weight:650">⚠ Google Ads fora do resumo: o acesso está vencido (veja a seção do Google).</div>`}
-  <div class="tp-kpis" style="margin-top:14px">
-    ${tpKpi({ic:"users",l:"Leads totais",v:tpN(L),d:tpDelta(L,Lp),f:gOk?`${tpN(mc.l)} Meta · ${tpN(gc.cv)} Google`:"só Meta",hl:1})}
-    ${tpKpi({ic:"money",l:"Investimento total",v:tpBRLc(I),d:tpDelta(I,Ip),f:gOk?`${tpBRL(mc.g,0)} Meta · ${tpBRL(gc.g,0)} Google`:""})}
-    ${tpKpi({ic:"tag",l:"Custo por lead médio",v:tpBRL(tpDiv(I,L)),d:tpDelta(tpDiv(I,L),tpDiv(Ip,Lp),true)})}
+  <div class="tp-hero"><div class="tp-logo geral">${TP_LOGO.geral}</div>
+    <div><h2>Resumo geral</h2><div class="tp-sub">Meta Ads + Google Ads somados</div></div>
+    <div class="tp-right"><select class="tp-pick" id="tp-geral-per">${Object.entries(TPG_LBL).map(([k,v])=>`<option value="${k}" ${k===f.p?"selected":""}>${v}</option>`).join("")}</select>
+      <span class="tp-live"><i></i>Dados atualizados às ${tpHora(TP.gerado_em).slice(-5)} · de hora em hora</span></div></div>
+  ${gOk?"":`<div class="tp-note" style="color:var(--bad);font-weight:650">⚠ Google Ads fora do resumo: a plataforma não está atualizando (veja a seção do Google).</div>`}
+  <div class="tp-bigs">
+    ${big({hl:1,ic:"users",l:"Leads totais",v:tpN(L),sub:gOk?`${tpN(mc.l)} Meta · ${tpN1(gc.cv)} Google`:"só Meta",cmp:cmp(L,Lp),spark:tpSpark(sL,"rgba(255,255,255,.75)",true)})}
+    ${big({ic:"money",ic2:"ic-blue",l:"Investimento total",v:tpBRL(I),sub:gOk?`${tpBRL(mc.g,0)} Meta · ${tpBRL(gc.g,0)} Google`:"",cmp:cmp(I,Ip),spark:tpSpark(sI,good(I,Ip))})}
+    ${big({ic:"tag",ic2:"ic-green",l:"Custo por lead médio",v:tpBRL(C),sub:gOk?`Meta ${tpBRL(tpDiv(mc.g,mc.l))} · Google ${tpBRL(tpDiv(gc.g,gc.cv))}`:"",cmp:cmp(C,Cp,true),spark:tpSpark(sC,good(C,Cp,true))})}
   </div>
-  ${gOk?`<div class="tp-card" style="margin-top:12px"><h4>Divisão entre plataformas</h4><div class="d">Quanto cada uma recebe de verba e entrega de leads (7 dias)</div>
-    <div class="tp-src">
-      <div><div class="nm">Investimento</div><div class="tp-split"><i style="width:${share(mc.g,gc.g)}%;background:var(--meta)"></i><i style="width:${share(gc.g,mc.g)}%;background:#34a853"></i></div><div class="sm">Meta ${tpPct(share(mc.g,gc.g))} · Google ${tpPct(share(gc.g,mc.g))}</div></div>
-      <div><div class="nm">Leads</div><div class="tp-split"><i style="width:${share(mc.l,gc.cv)}%;background:var(--meta)"></i><i style="width:${share(gc.cv,mc.l)}%;background:#34a853"></i></div><div class="sm">Meta ${tpPct(share(mc.l,gc.cv))} · Google ${tpPct(share(gc.cv,mc.l))}</div></div>
+  ${gOk?`<div class="tp-div">
+    <div class="tp-div-h"><div><h4>Divisão entre plataformas</h4><div class="d">Quanto cada uma recebe de verba e entrega de leads (${TPG_LBL[f.p].toLowerCase()})</div></div>
+      <div class="tp-div-leg"><span><i style="background:var(--meta)"></i>Meta Ads</span><span><i style="background:#34a853"></i>Google Ads</span></div></div>
+    <div class="tp-div-grid">
+      <div class="tp-div-box"><div class="top"><b>Investimento</b><span>Total: <b>${tpBRL(I)}</b></span></div>
+        <div class="tp-div-bar"><i style="width:${pct(mc.g,gc.g)}%;background:var(--meta)"></i><i style="width:${pct(gc.g,mc.g)}%;background:#34a853"></i></div>
+        <div class="tp-div-cols">${col("Meta Ads","var(--meta)",pct(mc.g,gc.g),tpBRL(mc.g))}${col("Google Ads","#34a853",pct(gc.g,mc.g),tpBRL(gc.g))}</div></div>
+      <div class="tp-div-box"><div class="top"><b>Leads</b><span>Total: <b>${tpN(L)}</b></span></div>
+        <div class="tp-div-bar"><i style="width:${pct(mc.l,gc.cv)}%;background:var(--meta)"></i><i style="width:${pct(gc.cv,mc.l)}%;background:#34a853"></i></div>
+        <div class="tp-div-cols">${col("Meta Ads","var(--meta)",pct(mc.l,gc.cv),tpN(mc.l)+" leads")}${col("Google Ads","#34a853",pct(gc.cv,mc.l),tpN1(gc.cv)+" leads")}</div></div>
     </div></div>`:""}`;
+  document.getElementById("tp-geral-per").onchange=e=>{TPF.geral.p=e.target.value;renderTpGeral();};
 }
 
 // ---------- Meta ----------
