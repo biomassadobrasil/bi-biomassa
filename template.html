@@ -1486,6 +1486,8 @@ function renderCmDyn(){
   const outrasNomes=[...new Set(neg.filter(x=>x.g==="outras").map(x=>((CM.etapas[x.c]||[]).find(s=>s.id===x.st)||{}).nome).filter(Boolean))];
   // motivos de perda (perdidos no período)
   const per=D.filter(x=>cmIn(x.lost,R)), mot={};per.forEach(x=>{const k=x.mot||"Sem motivo informado";mot[k]=(mot[k]||0)+1;});
+  const outros=per.filter(x=>x.mot==="Outro"), om={};outros.forEach(x=>{const k=x.mo||"Sem descrição";om[k]=(om[k]||0)+1;});
+  const outroArr=Object.entries(om).sort((a,b)=>b[1]-a[1]).map(([k,n])=>({label:k,n,color:["Outros casos","Sem descrição"].includes(k)?"#cbd5e1":"#94a3b8"}));
   const motArr=Object.entries(mot).sort((a,b)=>b[1]-a[1]).map(([k,n],i)=>({label:k,n,color:k==="Sem motivo informado"||k==="Outro"?"#9aa7bd":["#dc2626","#ef4444","#f87171","#fca5a5","#fecaca","#fee2e2"][Math.min(i,5)]}));
   // origem
   const src={};neg.forEach(x=>{const o=src[x.src]=src[x.src]||{n:0,w:0,o:0};o.n++;if(x.won){o.w++;o.o+=x.o;}});
@@ -1509,7 +1511,7 @@ function renderCmDyn(){
     ${outrasNomes.length?tpInfo(`<b>Outras etapas abertas</b>: ${outrasNomes.map(tpEsc).join(", ")}.`):""}</div>
   <div class="cm-g cm-g2" style="margin-top:16px">
     <div class="tp-qc"><h4>Motivos de perda</h4><div class="d">${tpN(per.length)} negócios perdidos no período · ranking dos motivos</div>
-      ${per.length?tpRows(motArr)+((mot["Outro"]||0)+(mot["Sem motivo informado"]||0)>per.length/2?tpInfo(`<b>${tpPct(((mot["Outro"]||0)+(mot["Sem motivo informado"]||0))/per.length*100)}</b> das perdas estão como “Outro” ou sem motivo. Vale orientar o time a escolher o motivo certo para a análise ficar útil.`):""):'<div class="tp-empty">Nenhum negócio perdido no período.</div>'}</div>
+      ${per.length?tpRows(motArr)+(outroArr.length?`<div class="tp-sep" style="margin:14px 0 10px"></div><div style="font-size:13.5px;font-weight:800;margin-bottom:2px">Dentro de “Outro”</div><div class="tp-note" style="margin:0 0 6px">Resumo do campo “Observações Desqualificação”, agrupado por tema</div>`+tpRows(outroArr)+tpInfo(`O principal motivo escondido em “Outro” é <b>${tpEsc(outroArr[0].label.toLowerCase())}</b>: ${tpPct(outroArr[0].n/outros.length*100)} desses casos.`):""):'<div class="tp-empty">Nenhum negócio perdido no período.</div>'}</div>
     <div class="tp-qc"><h4>Origem dos negócios</h4><div class="d">Campo “Fonte” dos negócios criados no período · e quantos viraram venda</div>
       ${srcArr.length?`<div class="cm-src">${srcArr.map(([k,o],i)=>`<div class="r"><span class="nm"><i style="background:${SRC_COR[i%SRC_COR.length]}"></i>${tpEsc(k)}</span><span class="rt"><i style="width:${o.n/srcMax*100}%;background:${SRC_COR[i%SRC_COR.length]}"></i></span><span class="q">${tpN(o.n)}<small>${tpPct(o.n/neg.length*100)}</small></span><span class="w" title="vendas e conversão">${o.w?`${tpN(o.w)} venda${o.w>1?"s":""}<small>${tpPct(o.w/o.n*100,1)}</small>`:'<small>sem venda</small>'}</span></div>`).join("")}</div>`:'<div class="tp-empty">Nenhum negócio no período.</div>'}</div>
   </div>`;

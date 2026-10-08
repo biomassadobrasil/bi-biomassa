@@ -12,6 +12,28 @@ DESDE = "2026-01-01"                       # histórico considerado (negócios m
 CATS = {"0": "Vendas Internas", "2": "LightWall"}
 VEND = {"948": "Patrícia", "38": "Luiz", "890": "Thauany", "16942": "Ingrid", "16812": "Vanessa", "376": "Douglas"}
 F_MOTIVO = "UF_CRM_67E591F01CB70"           # "Motivo da Desqualificação" (pedido ao mover p/ Perdido)
+F_OBS = "UF_CRM_67E591F02597A"              # "Observações Desqualificação" (texto livre, usado quando é "Outro")
+# temas do texto livre do "Outro" (ordem importa: o primeiro que bater vence). Só o tema vai pro painel.
+TEMAS_OUTRO = [
+    ("Contato inválido (número/e-mail)", ("numero errado", "numero invalido", "numero incorreto", "numero nao existe", "telefone nao existe",
+                                          "contato inexistente", "contato errado", "falha no envio", "nao conclui", "numero de telefone")),
+    ("Não responde / sem retorno", ("nao responde", "nao atende", "nunca respondeu", "nunca mais respondeu", "nunca me respondeu", "inativo",
+                                    "sem sucesso", "desligou", "bloqueou", "nao consigo contato", "sem retorno")),
+    ("Quantidade baixa (foi p/ loja)", ("quantidade", "qunatidade", "bisnaga", "loja")),
+    ("Produto que não temos", ("nao trabalhamos", "nao temos o produto", "graute", "bloco", "embalagem", "tinta", "manta", "mao de obra")),
+    ("Optou por outro método / concorrência", ("optou", "optamos", "convencional", "concorrencia", "usuais", "nao se adapt", "outro metodo")),
+    ("Já comprou / já é cliente", ("ja comprou", "ja fez a compra", "representante", "ja e nosso")),
+    ("Obra parada / mudou o projeto", ("obra", "projeto")),
+    ("Financeiro / crédito", ("credito", "faturamento", "financeiro", "orcamento nao aprovado")),
+    ("Sem interesse / desistiu", ("interesse", "desistiu", "nao precisa", "curiosidade", "consultivo", "doacao", "doacoes")),
+]
+
+def tema_outro(txt):
+    t = _norm(txt)
+    if not t: return "Sem descrição"
+    for nome, chaves in TEMAS_OUTRO:
+        if any(k in t for k in chaves): return nome
+    return "Outros casos"
 _LOCK = threading.Lock()
 
 import generate as G                       # call() do Bitrix + Redis
@@ -77,7 +99,7 @@ def build():
     motivos = {str(i["ID"]): i["VALUE"] for i in (campos.get(F_MOTIVO, {}).get("items") or [])}
 
     # ---- negócios (mexidos desde DESDE) ----
-    sel = ["ID", "CATEGORY_ID", "STAGE_ID", "OPPORTUNITY", "DATE_CREATE", "DATE_MODIFY", "CLOSEDATE", "ASSIGNED_BY_ID", "SOURCE_ID", F_MOTIVO]
+    sel = ["ID", "CATEGORY_ID", "STAGE_ID", "OPPORTUNITY", "DATE_CREATE", "DATE_MODIFY", "CLOSEDATE", "ASSIGNED_BY_ID", "SOURCE_ID", F_MOTIVO, F_OBS]
     deals = {}
     for c in CATS:
         for d in listar("crm.deal.list", {"filter": {"CATEGORY_ID": int(c), ">=DATE_MODIFY": DESDE}, "select": sel, "order": {"ID": "ASC"}}):
@@ -153,6 +175,7 @@ def build():
         out.append({"id": did, "c": str(d["CATEGORY_ID"]), "v": v, "dc": criado.date().isoformat() if criado else "",
                     "o": o, "st": st, "g": g, "src": fontes.get(str(d.get("SOURCE_ID")), "Sem fonte"),
                     "won": won, "lost": lost, "mot": motivos.get(str(d.get(F_MOTIVO) or ""), "") if g == "perdido" else "",
+                    "mo": tema_outro(d.get(F_OBS)) if (g == "perdido" and motivos.get(str(d.get(F_MOTIVO) or "")) == "Outro") else "",
                     "np": len(por_card.get(did, [])), "pd": _d(up.get("createTime")) if up else "",
                     "pv": round(valores.get(up["id"], 0.0), 2) if up else 0.0,
                     # horas até o 1º contato / dias até fechar
