@@ -1607,6 +1607,22 @@ function renderComercial(){
   renderCmDyn(); renderCmVend();
 }
 
+// funil horizontal em quantidade: Negócios -> Propostas -> Vendas
+function cmFunil(et){
+  const W=1000,H=230,gap=70,sw=(W-gap*(et.length-1))/et.length,mx=Math.max(1,...et.map(e=>e.n)),hh=v=>70+150*(v/mx),cy=H/2;
+  let g="";
+  et.forEach((e,i)=>{const x0=i*(sw+gap),h0=hh(e.n),h1=i<et.length-1?Math.max(hh(et[i+1].n),h0*.55):h0*.8;
+    g+=`<defs><linearGradient id="fg${i}" x1="0" x2="1"><stop offset="0" stop-color="${e.c1}"/><stop offset="1" stop-color="${e.c2}"/></linearGradient></defs>
+      <path d="M${x0},${cy-h0/2} L${x0+sw},${cy-h1/2} L${x0+sw},${cy+h1/2} L${x0},${cy+h0/2} Z" fill="url(#fg${i})" rx="12"/>
+      <text x="${x0+sw/2}" y="${cy+4}" text-anchor="middle" font-size="44" font-weight="800" fill="#fff">${tpN(e.n)}</text>
+      <text x="${x0+sw/2}" y="${cy+34}" text-anchor="middle" font-size="17" font-weight="700" fill="rgba(255,255,255,.9)">${e.l}</text>`;
+    if(i<et.length-1){const cx=x0+sw+gap/2, p=tpDiv(et[i+1].n*100,e.n);
+      g+=`<circle cx="${cx}" cy="${cy}" r="31" fill="var(--panel)" stroke="var(--line)" stroke-width="2"/>
+        <text x="${cx}" y="${cy+2}" text-anchor="middle" font-size="16" font-weight="800" fill="var(--ink)">${tpOk(p)?tpPct(p):"—"}</text>
+        <text x="${cx}" y="${cy+18}" text-anchor="middle" font-size="12" fill="var(--muted)">→</text>`;}
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" style="width:100%;height:auto;display:block">${g}</svg>`;
+}
 function renderCmDyn(){
   const r=cmRange(CMF.p,CMF.ini,CMF.fim), R=[r.ini,r.fim], P=[r.pini,r.pfim], el=document.getElementById("cm-dyn");
   TP_NOCMP=CMF.p==="hoje";
@@ -1660,6 +1676,10 @@ function renderCmDyn(){
       return `      <div class="tp-stack" style="height:22px;margin-top:4px" title="Proporcional ao valor">${abertas.filter(x=>x.o).map(x=>`<i title="${x.l}: ${tpBRL(x.o,0)}" style="width:${x.o/totO*100}%;background:${x.c}"></i>`).join("")}</div>
       <div class="tp-note" style="margin:-4px 0 10px">Barra proporcional ao valor em cada etapa</div>
       <div class="cm-sit cm-sit6">${abertas.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> negócio${x.n===1?"":"s"} · ${tpPct(x.o/totO*100)} do valor</div></div>`).join("")}</div>`;})()}
+  </div>
+  <div class="tp-panel" style="margin-top:16px">${tpHead("trend","Funil do período","Quantidade de negócios criados, propostas feitas e vendas fechadas no período · entre as etapas, a passagem de uma para a outra","",TPC.blue)}
+    ${cmFunil([{l:"Negócios",n:neg.length,c1:"#3b7cf0",c2:"#1d4ed8"},{l:"Propostas",n:pro.length,c1:"#f59e0b",c2:"#d97706"},{l:"Vendas",n:ven.length,c1:"#22c55e",c2:"#15803d"}])}
+    ${ven.length>pro.length?tpInfo("Há mais vendas que propostas no período porque parte das vendas (principalmente do LightWall, pela planilha) não passa por proposta gerada no Bitrix, ou teve a proposta em outro mês."):""}
   </div>
   ${tpHead("trend","Taxas de conversão","Dos negócios criados no período, o que aconteceu com eles até hoje","",TPC.green)}
   <div class="cm-g cm-g3">
