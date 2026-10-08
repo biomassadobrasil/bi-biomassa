@@ -643,6 +643,42 @@
   .tp-ai2 li b{color:var(--ink)}
   :is(#view-trafego,#view-comercial) .tp-camp{border-radius:20px}
   /* ===== Comercial ===== */
+  .cm-top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:6px 0 16px}
+  .cm-tl{display:flex;gap:16px;align-items:center}
+  .cm-logo{width:60px;height:60px;border-radius:17px;background:linear-gradient(150deg,#3b7cf0,#1d4fc4);color:#fff;display:grid;place-items:center;box-shadow:0 10px 24px rgba(37,99,235,.28);flex:0 0 auto}
+  .cm-logo svg{width:30px;height:30px}
+  .cm-h1{margin:0;font-size:36px;font-weight:800;letter-spacing:-.03em;line-height:1.05}
+  .cm-sub{font-size:15px;color:var(--muted);margin-top:4px}
+  .cm-tr{margin-left:auto;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .cm-upd{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--good)}
+  .cm-upd i{width:9px;height:9px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px var(--good-soft)}
+  .cm-datepill{display:inline-flex;gap:12px;align-items:center;font:inherit;font-size:14.5px;font-weight:650;padding:12px 18px;border-radius:14px;border:1px solid var(--line);background:var(--panel);box-shadow:var(--shadow);cursor:pointer;color:var(--ink)}
+  .cm-datepill svg{width:18px;height:18px;color:var(--muted)}
+  .cm-datepill:hover{border-color:var(--brand)}
+  .cm-fbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:8px 10px}
+  .cm-fbar .fl{font-size:13.5px;font-weight:750;margin:0 4px 0 8px}
+  .cm-fbar .sep{width:1px;height:30px;background:var(--line);margin:0 6px}
+  .cm-fbar .tp-ref{margin-left:auto}
+  .cm-fbar .tp-sel{min-width:140px;padding:9px 12px;border-radius:11px}
+  #view-comercial .tp-seg2{padding:4px;border-radius:12px}
+  #view-comercial .tp-seg2 button{padding:8px 16px;border-radius:9px}
+  #view-comercial .tp-seg2 button.on{background:var(--brand);color:#fff;box-shadow:0 3px 10px rgba(37,99,235,.3)}
+  .cm-evo{display:grid;grid-template-columns:1fr 250px;gap:24px;align-items:center}
+  @media(max-width:900px){.cm-evo{grid-template-columns:1fr}}
+  .cm-evleg>div{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;padding:11px 0;font-size:14.5px}
+  .cm-evleg>div+div{border-top:1px solid var(--line2)}
+  .cm-evleg i{width:11px;height:11px;border-radius:50%} .cm-evleg b{font-weight:800;font-variant-numeric:tabular-nums}
+  .cm-evleg .off{opacity:.4}
+  .cm-ods{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:1000px){.cm-ods{grid-template-columns:1fr}}
+  .cm-od{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:16px 18px;display:flex;gap:14px;align-items:center;border-left:5px solid var(--c)}
+  .cm-od .i{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c);flex:0 0 auto}
+  .cm-od .i svg{width:22px;height:22px}
+  .cm-od .t{font-size:12px;color:var(--muted);font-weight:700}.cm-od .v{font-size:19px;font-weight:800;margin-top:2px}.cm-od .s{font-size:12px;color:var(--muted)}
+  .cm-lg{display:grid;grid-template-columns:10px minmax(0,1fr) auto 36px;gap:8px;align-items:center;padding:6px 0;font-size:13.5px}
+  .cm-lg i{width:10px;height:10px;border-radius:50%} .cm-lg span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cm-lg small{color:var(--muted);text-align:right;font-weight:600}
+  .cm-rk .vv small{text-align:right}
   .cm-ri{width:28px;height:28px;border-radius:9px;display:inline-grid;place-items:center;background:color-mix(in srgb,var(--c) 13%,transparent);color:var(--c)}
   .cm-ri svg{width:15px;height:15px}
   .cm-rk{display:grid;grid-template-columns:26px minmax(0,1fr) minmax(50px,1.1fr) 92px;gap:10px;align-items:center;padding:7px 0;font-size:13.5px}
@@ -1099,7 +1135,7 @@ function tpChart(days,stacks,line,sel){
   });
   const pts=line.v.map((v,i)=>`${bx(i)+bw/2},${pt+ih-ih*v/maxL}`).join(" ");
   g+=`<polyline points="${pts}" fill="none" stroke="${line.color}" stroke-width="3" stroke-linejoin="round"/>`;
-  line.v.forEach((v,i)=>{g+=`<circle cx="${bx(i)+bw/2}" cy="${pt+ih-ih*v/maxL}" r="${n>45?2:4}" fill="var(--panel)" stroke="${line.color}" stroke-width="2.5"><title>${tpBrY(days[i])} · Investimento: ${tpBRL(v)}</title></circle>`;});
+  line.v.forEach((v,i)=>{g+=`<circle cx="${bx(i)+bw/2}" cy="${pt+ih-ih*v/maxL}" r="${n>45?2:4}" fill="var(--panel)" stroke="${line.color}" stroke-width="2.5"><title>${tpBrY(days[i])} · ${line.name||"Investimento"}: ${tpBRL(v)}</title></circle>`;});
   return `<svg viewBox="0 0 ${W} ${H}" role="img">${g}</svg>`;
 }
 const tpLegend=(stacks,line)=>`<div class="tp-legend">${stacks.map(s=>`<span><i style="background:${s.color}"></i>${s.name}</span>`).join("")}${line?`<span><i style="background:${line.color}"></i>${line.name}</span>`:""}</div>`;
@@ -1480,14 +1516,18 @@ function cmRange(p,ini,fim){return tpRange({p,ini,fim},CM.hoje);}
 function renderComercial(){
   const box=document.getElementById("view-comercial");
   box.innerHTML=`
-  <div class="tp-hero" style="margin-top:6px"><div class="tp-logo geral">${tpSvg("brief",'style="color:#fff"')}</div>
-    <div><h2>Comercial</h2><div class="tp-sub">Bitrix · Vendas Internas e LightWall · atualiza de hora em hora</div></div>
-    <span class="tp-status ok">● Atualizado ${tpHora(CM.gerado_em)}</span></div>
-  ${tpHead("users","Resultados",'<span id="cm-per"></span>',`<div class="tp-filters">
-      <span class="fl">Período</span>${cmSeg("cm-seg",CMF.p,CM_PER)}${cmDates("cm",CMF.p==="custom",CMF.ini,CMF.fim)}
-      <span class="fl">Vendedor</span><select class="tp-sel" id="cm-v"><option value="">Todos</option>${Object.entries(CM.vend).map(([k,n])=>`<option value="${k}" ${CMF.v===k?"selected":""}>${n}</option>`).join("")}</select>
-      <span class="fl">Pipeline</span><select class="tp-sel" id="cm-c"><option value="">Todos</option>${Object.entries(CM.pipes).map(([k,n])=>`<option value="${k}" ${CMF.c===k?"selected":""}>${n}</option>`).join("")}</select>
-    </div><button class="tp-ref" id="cm-ref" title="Recarregar os dados">${tpSvg("refresh")}</button>`,TPC.blue)}
+  <div class="cm-top">
+    <div class="cm-tl"><span class="cm-logo">${tpSvg("bars")}</span><div><h1 class="cm-h1">Comercial</h1><div class="cm-sub">Bitrix · Vendas Internas e LightWall</div></div></div>
+    <div class="cm-tr"><span class="cm-upd"><i></i>Atualizado ${tpHora(CM.gerado_em)}</span>
+      <button class="cm-datepill" id="cm-dp" title="Escolher período personalizado">${tpSvg("cal")}<span id="cm-dp-t"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+  </div>
+  <div class="cm-fbar">
+    <span class="fl">Período</span>${cmSeg("cm-seg",CMF.p,CM_PER)}${cmDates("cm",CMF.p==="custom",CMF.ini,CMF.fim)}
+    <span class="sep"></span><span class="fl">Vendedor</span><select class="tp-sel" id="cm-v"><option value="">Todos</option>${Object.entries(CM.vend).map(([k,n])=>`<option value="${k}" ${CMF.v===k?"selected":""}>${n}</option>`).join("")}</select>
+    <span class="fl">Pipeline</span><select class="tp-sel" id="cm-c"><option value="">Todos</option>${Object.entries(CM.pipes).map(([k,n])=>`<option value="${k}" ${CMF.c===k?"selected":""}>${n}</option>`).join("")}</select>
+    <button class="tp-ref" id="cm-ref" title="Recarregar os dados">${tpSvg("refresh")}</button>
+  </div>
+  <div class="tp-note" id="cm-per" style="margin:8px 4px 0"></div>
   <div id="cm-dyn"></div>
   ${tpHead("users","Desempenho por vendedor",'Não muda com o filtro de vendedor · <span id="cm-vper"></span>',`<div class="tp-filters"><span class="fl">Período</span>${cmSeg("cm-vseg",CMF.vp,CM_PER)}${cmDates("cm-v",CMF.vp==="custom",CMF.vini,CMF.vfim)}</div>`,TPC.purple)}
   <div id="cm-vend"></div>`;
@@ -1500,6 +1540,8 @@ function renderComercial(){
   document.getElementById("cm-v").onchange=e=>{CMF.v=e.target.value;renderCmDyn();};
   document.getElementById("cm-c").onchange=e=>{CMF.c=e.target.value;renderCmDyn();renderCmVend();};
   document.getElementById("cm-ref").onclick=()=>{CM_EM=0;abrirComercial();};
+  document.getElementById("cm-dp").onclick=()=>{if(CMF.p!=="custom"){const r=cmRange(CMF.p,CMF.ini,CMF.fim);CMF.ini=r.ini;CMF.fim=r.fim;CMF.p="custom";renderComercial();}
+    const i=document.getElementById("cm-ini");if(i){i.focus();try{i.showPicker();}catch(e){}}};
   renderCmDyn(); renderCmVend();
 }
 
@@ -1507,6 +1549,7 @@ function renderCmDyn(){
   const r=cmRange(CMF.p,CMF.ini,CMF.fim), R=[r.ini,r.fim], P=[r.pini,r.pfim], el=document.getElementById("cm-dyn");
   TP_NOCMP=CMF.p==="hoje";
   document.getElementById("cm-per").textContent=tpPerTxt({p:CMF.p},r);
+  document.getElementById("cm-dp-t").innerHTML=`${tpBrY(r.ini)} <span style="color:var(--muted)">→</span> ${tpBrY(r.fim)}`;
   const D=CM.deals.filter(x=>(!CMF.v||x.v===CMF.v)&&(!CMF.c||x.c===CMF.c));
   const neg=D.filter(x=>cmIn(x.dc,R)), negP=D.filter(x=>cmIn(x.dc,P));
   const pro=D.filter(x=>cmIn(x.pd,R)), proP=D.filter(x=>cmIn(x.pd,P));
@@ -1549,17 +1592,111 @@ function renderCmDyn(){
     ${ring("Proposta → Venda",C.pv,"Negócios com proposta que viraram venda",C.pw,"vendas",`de ${tpN(C.p)} com proposta · ${tpPct(C.pv,1)}`,C.pv,Cp.pv,"#7c3aed")}
     ${ring("Negócio → Venda",C.nv,"Negócios do período que viraram venda",C.w,"vendas",`de ${tpN(C.n)} negócios · ${tpPct(C.nv,1)}`,C.nv,Cp.nv,"#16a34a")}
   </div>
+  <div class="tp-panel" style="margin-top:16px" id="cm-evol"></div>
   <div class="tp-panel" style="margin-top:30px">${tpHead("bars","O que está sendo negociado",`Situação atual dos ${tpN(neg.length)} negócios criados no período`,"",TPC.blue)}
     <div class="tp-stack" style="height:26px">${sit.filter(s=>s.n).map(s=>`<i title="${s.l}: ${s.n}" style="width:${s.n/Math.max(1,neg.length)*100}%;background:${s.c}"></i>`).join("")}</div>
     <div class="cm-sit">${sit.map(s=>`<div style="--c:${s.c}"><div class="t"><i></i>${s.l}</div><div class="n">${tpN(s.n)}</div><div class="s">${tpPct(neg.length?s.n/neg.length*100:0)} · ${tpBRL(s.o,0)}</div></div>`).join("")}</div>
   </div>
-  <div class="cm-g cm-g2" style="margin-top:16px">
-    <div class="tp-qc"><h4>Motivos de perda</h4><div class="d">${tpN(per.length)} negócios perdidos no período · ranking dos motivos</div>
-      ${per.length?tpRows(motArr)+(outroArr.length?`<div class="tp-sep" style="margin:14px 0 10px"></div><div style="font-size:13.5px;font-weight:800;margin-bottom:2px">Dentro de “Outro”</div><div class="tp-note" style="margin:0 0 6px">Resumo do campo “Observações Desqualificação”, agrupado por tema</div>`+tpRows(outroArr)+tpInfo(`O principal motivo escondido em “Outro” é <b>${tpEsc(outroArr[0].label.toLowerCase())}</b>: ${tpPct(outroArr[0].n/outros.length*100)} desses casos.`):""):'<div class="tp-empty">Nenhum negócio perdido no período.</div>'}</div>
-    <div class="tp-qc"><h4>Origem dos negócios</h4><div class="d">Campo “Fonte” dos negócios criados no período · e quantos viraram venda</div>
-      ${srcArr.length?`<div class="cm-src">${srcArr.map(([k,o],i)=>`<div class="r"><span class="nm"><i style="background:${SRC_COR[i%SRC_COR.length]}"></i>${tpEsc(k)}</span><span class="rt"><i style="width:${o.n/srcMax*100}%;background:${SRC_COR[i%SRC_COR.length]}"></i></span><span class="q">${tpN(o.n)}<small>${tpPct(o.n/neg.length*100)}</small></span><span class="w" title="vendas e conversão">${o.w?`${tpN(o.w)} venda${o.w>1?"s":""}<small>${tpPct(o.w/o.n*100,1)}</small>`:'<small>sem venda</small>'}</span></div>`).join("")}</div>`:'<div class="tp-empty">Nenhum negócio no período.</div>'}</div>
-  </div>`;
+  <div id="cm-origem"></div>
+  ${tpHead("tool","Motivos de perda",`${tpN(per.length)} negócios perdidos no período · ranking dos motivos informados no Bitrix`,"",TPC.pink)}
+  <div class="tp-qc">${per.length?`<div class="cm-g cm-g2" style="gap:32px;align-items:start"><div><div style="font-size:14px;font-weight:800;margin-bottom:6px">Ranking dos motivos</div>${tpRows(motArr)}</div>
+      <div>${outroArr.length?`<div style="font-size:14px;font-weight:800">Dentro de “Outro”</div><div class="tp-note" style="margin:0 0 6px">Resumo do campo “Observações Desqualificação”, agrupado por tema</div>${tpRows(outroArr)}${tpInfo(`O principal motivo escondido em “Outro” é <b>${tpEsc(outroArr[0].label.toLowerCase())}</b>: ${tpPct(outroArr[0].n/outros.length*100)} desses casos.`)}`:'<div class="tp-empty">Nenhuma perda marcada como “Outro” no período.</div>'}</div></div>`:'<div class="tp-empty">Nenhum negócio perdido no período.</div>'}</div>`;
   TP_NOCMP=false;
+  renderCmEvol(D,r); renderCmOrigem(D,r);
+}
+
+// ---- Evolução de resultados: linhas com área (R$ por dia) ----
+function cmLines(days,series,focus){
+  const W=1000,H=250,pl=62,pr=16,pt=14,pb=30,iw=W-pl-pr,ih=H-pt-pb,n=days.length;
+  const mx=Math.max(1,...series.flatMap(s=>s.v)), nice=(()=>{const raw=mx/3,p=Math.pow(10,Math.floor(Math.log10(raw))),f=raw/p,st=(f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p;return st*3;})();
+  const x=i=>pl+(n<2?iw/2:i*iw/(n-1)), y=v=>pt+ih-ih*v/nice;
+  const curva=pts=>{ if(pts.length<2) return ""; let d=`M${pts[0][0]},${pts[0][1]}`;
+    for(let i=0;i<pts.length-1;i++){const p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||p2;
+      const bY=pt+ih,cy=v=>Math.min(bY,v);d+=` C${p1[0]+(p2[0]-p0[0])/6},${cy(p1[1]+(p2[1]-p0[1])/6)} ${p2[0]-(p3[0]-p1[0])/6},${cy(p2[1]-(p3[1]-p1[1])/6)} ${p2[0]},${p2[1]}`;}
+    return d;};
+  let g="";
+  for(let t=0;t<=3;t++){const v=nice*t/3,yy=y(v);g+=`<line x1="${pl}" x2="${W-pr}" y1="${yy}" y2="${yy}" stroke="var(--line2)"/><text class="ax" x="${pl-8}" y="${yy+4}" text-anchor="end">${tpN(v)}</text>`;}
+  const step=Math.ceil(n/10);
+  days.forEach((d,i)=>{if(i%step===0||i===n-1) g+=`<text class="ax" x="${x(i)}" y="${H-8}" text-anchor="middle">${tpBr(d)}</text>`;});
+  // desenha a série em foco por último (por cima)
+  const ord=[...series].sort((a,b)=>(a.k===focus)-(b.k===focus));
+  ord.forEach(s=>{
+    const pts=s.v.map((v,i)=>[x(i),y(v)]), op=!focus||s.k===focus?1:.35, id="cl"+s.k;
+    const path=curva(pts);
+    g+=`<defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${s.color}" stop-opacity="${.22*op}"/><stop offset="1" stop-color="${s.color}" stop-opacity="0"/></linearGradient></defs>`;
+    if(path) g+=`<path d="${path} L${pts[pts.length-1][0]},${pt+ih} L${pts[0][0]},${pt+ih} Z" fill="url(#${id})"/><path d="${path}" fill="none" stroke="${s.color}" stroke-width="${s.k===focus?3.2:2.4}" opacity="${op}" stroke-linecap="round"/>`;
+    pts.forEach((p,i)=>{g+=`<circle cx="${p[0]}" cy="${p[1]}" r="${n>31?2.2:4.2}" fill="${s.color}" stroke="var(--panel)" stroke-width="2" opacity="${op}"><title>${tpBrY(days[i])} · ${s.name}: ${tpBRL(s.v[i],0)}</title></circle>`;});
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" role="img">${g}</svg>`;
+}
+function renderCmEvol(D,r){
+  const el=document.getElementById("cm-evol"); if(!el) return;
+  const cd=tpChartDays(r), R=[r.ini,r.fim];
+  const soma=(k,val)=>{const o={};D.forEach(x=>{if(x[k])o[x[k]]=(o[x[k]]||0)+(x[val]||0);});return cd.days.map(d=>o[d]||0);};
+  const tot=(k,val)=>D.filter(x=>cmIn(x[k],R)).reduce((s,x)=>s+(x[val]||0),0);
+  const S=[{k:"neg",name:"Negócios",color:"#2563eb",v:soma("dc","o"),t:tot("dc","o")},
+           {k:"pro",name:"Propostas",color:"#7c3aed",v:soma("pd","pv"),t:tot("pd","pv")},
+           {k:"ven",name:"Vendas",color:"#16a34a",v:soma("won","o"),t:tot("won","o")}];
+  const f=CMF.evol||"";
+  el.innerHTML=`${tpHead("bars","Evolução de resultados","Negócios, propostas e vendas (R$) ao longo do período"+(cd.sel?" · mostrando 14 dias, com o período destacado":""),
+      `<span class="tp-seg2 cm-evtog">${[["","Todos"],...S.map(s=>[s.k,s.name])].map(([k,l])=>`<button data-ev="${k}" class="${f===k?"on":""}">${l}</button>`).join("")}</span>`,TPC.blue)}
+    <div class="cm-evo"><div class="tp-chart">${cmLines(cd.days,S,f)}</div>
+      <div class="cm-evleg">${S.map(s=>`<div class="${f&&f!==s.k?"off":""}"><i style="background:${s.color}"></i><span>${s.name}</span><b>${tpBRL(s.t,0)}</b></div>`).join("")}<div class="tp-note" style="margin:6px 0 0">Totais do período</div></div></div>`;
+  el.querySelectorAll("[data-ev]").forEach(b=>b.onclick=()=>{CMF.evol=b.dataset.ev;renderCmEvol(D,r);});
+}
+
+// ---- seção Origem dos negócios (campo Fonte do Bitrix) ----
+const CM_SRC_COR=["#2563eb","#16a34a","#f59e0b","#7c3aed","#e11d48","#0891b2","#0d9488","#ea580c","#64748b","#a855f7","#84cc16","#f43f5e"];
+function cmDonutMulti(parts,tot,lbl){
+  const r=46,c=2*Math.PI*r; let off=0;
+  const segs=parts.filter(p=>p.n).map(p=>{const len=p.n/tot*c, s=`<circle cx="60" cy="60" r="${r}" fill="none" stroke="${p.c}" stroke-width="16" stroke-dasharray="${len} ${c-len}" stroke-dashoffset="${-off}" transform="rotate(-90 60 60)"><title>${tpEsc(p.l)}: ${tpN(p.n)}</title></circle>`;off+=len;return s;}).join("");
+  return `<svg viewBox="0 0 120 120" style="width:170px;height:170px;flex:0 0 auto"><circle cx="60" cy="60" r="${r}" fill="none" stroke="var(--line2)" stroke-width="16"/>${segs}<text x="60" y="58" text-anchor="middle" font-size="22" font-weight="800" fill="var(--ink)">${tpN(tot)}</text><text x="60" y="75" text-anchor="middle" font-size="10" fill="var(--muted)">${lbl}</text></svg>`;
+}
+function renderCmOrigem(D,r){
+  const el=document.getElementById("cm-origem"), R=[r.ini,r.fim];
+  const filtroTxt=[CMF.v?CM.vend[CMF.v]:"",CMF.c?CM.pipes[CMF.c]:""].filter(Boolean).join(" · ");
+  const neg=D.filter(x=>cmIn(x.dc,R)), ven=D.filter(x=>cmIn(x.won,R));
+  // cor fixa por fonte (pela ordem de volume no histórico inteiro, p/ não trocar de cor a cada filtro)
+  const tot={};CM.deals.forEach(x=>{tot[x.src]=(tot[x.src]||0)+1;});
+  const corF={};Object.entries(tot).sort((a,b)=>b[1]-a[1]).forEach(([k],i)=>{corF[k]=CM_SRC_COR[i%CM_SRC_COR.length];});
+  const by={};neg.forEach(x=>{const o=by[x.src]=by[x.src]||{n:0,o:0,p:0,w:0,wo:0};o.n++;o.o+=x.o;if(x.np>0)o.p++;if(x.won){o.w++;o.wo+=x.o;}});
+  const arr=Object.entries(by).map(([k,o])=>({k,...o,conv:tpDiv(o.w*100,o.n),c:corF[k]})).sort((a,b)=>b.n-a.n);
+  const vby={};ven.forEach(x=>{const o=vby[x.src]=vby[x.src]||{n:0,o:0};o.n++;o.o+=x.o;});
+  const varr=Object.entries(vby).map(([k,o])=>({k,...o,c:corF[k]})).sort((a,b)=>b.o-a.o);
+  const head=tpHead("radar","Origem dos negócios",`De onde vêm os negócios (campo “Fonte” do Bitrix) · ${tpPerTxt({p:CMF.p},r)}${filtroTxt?" · "+tpEsc(filtroTxt):""}`,"",TPC.orange);
+  if(!neg.length&&!ven.length){el.innerHTML=head+`<div class="tp-panel"><div class="tp-empty">Nenhum negócio criado e nenhuma venda ${CMF.p==="hoje"?"hoje":"no período"}${filtroTxt?" para "+tpEsc(filtroTxt):""}. Tente um período maior ou tire o filtro de vendedor.</div></div>`;return;}
+  const top=arr[0], topV=varr[0], topC=arr.filter(x=>x.n>=5&&x.w>0).sort((a,b)=>b.conv-a.conv)[0];
+  const dest=(ic,c,t,v,s)=>`<div class="cm-od" style="--c:${c}"><span class="i">${tpSvg(ic)}</span><div><div class="t">${t}</div><div class="v">${v}</div><div class="s">${s}</div></div></div>`;
+  // donut: top 6 + "outras"
+  const top6=arr.slice(0,6), resto=arr.slice(6).reduce((s,x)=>s+x.n,0);
+  const parts=top6.map(x=>({l:x.k,n:x.n,c:x.c})).concat(resto?[{l:"Outras fontes",n:resto,c:"#cbd5e1"}]:[]);
+  const vmx=Math.max(1,...varr.map(x=>x.o));
+  // evolução semanal (últimas 8 semanas, não depende do período; respeita vendedor/pipeline)
+  const seg=d=>{const t=new Date(d+"T12:00:00Z"),w=(t.getUTCDay()+6)%7;t.setUTCDate(t.getUTCDate()-w);return t.toISOString().slice(0,10);};
+  const sem=[];for(let i=7;i>=0;i--)sem.push(seg(tpAdd(CM.hoje,-7*i)));
+  const top5=Object.entries(D.filter(x=>x.dc>=sem[0]).reduce((o,x)=>{o[x.src]=(o[x.src]||0)+1;return o;},{})).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>x[0]);
+  const cont=(f,s)=>D.filter(x=>x.dc&&seg(x.dc)===s&&(f?x.src===f:!top5.includes(x.src))).length;
+  const stacks=top5.map(f=>({name:f,color:corF[f],v:sem.map(s=>cont(f,s))})).concat([{name:"Outras",color:"#cbd5e1",v:sem.map(s=>cont(null,s))}]);
+  const line={name:"Vendido no período (R$)",color:"#f59e0b",v:sem.map(s=>D.filter(x=>x.won&&seg(x.won)===s).reduce((a,x)=>a+x.o,0))};
+  el.innerHTML=head+`
+  <div class="cm-ods">
+    ${top?dest("users",top.c,"Fonte que mais traz negócios",tpEsc(top.k),`${tpN(top.n)} negócios · ${tpPct(top.n/neg.length*100)} do total`):""}
+    ${topV?dest("check",topV.c,"Fonte que mais vendeu no período",tpEsc(topV.k),`${tpBRL(topV.o,0)} · ${tpN(topV.n)} venda${topV.n===1?"":"s"}`):dest("check","#9aa7bd","Fonte que mais vendeu no período","—","nenhuma venda no período")}
+    ${topC?dest("trend",topC.c,"Melhor conversão (mín. 5 negócios)",tpEsc(topC.k),`${tpPct(topC.conv,1)} viraram venda · ${tpN(topC.w)} de ${tpN(topC.n)}`):dest("trend","#9aa7bd","Melhor conversão (mín. 5 negócios)","—","nenhuma fonte com venda e 5+ negócios")}
+  </div>
+  <div class="cm-g cm-g2" style="margin-top:16px">
+    <div class="tp-qc"><h4>Participação nos negócios</h4><div class="d">Negócios criados no período, por fonte</div>
+      ${neg.length?`<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">${cmDonutMulti(parts,neg.length,"negócios")}<div style="flex:1;min-width:200px">${parts.map(p=>`<div class="cm-lg"><i style="background:${p.c}"></i><span>${tpEsc(p.l)}</span><b>${tpPct(p.n/neg.length*100)}</b><small>${tpN(p.n)}</small></div>`).join("")}</div></div>`:'<div class="tp-empty">Nenhum negócio criado no período.</div>'}</div>
+    <div class="tp-qc"><h4>Vendas fechadas no período, por fonte</h4><div class="d">Valor vendido no período (inclui cards criados antes)</div>
+      ${varr.length?varr.map((x,i)=>`<div class="cm-rk"><span class="p">${i+1}º</span><span class="nm"><i style="background:${x.c}"></i>${tpEsc(x.k)}</span><span class="rt"><i style="width:${x.o/vmx*100}%;background:${x.c}"></i></span><span class="vv">${tpBRL(x.o,0)}<small style="display:block;font-size:10.5px;color:var(--muted);font-weight:600">${tpN(x.n)} venda${x.n===1?"":"s"}</small></span></div>`).join(""):'<div class="tp-empty">Nenhuma venda no período.</div>'}</div>
+  </div>
+  ${arr.length?`<div class="tp-panel" style="margin-top:16px">${tpHead("bars","Desempenho por fonte","Negócios criados no período e o que aconteceu com eles até hoje","",TPC.orange)}
+    <div class="tp-tblw"><table class="tp-tbl2"><thead><tr><th>Fonte</th><th>Negócios</th><th>% do total</th><th>Valor</th><th>Com proposta</th><th>Viraram venda</th><th>Conversão</th><th>Valor vendido</th><th>Ticket médio</th></tr></thead><tbody>
+    ${arr.map(x=>`<tr class="${x===topC?"best":""}"><td><div class="cn"><i style="background:${x.c}"></i><div>${tpEsc(x.k)}${x===top||x===topC?`<div class="tags">${x===top?"<span>Mais negócios</span>":""}${x===topC?"<span>Melhor conversão</span>":""}</div>`:""}</div></div></td>
+      <td><b>${tpN(x.n)}</b></td><td>${tpPct(x.n/neg.length*100,1)}</td><td>${tpBRL(x.o,0)}</td><td>${tpN(x.p)}</td><td>${tpN(x.w)}</td><td><b>${tpPct(x.conv,1)}</b></td><td>${tpBRL(x.wo,0)}</td><td>${x.w?tpBRL(x.wo/x.w,0):"—"}</td></tr>`).join("")}
+    <tr class="tot"><td>Total</td><td>${tpN(neg.length)}</td><td>100%</td><td>${tpBRL(arr.reduce((s,x)=>s+x.o,0),0)}</td><td>${tpN(arr.reduce((s,x)=>s+x.p,0))}</td><td>${tpN(arr.reduce((s,x)=>s+x.w,0))}</td><td>${tpPct(tpDiv(arr.reduce((s,x)=>s+x.w,0)*100,neg.length),1)}</td><td>${tpBRL(arr.reduce((s,x)=>s+x.wo,0),0)}</td><td>—</td></tr>
+    </tbody></table></div></div>`:""}
+  <div class="tp-panel" style="margin-top:16px">${tpHead("trend","Evolução semanal por fonte","Negócios criados por semana nas últimas 8 semanas (não muda com o período) · linha: valor vendido",tpLegend(stacks,line),TPC.orange)}<div class="tp-chart">${tpChart(sem,stacks,line,null)}</div></div>`;
 }
 
 function renderCmVend(){
