@@ -643,6 +643,8 @@
   .tp-ai2 li b{color:var(--ink)}
   :is(#view-trafego,#view-comercial) .tp-camp{border-radius:20px}
   /* ===== Comercial ===== */
+  #view-comercial .tp-big .spark{width:min(24%,130px);height:38px}
+  #view-comercial .tp-big .bd{max-width:100%}
   .cm-g{display:grid;gap:16px}.cm-g3{grid-template-columns:repeat(3,1fr)}.cm-g2{grid-template-columns:repeat(2,1fr)}
   @media(max-width:1000px){.cm-g3,.cm-g2{grid-template-columns:1fr}}
   .cm-sit{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:6px}
@@ -683,7 +685,8 @@
   .tp-big .vl{font-size:clamp(30px,3.2vw,42px);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-top:8px;font-variant-numeric:tabular-nums}
   .tp-big .cmp{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:12px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
   .tp-big .cmp .tp-delta{font-size:12px;padding:3px 9px}
-  .tp-big .sub{font-size:12.5px;color:var(--muted);margin-top:6px}
+  .tp-big .sub{font-size:12.5px;color:var(--muted);margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .tp-big .sub b{font-size:15px;color:var(--ink)} .tp-big.hl .sub b{color:#fff}
   .tp-big .spark{position:absolute;right:18px;bottom:18px;width:min(30%,150px);height:44px;pointer-events:none;opacity:.85}
   .tp-big .spark svg{width:100%;height:100%;display:block}
   .tp-big.hl{background:radial-gradient(120% 140% at 100% 0%,#2f63c4 0%,transparent 55%),linear-gradient(150deg,#22489a,#142f66);border-color:transparent;color:#fff}
@@ -1478,7 +1481,7 @@ function renderCmDyn(){
   const conv=(a)=>{const n=a.length,p=a.filter(x=>x.np>0).length,pw=a.filter(x=>x.np>0&&x.won).length,w=a.filter(x=>x.won).length;return {n,p,pw,w,np:tpDiv(p*100,n),pv:tpDiv(pw*100,p),nv:tpDiv(w*100,n)};};
   const C=conv(neg), Cp=conv(negP);
   const big=(o)=>`<div class="tp-big${o.hl?" hl":""}"><div class="ic ${o.ic2||""}">${tpSvg(o.ic)}</div>
-    <div class="bd"><div class="lb">${o.l}</div><div class="vl">${o.v}</div><div class="sub">${o.sub}</div><div class="cmp">${TP_NOCMP?"<span>dia em andamento</span>":tpDelta(o.cur,o.prev)+"<span>vs. período anterior</span>"}</div></div><div class="spark">${o.spark}</div></div>`;
+    <div class="bd"><div class="lb">${o.l}</div><div class="vl">${o.v}</div><div class="sub">${o.sub}</div><div class="cmp">${TP_NOCMP?"<span>dia em andamento</span>":tpDelta(o.cur,o.prev)+"<span>valor vs. período anterior</span>"}</div></div><div class="spark">${o.spark}</div></div>`;
   const ring=(t,p,a,num,lbl,b,cur,prev,c)=>`<div class="tp-qc"><h4>${t}</h4><div class="d">${a}</div>
     <div class="tp-donut">${tpDonut(p||0,c,"conversão")}<div><div class="bn">${tpN(num)} ${TP_NOCMP?"":tpDelta(cur,prev)}</div><div class="bl">${lbl}</div><div class="bs">${b}</div></div></div></div>`;
   // situação atual dos negócios do período
@@ -1495,9 +1498,9 @@ function renderCmDyn(){
   const SRC_COR=["#2563eb","#16a34a","#f59e0b","#7c3aed","#e11d48","#0891b2","#0d9488","#ea580c","#64748b"];
   el.innerHTML=`
   <div class="tp-bigs">
-    ${big({hl:1,ic:"users",l:"Negócios",v:tpN(neg.length),sub:`${tpBRL(sum(neg,"o"),0)} em valor`,cur:neg.length,prev:negP.length,spark:tpSpark(conta(D,"dc"),"rgba(255,255,255,.75)",true)})}
-    ${big({ic:"form",ic2:"ic-blue",l:"Propostas feitas",v:tpN(pro.length),sub:`${tpBRL(sum(pro,"pv"),0)} · só a última proposta de cada card`,cur:pro.length,prev:proP.length,spark:tpSpark(conta(D,"pd"),"#2563eb")})}
-    ${big({ic:"check",ic2:"ic-green",l:"Vendas feitas",v:tpN(ven.length),sub:`${tpBRL(sum(ven,"o"),0)} · ticket médio ${tpBRL(tpDiv(sum(ven,"o"),ven.length),0)}`,cur:ven.length,prev:venP.length,spark:tpSpark(conta(D,"won"),"#16a34a")})}
+    ${big({hl:1,ic:"users",l:"Negócios",v:tpBRL(sum(neg,"o"),0),sub:`<b>${tpN(neg.length)}</b> negócio${neg.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(neg.length,negP.length)}`,cur:sum(neg,"o"),prev:sum(negP,"o"),spark:tpSpark(conta(D,"dc"),"rgba(255,255,255,.75)",true)})}
+    ${big({ic:"form",ic2:"ic-blue",l:"Propostas feitas",v:tpBRL(sum(pro,"pv"),0),sub:`<b>${tpN(pro.length)}</b> proposta${pro.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(pro.length,proP.length)} · só a última de cada card`,cur:sum(pro,"pv"),prev:sum(proP,"pv"),spark:tpSpark(conta(D,"pd"),"#2563eb")})}
+    ${big({ic:"check",ic2:"ic-green",l:"Vendas feitas",v:tpBRL(sum(ven,"o"),0),sub:`<b>${tpN(ven.length)}</b> venda${ven.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(ven.length,venP.length)} · ticket médio ${tpBRL(tpDiv(sum(ven,"o"),ven.length),0)}`,cur:sum(ven,"o"),prev:sum(venP,"o"),spark:tpSpark(conta(D,"won"),"#16a34a")})}
   </div>
   ${tpHead("trend","Taxas de conversão","Dos negócios criados no período, o que aconteceu com eles até hoje","",TPC.green)}
   <div class="cm-g cm-g3">
