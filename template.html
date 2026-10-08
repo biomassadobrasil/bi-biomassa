@@ -643,6 +643,42 @@
   .tp-ai2 li b{color:var(--ink)}
   :is(#view-trafego,#view-comercial) .tp-camp{border-radius:20px}
   /* ===== Comercial ===== */
+  .cm-ri{width:28px;height:28px;border-radius:9px;display:inline-grid;place-items:center;background:color-mix(in srgb,var(--c) 13%,transparent);color:var(--c)}
+  .cm-ri svg{width:15px;height:15px}
+  .cm-rk{display:grid;grid-template-columns:26px minmax(0,1fr) minmax(50px,1.1fr) 92px;gap:10px;align-items:center;padding:7px 0;font-size:13.5px}
+  .cm-rk .p{font-size:11.5px;font-weight:800;color:var(--muted)}
+  .cm-rk .nm{display:flex;align-items:center;gap:7px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cm-rk .nm i{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .cm-rk .rt{height:10px;border-radius:999px;background:var(--line2);overflow:hidden}.cm-rk .rt i{display:block;height:100%;border-radius:999px}
+  .cm-rk .vv{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+  .cm-rk.zero{opacity:.45}
+  .cm-vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+  @media(max-width:1100px){.cm-vgrid{grid-template-columns:repeat(2,1fr)}} @media(max-width:700px){.cm-vgrid{grid-template-columns:1fr}}
+  .cm-vc{background:var(--panel);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:18px 20px;border-top:4px solid var(--c);display:flex;flex-direction:column;gap:16px}
+  .cm-vc.vazio{opacity:.55}
+  .cm-vc .h{display:flex;gap:12px;align-items:center}
+  .cm-vc .av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:18px;color:#fff;background:var(--c);flex:0 0 auto}
+  .cm-vc .nm{font-size:17px;font-weight:800}
+  .cm-vc .sb{font-size:12px;color:var(--muted)}
+  .cm-vc .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+  .cm-vc .tags span{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--good-soft);color:var(--good)}
+  .cm-vc .ms{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:10px}
+  .cm-vc .ms>div{background:color-mix(in srgb,var(--bg) 60%,var(--panel));border-radius:12px;padding:10px 12px;min-width:0}
+  .cm-vc .ms .hv{background:var(--good-soft)}
+  .cm-vc .ms .k{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .cm-vc .ms .n{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cm-vc .ms .hv .n{color:var(--good);font-size:19px}
+  .cm-vc .ms .s{font-size:11.5px;color:var(--muted)}
+  .cm-vc .cv .t{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700}
+  .cm-vc .cv .t b{font-size:16px;color:#7c3aed}
+  .cm-vc .cv .tr{height:10px;border-radius:999px;background:var(--line2);overflow:hidden;margin:6px 0 4px}
+  .cm-vc .cv .tr i{display:block;height:100%;border-radius:999px;background:#7c3aed}
+  .cm-vc .cv .s{font-size:11.5px;color:var(--muted)}
+  .cm-vc .ft{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:1px solid var(--line2);padding-top:12px}
+  .cm-vc .ft>div{display:flex;gap:8px;align-items:flex-start;min-width:0}
+  .cm-vc .ft svg{width:16px;height:16px;color:var(--muted);flex:0 0 auto;margin-top:2px}
+  .cm-vc .ft b{display:block;font-size:14px}
+  .cm-vc .ft small{display:block;font-size:11px;color:var(--muted);line-height:1.3}
   #view-comercial .tp-big .spark{width:min(24%,130px);height:38px}
   #view-comercial .tp-big .bd{max-width:100%}
   .cm-g{display:grid;gap:16px}.cm-g3{grid-template-columns:repeat(3,1fr)}.cm-g2{grid-template-columns:repeat(2,1fr)}
@@ -1021,6 +1057,7 @@ Object.assign(TPI,{
   build:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/>',
   ruler:'<path d="M21.3 8.7 8.7 21.3a1 1 0 0 1-1.4 0l-4.6-4.6a1 1 0 0 1 0-1.4L15.3 2.7a1 1 0 0 1 1.4 0l4.6 4.6a1 1 0 0 1 0 1.4z"/><path d="m7.5 10.5 2 2M10.5 7.5l2 2M13.5 4.5l2 2M4.5 13.5l2 2"/>',
   hammer:'<path d="m15 12-8.5 8.5a2.12 2.12 0 1 1-3-3L12 9"/><path d="M17.64 15 22 10.64"/><path d="m20.91 11.7-1.25-1.25c-.6-.6-.93-1.4-.93-2.25v-.86L16.01 4.6a5.56 5.56 0 0 0-3.94-1.64H9l.92.82A6.18 6.18 0 0 1 12 8.4v1.56l2 2h2.47l2.26 1.91"/>',
+  phone:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>',
   pause:'<circle cx="12" cy="12" r="10"/><line x1="10" y1="15" x2="10" y2="9"/><line x1="14" y1="15" x2="14" y2="9"/>',
 });
 const TPC={blue:"#2563eb",pink:"#e11d48",purple:"#7c3aed",teal:"#0891b2",orange:"#f59e0b",green:"#16a34a",ig:"#d62976",fb:"#1877f2"};
@@ -1532,23 +1569,42 @@ function renderCmVend(){
   const rows=Object.entries(CM.vend).map(([v,nome],i)=>{
     const a=D.filter(x=>x.v===v), neg=a.filter(x=>cmIn(x.dc,R)), pro=a.filter(x=>cmIn(x.pd,R)), ven=a.filter(x=>cmIn(x.won,R));
     const lg=CM.ligacoes.filter(x=>x.v===v&&cmIn(x.d,R)), n=lg.reduce((s,x)=>s+x.n,0), ok=lg.reduce((s,x)=>s+x.ok,0);
+    const pw=pro.filter(x=>x.won).length;
     return {v,nome,cor:TP_DOTS[i%TP_DOTS.length],neg:neg.length,negO:neg.reduce((s,x)=>s+x.o,0),pro:pro.length,proO:pro.reduce((s,x)=>s+x.pv,0),
-      ven:ven.length,venO:ven.reduce((s,x)=>s+x.o,0),conv:tpDiv(neg.filter(x=>x.won).length*100,neg.length),lig:n,ok,
+      ven:ven.length,venO:ven.reduce((s,x)=>s+x.o,0),pw,conv:tpDiv(pw*100,pro.length),lig:n,ok,
       fc:cmMed(neg.map(x=>x.fc)),fcN:neg.filter(x=>tpOk(x.fc)).length,dias:cmMed(ven.map(x=>x.dias))};
   });
-  const mx=k=>Math.max(1,...rows.map(x=>x[k]||0));
-  const cell=(x,k,txt,sub,cor)=>`<td><div class="cm-cell"><b>${txt}</b>${sub?`<small>${sub}</small>`:""}<span class="cm-bar"><i style="width:${(x[k]||0)/mx(k)*100}%;background:${cor||x.cor}"></i></span></div></td>`;
-  const best=(k,low)=>{const ok=rows.filter(x=>tpOk(x[k])&&(k!=="conv"||x.neg>=5));return ok.length?ok.reduce((a,b)=>(low?b[k]<a[k]:b[k]>a[k])?b:a):null;};
-  const bV=best("venO"), bC=best("conv"), bF=best("fc",true);
-  el.innerHTML=`<div class="tp-panel"><div class="tp-tblw"><table class="tp-tbl2 cm-vt"><thead><tr><th>Vendedor</th><th>Negócios</th><th>Propostas</th><th>Vendas</th><th>Conversão</th><th>Ligações</th><th>1º contato</th><th>Fechamento</th></tr></thead><tbody>
-    ${rows.map(x=>{const tg=[x===bV&&x.venO?"Mais vendas (R$)":"",x===bC?"Melhor conversão":"",x===bF?"Contato mais rápido":""].filter(Boolean);
-      return `<tr><td><div class="cn"><i style="background:${x.cor}"></i><div>${x.nome}${tg.length?`<div class="tags">${tg.map(t=>`<span>${t}</span>`).join("")}</div>`:""}</div></div></td>
-      ${cell(x,"neg",tpN(x.neg),tpBRL(x.negO,0))}${cell(x,"pro",tpN(x.pro),tpBRL(x.proO,0))}${cell(x,"venO",tpN(x.ven),tpBRL(x.venO,0),"#16a34a")}
-      ${cell(x,"conv",tpPct(x.conv,1),"negócio → venda","#7c3aed")}${cell(x,"lig",tpN(x.lig),x.lig?tpPct(x.ok/x.lig*100)+" atendidas":"","#0891b2")}
-      <td><div class="cm-cell"><b>${cmHoras(x.fc)}</b><small>${x.fcN?`mediana · ${tpN(x.fcN)} com ligação`:"sem ligação no card"}</small></div></td>
-      <td><div class="cm-cell"><b>${tpOk(x.dias)?tpN(x.dias)+(x.dias===1?" dia":" dias"):"—"}</b><small>${x.ven?"mediana da criação ao ganho":"sem vendas"}</small></div></td></tr>`;}).join("")}
-    </tbody></table></div>
-    ${tpInfo(`<b>Conversão</b>: negócios criados no período que já viraram venda. <b>1º contato</b>: tempo entre a criação do card e a primeira ligação feita para ele (contatos só pelo WhatsApp não ficam registrados no Bitrix). <b>Fechamento</b>: dias entre a criação e o ganho, das vendas do período. <b>Ligações</b>: telefonia do Bitrix, feitas no período.`)}</div>`;
+  const best=(k,low,min)=>{const ok=rows.filter(x=>tpOk(x[k])&&x[k]>0&&(!min||min(x)));return ok.length?ok.reduce((a,b)=>(low?b[k]<a[k]:b[k]>a[k])?b:a):null;};
+  const bV=best("venO"), bC=best("conv",false,x=>x.pro>=3), bF=best("fc",true);
+  // rankings
+  const rank=(t,ic,c,k,fmt,sub)=>{const arr=[...rows].sort((a,b)=>b[k]-a[k]), mx=Math.max(1,...arr.map(x=>x[k]));
+    return `<div class="tp-qc"><h4><span class="cm-ri" style="--c:${c}">${tpSvg(ic)}</span>${t}</h4><div class="d">${sub}</div>
+      ${arr.map((x,i)=>`<div class="cm-rk${x[k]?"":" zero"}"><span class="p">${i+1}º</span><span class="nm"><i style="background:${x.cor}"></i>${x.nome}</span><span class="rt"><i style="width:${x[k]/mx*100}%;background:${c}"></i></span><span class="vv">${fmt(x)}</span></div>`).join("")}</div>`;};
+  // cards por vendedor (ordem: quem vendeu mais primeiro)
+  const ord=[...rows].sort((a,b)=>b.venO-a.venO||b.proO-a.proO||b.neg-a.neg);
+  const card=x=>{const tg=[x===bV?"Mais vendas (R$)":"",x===bC?"Melhor conversão":"",x===bF?"Contato mais rápido":""].filter(Boolean);
+    const vazio=!x.neg&&!x.pro&&!x.ven;
+    return `<div class="cm-vc${vazio?" vazio":""}" style="--c:${x.cor}">
+      <div class="h"><span class="av">${x.nome[0]}</span><div><div class="nm">${x.nome}</div>${tg.length?`<div class="tags">${tg.map(t=>`<span>${t}</span>`).join("")}</div>`:`<div class="sb">${vazio?"sem movimento no período":"&nbsp;"}</div>`}</div></div>
+      <div class="ms">
+        <div><div class="k">Negócios</div><div class="n">${tpN(x.neg)}</div><div class="s">${tpBRL(x.negO,0)}</div></div>
+        <div><div class="k">Propostas</div><div class="n">${tpN(x.pro)}</div><div class="s">${tpBRL(x.proO,0)}</div></div>
+        <div class="hv"><div class="k">Vendas</div><div class="n">${tpBRL(x.venO,0)}</div><div class="s">${tpN(x.ven)} venda${x.ven===1?"":"s"}</div></div>
+      </div>
+      <div class="cv"><div class="t"><span>Conversão proposta → venda</span><b>${x.pro?tpPct(x.conv,1):"—"}</b></div>
+        <div class="tr"><i style="width:${x.conv||0}%"></i></div><div class="s">${x.pro?`${tpN(x.pw)} de ${tpN(x.pro)} proposta${x.pro===1?"":"s"} do período já viraram venda`:"nenhuma proposta no período"}</div></div>
+      <div class="ft">
+        <div title="Ligações feitas pela telefonia do Bitrix">${tpSvg("phone")}<div><b>${tpN(x.lig)}</b><small>ligações · ${x.lig?tpPct(x.ok/x.lig*100)+" atendidas":"—"}</small></div></div>
+        <div title="Mediana do tempo entre a criação do card e a 1ª ligação para ele">${tpSvg("clock")}<div><b>${cmHoras(x.fc)}</b><small>até o 1º contato</small></div></div>
+        <div title="Mediana de dias entre a criação e o ganho, das vendas do período">${tpSvg("check")}<div><b>${tpOk(x.dias)?tpN(x.dias)+(x.dias===1?" dia":" dias"):"—"}</b><small>para fechar</small></div></div>
+      </div></div>`;};
+  el.innerHTML=`<div class="cm-g cm-g3">
+      ${rank("Vendas","check","#16a34a","venO",x=>tpBRL(x.venO,0),"Valor vendido no período")}
+      ${rank("Propostas","form","#2563eb","proO",x=>tpBRL(x.proO,0),"Valor das propostas (última de cada card)")}
+      ${rank("Negócios","users","#7c3aed","neg",x=>tpN(x.neg),"Negócios criados no período")}
+    </div>
+    <div class="cm-vgrid">${ord.map(card).join("")}</div>
+    ${tpInfo(`<b>Conversão</b>: das propostas feitas no período, quantas já viraram venda. <b>1º contato</b>: tempo (mediana) entre a criação do card e a primeira ligação para ele. Contatos só pelo WhatsApp não ficam registrados no Bitrix. <b>Para fechar</b>: dias (mediana) entre a criação e o ganho, das vendas do período. <b>Ligações</b>: telefonia do Bitrix.`)}`;
 }
 
 setView("comercial");
