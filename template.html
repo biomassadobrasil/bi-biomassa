@@ -1690,13 +1690,6 @@ function renderCmOrigem(D,r){
   const top6=arr.slice(0,6), resto=arr.slice(6).reduce((s,x)=>s+x.n,0);
   const parts=top6.map(x=>({l:x.k,n:x.n,c:x.c})).concat(resto?[{l:"Outras fontes",n:resto,c:"#cbd5e1"}]:[]);
   const vmx=Math.max(1,...varr.map(x=>x.o));
-  // evolução semanal (últimas 8 semanas, não depende do período; respeita vendedor/pipeline)
-  const seg=d=>{const t=new Date(d+"T12:00:00Z"),w=(t.getUTCDay()+6)%7;t.setUTCDate(t.getUTCDate()-w);return t.toISOString().slice(0,10);};
-  const sem=[];for(let i=7;i>=0;i--)sem.push(seg(tpAdd(CM.hoje,-7*i)));
-  const top5=Object.entries(D.filter(x=>x.dc>=sem[0]).reduce((o,x)=>{o[x.src]=(o[x.src]||0)+1;return o;},{})).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>x[0]);
-  const cont=(f,s)=>D.filter(x=>x.dc&&seg(x.dc)===s&&(f?x.src===f:!top5.includes(x.src))).length;
-  const stacks=top5.map(f=>({name:f,color:corF[f],v:sem.map(s=>cont(f,s))})).concat([{name:"Outras",color:"#cbd5e1",v:sem.map(s=>cont(null,s))}]);
-  const line={name:"Vendido no período (R$)",color:"#f59e0b",v:sem.map(s=>D.filter(x=>x.won&&seg(x.won)===s).reduce((a,x)=>a+x.o,0))};
   el.innerHTML=head+`
   <div class="cm-ods">
     ${top?dest("users",top.c,"Fonte que mais traz negócios",tpEsc(top.k),`${tpN(top.n)} negócios · ${tpPct(top.n/neg.length*100)} do total`):""}
@@ -1715,7 +1708,7 @@ function renderCmOrigem(D,r){
       <td><b>${tpN(x.n)}</b></td><td>${tpPct(x.n/neg.length*100,1)}</td><td>${tpBRL(x.o,0)}</td><td>${tpN(x.p)}</td><td>${tpN(x.w)}</td><td><b>${tpPct(x.conv,1)}</b></td><td>${tpBRL(x.wo,0)}</td><td>${x.w?tpBRL(x.wo/x.w,0):"—"}</td></tr>`).join("")}
     <tr class="tot"><td>Total</td><td>${tpN(neg.length)}</td><td>100%</td><td>${tpBRL(arr.reduce((s,x)=>s+x.o,0),0)}</td><td>${tpN(arr.reduce((s,x)=>s+x.p,0))}</td><td>${tpN(arr.reduce((s,x)=>s+x.w,0))}</td><td>${tpPct(tpDiv(arr.reduce((s,x)=>s+x.w,0)*100,neg.length),1)}</td><td>${tpBRL(arr.reduce((s,x)=>s+x.wo,0),0)}</td><td>—</td></tr>
     </tbody></table></div></div>`:""}
-  <div class="tp-panel" style="margin-top:16px">${tpHead("trend","Evolução semanal por fonte","Negócios criados por semana nas últimas 8 semanas (não muda com o período) · linha: valor vendido",tpLegend(stacks,line),TPC.orange)}<div class="tp-chart">${tpChart(sem,stacks,line,null)}</div></div>`;
+`;
 }
 
 function renderCmVend(){
