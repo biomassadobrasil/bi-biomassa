@@ -351,36 +351,6 @@ def build_tiny():
     return {"dmin":datas[0] if datas else "","dmax":datas[-1] if datas else "",
             "peds":peds,"vendedores":vends}
 
-def build_meta():
-    """Meta: campanhas (insights) + leads individuais do formulário (perfil). None se sem token."""
-    if not os.environ.get("META_TOKEN"): return None
-    import meta
-    camps=meta.resumo_ativas()          # [{nome,leads,gasto,impressoes,cliques}]
-    try: leads=meta.leads_raw()         # [{c,p,dt}] via leads_retrieval
-    except Exception: import traceback; print("[BI] Meta leads_raw falhou:\n"+traceback.format_exc()); leads=[]
-    try: daily=meta.spend_diario()      # [{c,dt,gasto}] p/ filtro de data nas tabelas
-    except Exception: import traceback; print("[BI] Meta spend_diario falhou:\n"+traceback.format_exc()); daily=[]
-    return {"camp":camps,"leads":leads,"daily":daily}
-
-def build_google():
-    """Google: campanhas (leads/CPL/wpp/form/investido) + leads diários (90d p/ filtro de data)."""
-    try:
-        import google_ads as g
-        resumo=g.campanhas_resumo()                 # últimos 30d
-        acoes=g.conversoes_por_acao()
-        ate=datetime.date.today(); desde=ate-datetime.timedelta(days=89)
-        daily=g.leads_diarios(desde,ate)
-        cost=g.custo_diario(desde,ate)
-    except Exception:
-        import traceback; print("[BI] Google falhou:\n"+traceback.format_exc()); return None
-    camps=[]
-    for c in resumo:
-        ac=acoes.get(c["id"],{}).get("acoes",{})
-        wpp=round(sum(v for k,v in ac.items() if "whats" in k.lower() or "zap" in k.lower()))
-        form=round(sum(v for k,v in ac.items() if "form" in k.lower()))
-        camps.append({**c,"wpp":wpp,"form":form})
-    return {"camp":camps,"daily":daily,"cost":cost}
-
 VEND_FUNIL={"948":("Patrícia","Sênior"),"890":("Thauany","Júnior"),
             "376":("Douglas",""),"16812":("Vanessa",""),"16942":("Ingrid",""),"38":("Luiz","")}
 VEND_ORDER=["948","890","376","16812","16942","38"]
@@ -486,22 +456,8 @@ def run():
         payload["tiny"]=build_tiny()
     except Exception as e:
         import traceback; print("[BI] Tiny falhou (segue sem):\n"+traceback.format_exc()); payload["tiny"]=None
-    # ---- B.I Marketing: funil (Bitrix Vendas) + Meta (form) + Google (plataforma) ----
-    funil=payload.pop("mkt_vendas",[])          # deals de Vendas fonte 1/2 (com perfil/porte)
-    # cache de bloco: se Meta/Google falhar numa regeneração, usa o último resultado bom
-    meta_blk=_bloco_cache("meta", build_meta, lambda v: bool(v and v.get("camp") and v.get("leads")))
-    google_blk=_bloco_cache("google", build_google, lambda v: bool(v and v.get("camp")))
-    meta_leads=[{"p":perfil_bucket(l.get("p")),"dt":l.get("dt",""),"c":l.get("c","")}
-                for l in (meta_blk or {}).get("leads",[])]
-    payload["marketing"]={
-        "funil":funil,
-        "meta_camp":(meta_blk or {}).get("camp",[]),
-        "meta_leads":meta_leads,
-        "meta_daily":(meta_blk or {}).get("daily",[]),
-        "google_camp":(google_blk or {}).get("camp",[]),
-        "google_daily":(google_blk or {}).get("daily",[]),
-        "google_cost":(google_blk or {}).get("cost",[]),
-        "perfis":PERFIL_ORDER,"portes":PORTE_ORDER}
+    # Meta/Google agora ficam na aba Tráfego Pago (trafego.py, de hora em hora)
+    payload.pop("mkt_vendas",None)
     # ---- B.I Funil (comercial: deals + propostas + ligações) ----
     try: payload["funil"]=build_funil(stages,sources,deals)
     except Exception: import traceback; print("[BI] Funil falhou:\n"+traceback.format_exc()); payload["funil"]=None

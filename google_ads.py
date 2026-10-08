@@ -4,7 +4,7 @@ Credenciais via env (GOOGLE_*) no Railway, ou fallback ~/google-ads.yaml no loca
 Conta filha real (campanhas) = GOOGLE_CUSTOMER_ID; login = GOOGLE_LOGIN_CUSTOMER_ID (MCC)."""
 import os, json, urllib.parse, urllib.request, urllib.error
 
-VER = "v21"
+VER = "v25"   # o Google desliga versões antigas (~1 ano): v21 parou de responder em 2026
 TOKEN_URL = "https://oauth2.googleapis.com/token"
 
 def _cfg():

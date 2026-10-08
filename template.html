@@ -262,12 +262,6 @@
   .fnl-foot{margin-top:12px;padding-top:12px;border-top:1px solid var(--line2);font-size:12.5px;color:var(--muted);line-height:1.7}
   .fnl-foot b{color:var(--ink)}
   @media(max-width:640px){.fnl-row{grid-template-columns:120px 1fr}.fnl-val{grid-column:2;text-align:left}}
-  .mkt-presets{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
-  .mkt-presets button{font:inherit;font-size:12.5px;font-weight:650;border:none;background:transparent;
-    color:var(--muted);padding:6px 11px;cursor:pointer;border-right:1px solid var(--line)}
-  .mkt-presets button:last-child{border-right:none}
-  .mkt-presets button:hover{background:var(--line2)}
-  .mkt-presets button.on{background:var(--brand);color:#fff}
   .mkt-perdas{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line2)}
   .mkt-chip{font-size:12.5px;font-weight:600;padding:4px 11px;border-radius:20px}
   .mkt-chip b{font-weight:800}
@@ -388,6 +382,157 @@
   .vsside.l .vstrack{justify-content:flex-end}
   .vsfill{height:100%;border-radius:6px}
   @media(max-width:820px){.vsrow{grid-template-columns:1fr auto;gap:6px}.vshead,.vsrow .vsside.l .vstrack,.vsrow .vsside .vstrack{display:none}.vsrow .vsside{gap:6px}}
+  /* ===== Tráfego Pago ===== */
+  #view-trafego{--meta:#1877f2;--ig:#d62976;--gg:#1a73e8;--b2b:var(--brand);--pf:#9aa7bd}
+  .tp-nav{position:sticky;top:0;z-index:35;display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:10px 0 12px;
+    background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px)}
+  .tp-nav a{font-size:13px;font-weight:700;color:var(--muted);text-decoration:none;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel)}
+  .tp-nav a:hover{color:var(--brand);border-color:var(--brand)}
+  .tp-nav .tp-upd{margin-left:auto;font-size:12px;color:var(--muted)}
+  .tp-sec{scroll-margin-top:64px}
+  .tp-hero{display:flex;align-items:center;gap:14px;margin:30px 0 4px}
+  .tp-logo{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;color:#fff;flex:0 0 auto;box-shadow:var(--shadow)}
+  .tp-logo svg{width:24px;height:24px}
+  .tp-logo.meta{background:linear-gradient(135deg,#0866ff,#7b3fe4 55%,#d62976)}
+  .tp-logo.google{background:#fff;border:1px solid var(--line)}
+  .tp-logo.geral{background:linear-gradient(135deg,var(--brand),#1a3c7d)}
+  .tp-hero h2{margin:0;font-size:22px;font-weight:780;letter-spacing:-.02em}
+  .tp-hero .tp-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .tp-status{margin-left:auto;font-size:12px;font-weight:650;padding:5px 11px;border-radius:999px;white-space:nowrap}
+  .tp-status.ok{background:var(--good-soft);color:var(--good)}
+  .tp-status.bad{background:var(--bad-soft);color:var(--bad)}
+  .tp-h3{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:26px 0 11px;display:flex;align-items:center;gap:8px}
+  .tp-h3 .n{background:var(--brand-soft);color:var(--brand);border-radius:999px;padding:0 8px;font-size:11px}
+  .tp-warn{display:flex;gap:12px;align-items:flex-start;background:var(--bad-soft);border:1px solid color-mix(in srgb,var(--bad) 35%,transparent);
+    border-radius:12px;padding:13px 15px;margin-top:14px;font-size:13.5px}
+  .tp-warn b{color:var(--bad)}
+  .tp-note{font-size:12px;color:var(--muted);margin-top:8px}
+  /* cards de campanha */
+  .tp-camps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:14px}
+  .tp-camp{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+  .tp-camp-h{padding:16px 18px 12px;border-bottom:1px solid var(--line2)}
+  .tp-camp-h .nm{font-weight:760;font-size:15px;line-height:1.3}
+  .tp-camp-h .st{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--good);margin-bottom:5px}
+  .tp-camp-h .st i{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px var(--good-soft)}
+  .tp-facts{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line2)}
+  .tp-fact{flex:1 1 118px;padding:10px 16px;border-right:1px solid var(--line2);border-top:1px solid var(--line2);margin-top:-1px}
+  .tp-fact .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+  .tp-fact .v{font-size:13.5px;font-weight:700;margin-top:2px}
+  .tp-fact .v.big{font-size:18px;color:var(--brand);white-space:nowrap}
+  .tp-fact:first-child{flex-basis:150px}
+  .tp-body{padding:14px 18px 16px;display:grid;grid-template-columns:1fr 210px;gap:18px;flex:1}
+  .tp-body.g{grid-template-columns:1fr minmax(0,300px)}
+  @media(max-width:640px){.tp-body,.tp-body.g{grid-template-columns:1fr}}
+  .tp-pub .row{display:flex;gap:8px;font-size:13px;padding:4px 0;align-items:baseline}
+  .tp-pub .row .k{color:var(--muted);min-width:96px;font-size:12px;font-weight:600}
+  .tp-tags{display:flex;flex-wrap:wrap;gap:5px}
+  .tp-tag{font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--line2);color:var(--ink)}
+  .tp-tag.more{background:transparent;border:1px dashed var(--line);color:var(--muted);cursor:pointer}
+  .tp-tag.adv{background:linear-gradient(135deg,#0866ff22,#d6297622);color:var(--brand)}
+  .tp-seg{margin-top:6px}
+  .tp-seg .lbl{font-size:11px;font-weight:700;color:var(--muted);margin:7px 0 4px}
+  /* prévia do anúncio */
+  .tp-ad{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg)}
+  .tp-ad .th{position:relative;aspect-ratio:1/1;background:#0d1524 center/cover no-repeat}
+  .tp-ad .th .play{position:absolute;inset:0;display:grid;place-items:center}
+  .tp-ad .th .play span{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.55);display:grid;place-items:center;backdrop-filter:blur(4px)}
+  .tp-ad .th .tipo{position:absolute;top:8px;left:8px;font-size:10.5px;font-weight:800;color:#fff;background:rgba(0,0,0,.55);padding:2px 8px;border-radius:999px}
+  .tp-ad .tx{padding:9px 10px}
+  .tp-ad .tt{font-size:12.5px;font-weight:750;line-height:1.3}
+  .tp-ad .bd{font-size:11.5px;color:var(--muted);margin-top:4px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
+  .tp-ad .bd.open{-webkit-line-clamp:unset}
+  .tp-ad .lnk{display:flex;gap:6px;padding:0 10px 10px;flex-wrap:wrap}
+  .tp-btn{font:inherit;font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+  .tp-btn:hover{border-color:var(--brand);color:var(--brand)}
+  .tp-btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+  .tp-btn.pri:hover{filter:brightness(1.08);color:#fff}
+  /* prévia google */
+  .tp-gad{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--panel);font-family:Arial,Helvetica,sans-serif}
+  .tp-gad .sp{font-size:12px;font-weight:700;color:var(--ink)}
+  .tp-gad .url{font-size:12px;color:var(--muted);margin-top:2px;word-break:break-all}
+  .tp-gad .hl{font-size:17px;color:#1a0dab;margin-top:4px;line-height:1.3}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tp-gad .hl{color:#8ab4f8}}
+  :root[data-theme="dark"] .tp-gad .hl{color:#8ab4f8}
+  .tp-gad .ds{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.45}
+  .tp-gad .ft{display:flex;justify-content:space-between;align-items:center;margin-top:9px;font-family:var(--sans)}
+  .tp-kw{display:flex;flex-wrap:wrap;gap:5px}
+  .tp-kw span{font-size:11.5px;padding:2px 8px;border-radius:6px;background:var(--line2)}
+  .tp-kw span i{font-style:normal;color:var(--muted);font-size:10.5px;margin-left:4px}
+  /* filtros */
+  .tp-filters{position:sticky;top:52px;z-index:30;display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:color-mix(in srgb,var(--panel) 92%,transparent);
+    backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:14px;padding:10px 12px;box-shadow:var(--shadow);margin:22px 0 14px}
+  .tp-seg2{display:inline-flex;background:var(--line2);border-radius:10px;padding:3px;gap:2px}
+  .tp-seg2 button{font:inherit;font-size:12.5px;font-weight:700;border:none;background:transparent;color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer}
+  .tp-seg2 button.on{background:var(--panel);color:var(--brand);box-shadow:0 1px 3px rgba(13,21,36,.12)}
+  .tp-dates{display:inline-flex;gap:6px;align-items:center}
+  .tp-dates[hidden]{display:none}
+  .tp-dates input{font:inherit;font-size:12.5px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:5px 7px;color-scheme:light dark}
+  .tp-sel{font:inherit;font-size:13px;font-weight:650;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:7px 10px;max-width:100%;min-width:0}
+  .tp-per{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600}
+  /* KPIs */
+  .tp-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+  .tp-kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .tp-kpi .l{font-size:12px;color:var(--muted);font-weight:650;display:flex;align-items:center;gap:7px}
+  .tp-kpi .l svg{width:15px;height:15px;color:var(--brand)}
+  .tp-kpi .v{font-size:27px;font-weight:780;letter-spacing:-.025em;margin-top:8px;line-height:1;font-variant-numeric:tabular-nums}
+  .tp-kpi .f{font-size:11.5px;color:var(--muted);margin-top:8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .tp-kpi.hl{background:linear-gradient(160deg,var(--brand),#1a3c7d);border-color:transparent;color:#fff}
+  .tp-kpi.hl .l,.tp-kpi.hl .f,.tp-kpi.hl .l svg{color:rgba(255,255,255,.82)}
+  .tp-delta{font-size:11px;font-weight:800;padding:1px 7px;border-radius:999px}
+  .tp-delta.up{background:var(--good-soft);color:var(--good)}.tp-delta.dn{background:var(--bad-soft);color:var(--bad)}.tp-delta.eq{background:var(--line2);color:var(--muted)}
+  .tp-kpi.hl .tp-delta{background:rgba(255,255,255,.18);color:#fff}
+  /* gráficos */
+  .tp-grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px}
+  .tp-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px;min-width:0}
+  .tp-card h4{margin:0 0 3px;font-size:14px;font-weight:750}
+  .tp-card .d{font-size:12px;color:var(--muted);margin-bottom:12px}
+  .tp-chart svg{width:100%;height:auto;display:block}
+  .tp-chart .ax{font-size:10px;fill:var(--muted)}
+  .tp-leg{display:flex;gap:14px;font-size:11.5px;color:var(--muted);margin-top:6px;flex-wrap:wrap}
+  .tp-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .tp-hb{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(50px,1fr) auto;gap:10px;align-items:center;font-size:12.5px;padding:5px 0}
+  .tp-hb .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+  .tp-hb .tr{height:10px;border-radius:6px;background:var(--line2);overflow:hidden}
+  .tp-hb .tr i{display:block;height:100%;border-radius:6px}
+  .tp-hb .vv{font-weight:750;font-variant-numeric:tabular-nums;white-space:nowrap;font-size:12px}
+  .tp-hb .vv small{color:var(--muted);font-weight:600;margin-left:4px}
+  .tp-split{display:flex;height:14px;border-radius:8px;overflow:hidden;background:var(--line2);margin:6px 0 10px}
+  .tp-split i{display:block;height:100%}
+  .tp-src{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tp-src>div{border:1px solid var(--line2);border-radius:11px;padding:11px 12px}
+  .tp-src .nm{font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px}
+  .tp-src .nm i{width:9px;height:9px;border-radius:50%}
+  .tp-src .big{font-size:22px;font-weight:780;margin-top:4px}
+  .tp-src .sm{font-size:11.5px;color:var(--muted)}
+  .tp-ring{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+  .tp-ring svg{width:74px;height:74px;flex:0 0 auto}
+  .tp-ring .t{font-size:12.5px;color:var(--muted)}.tp-ring .t b{color:var(--ink);font-size:15px}
+  /* tabela */
+  .tp-tblw{overflow-x:auto}
+  .tp-tbl{width:100%;border-collapse:collapse;font-size:12.5px;min-width:640px}
+  .tp-tbl th{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:right;padding:8px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+  .tp-tbl th:first-child,.tp-tbl td:first-child{text-align:left}
+  .tp-tbl td{padding:9px 8px;border-bottom:1px solid var(--line2);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tp-tbl td:first-child{white-space:normal;font-weight:650;max-width:320px}
+  .tp-tbl tr.best td{background:color-mix(in srgb,var(--good-soft) 60%,transparent)}
+  .tp-tbl .tr-tot td{font-weight:800;border-top:1px solid var(--line)}
+  .tp-crown{font-size:10.5px;font-weight:800;color:var(--good);background:var(--good-soft);border-radius:999px;padding:1px 7px;margin-left:6px;white-space:nowrap}
+  /* análises */
+  .tp-ai-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .tp-ai-head .src{font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--brand-soft);color:var(--brand)}
+  .tp-ai-head .src.rg{background:var(--open-soft);color:var(--open)}
+  .tp-ai-res{font-size:14.5px;font-weight:650;line-height:1.5;padding:14px 16px;border-radius:12px;background:var(--brand-soft);color:var(--ink);margin-bottom:12px;border-left:4px solid var(--brand)}
+  .tp-ai{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+  .tp-ai .col{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+  .tp-ai .col h5{margin:0 0 8px;font-size:13px;font-weight:800;display:flex;align-items:center;gap:8px}
+  .tp-ai .col h5 span{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font-size:13px}
+  .tp-ai .col.b h5 span{background:var(--good-soft);color:var(--good)}
+  .tp-ai .col.c h5 span{background:var(--open-soft);color:var(--open)}
+  .tp-ai .col.m h5 span{background:var(--bad-soft);color:var(--bad)}
+  .tp-ai ul{margin:0;padding-left:17px;font-size:13px;line-height:1.55}
+  .tp-ai li+li{margin-top:7px}
+  .tp-empty{color:var(--muted);font-size:13px;padding:6px 0}
+  .tp-loading{padding:60px 0;text-align:center;color:var(--muted)}
 </style>
 
 <div class="app">
@@ -397,7 +542,7 @@
       <span class="bi-cur" id="bi-cur">Bitrix ▾</span>
       <div class="bi-menu" id="bi-menu">
         <div class="bi-opt active" data-view="bitrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="12"/><line x1="10" y1="20" x2="10" y2="4"/><line x1="16" y1="20" x2="16" y2="9"/><line x1="21" y1="20" x2="3" y2="20"/></svg><span>B.I Bitrix</span></div>
-        <div class="bi-opt" data-view="marketing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/></svg><span>B.I Marketing</span></div>
+        <div class="bi-opt" data-view="trafego"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/></svg><span>Tráfego Pago</span></div>
         <div class="bi-opt" data-view="funil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 4 21 4 14 12 14 19 10 21 10 12 3 4"/></svg><span>B.I Funil</span></div>
       </div>
     </div>
@@ -530,44 +675,7 @@
     </div>
   </div><!-- /view-tiny -->
 
-  <div id="view-marketing" style="display:none">
-    <div class="tiny-alert">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2.2"><path d="M12 9v4m0 4h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
-      <div><b>Como ler:</b> <b>Total de Leads</b> vem da plataforma (Meta/Google). O <b>funil</b> e os <b>negócios</b> vêm do Bitrix (fonte da campanha). A diferença entre os dois mostra quanto vaza entre o anúncio e o CRM. <b>Pessoa Física é ignorada</b> (vai pra outra pipeline). Investido/CPL: Meta = histórico da campanha · Google = últimos 30 dias.</div>
-    </div>
-    <div class="filterbar" style="margin-bottom:10px;flex-wrap:wrap;row-gap:10px">
-      <span class="fllbl">Período</span>
-      <span class="mkt-presets">
-        <button data-p="hoje">Hoje</button><button data-p="ontem">Ontem</button>
-        <button data-p="7">7 dias</button><button data-p="30">30 dias</button>
-        <button data-p="tudo" class="on">Tudo</button>
-      </span>
-      <span class="drsep">ou</span>
-      <input type="date" id="mkt-from" class="tiny-select" style="color-scheme:light dark">
-      <span class="drsep">até</span>
-      <input type="date" id="mkt-to" class="tiny-select" style="color-scheme:light dark">
-      <span class="fcount" id="mkt-fcount" style="margin-left:auto"></span>
-    </div>
-    <div class="filterbar" style="margin-bottom:16px;flex-wrap:wrap;row-gap:10px">
-      <span class="fllbl">Fonte</span>
-      <select id="mkt-fonte" class="tiny-select"></select>
-      <span class="fllbl" style="margin-left:6px">Campanha</span>
-      <select id="mkt-camp" class="tiny-select"></select>
-      <span class="fllbl" style="margin-left:6px">Segmento</span>
-      <select id="mkt-seg" class="tiny-select">
-        <option value="b2b">B2B</option>
-        <option value="pf">Consumidor Final</option>
-        <option value="">Todos</option>
-      </select>
-      <span class="fllbl" style="margin-left:6px">Perfil</span>
-      <div class="mktdd" style="position:relative">
-        <button type="button" id="mkt-perfil-btn" class="tiny-select" style="text-align:left;cursor:pointer;min-width:170px">Todos os perfis</button>
-        <div class="menu" id="mkt-perfil-menu" style="display:none;position:absolute;z-index:30;margin-top:4px;min-width:250px;max-height:300px;overflow:auto;padding:6px"></div>
-      </div>
-      <button id="mkt-reset" class="reset" style="margin-left:auto">limpar filtros</button>
-    </div>
-    <div id="mkt-body"></div>
-  </div>
+  <div id="view-trafego" style="display:none"><div class="tp-loading">Carregando Tráfego Pago…</div></div>
 
   <div id="view-funil" style="display:none">
     <div class="fun-filters">
@@ -946,16 +1054,16 @@ document.querySelectorAll('.sidebar > .sb-ic[data-tip="Sair"]').forEach(el=>el.o
 function setView(v){
   document.getElementById("view-bitrix").style.display=(v==="bitrix")?"":"none";
   document.getElementById("view-tiny").style.display=(v==="tiny")?"":"none";
-  document.getElementById("view-marketing").style.display=(v==="marketing")?"":"none";
   document.getElementById("view-funil").style.display=(v==="funil")?"":"none";
+  document.getElementById("view-trafego").style.display=(v==="trafego")?"":"none";
   document.querySelector(".sb-secnav").style.display=(v==="bitrix")?"":"none";
   document.querySelectorAll(".bi-opt").forEach(o=>o.classList.toggle("active",o.dataset.view===v));
-  const nome={tiny:"Tiny",marketing:"Marketing",funil:"Funil"}[v]||"Bitrix";
+  const nome={tiny:"Tiny",funil:"Funil",trafego:"Tráfego"}[v]||"Bitrix";
   document.getElementById("bi-cur").textContent=nome+" ▾";
-  const subs={tiny:"Dados do Tiny · pedidos/vendas",marketing:"Marketing · leads das campanhas (Meta/Google)",funil:"Comercial · funil, ligações e produtividade",bitrix:"Dados ao vivo do Bitrix24 · Negócios"};
-  document.querySelector(".ph-right .sub").innerHTML='<span class="dot"></span>'+subs[v]+' · gerado em __GENDATE__';
+  const subs={tiny:"Dados do Tiny · pedidos/vendas",funil:"Comercial · funil, ligações e produtividade",bitrix:"Dados ao vivo do Bitrix24 · Negócios",trafego:"Tráfego Pago · Meta Ads e Google Ads · atualiza de hora em hora"};
+  document.querySelector(".ph-right .sub").innerHTML='<span class="dot"></span>'+subs[v]+(v==="trafego"?'':' · gerado em __GENDATE__');
   if(v==="tiny") renderTiny();
-  if(v==="marketing") renderMarketing();
+  if(v==="trafego") abrirTrafego();
   if(v==="funil") renderFunil();
   window.scrollTo({top:0});
 }
@@ -1028,206 +1136,7 @@ document.getElementById("tiny-to").onchange=e=>{TINYF.to=e.target.value;renderTi
 document.getElementById("tiny-reset").onclick=()=>{TINYF.vd="";TINYF.q="";TINYF.from="";TINYF.to="";
   document.getElementById("tiny-vd").value="";document.getElementById("tiny-search").value="";
   document.getElementById("tiny-from").value="";document.getElementById("tiny-to").value="";renderTiny();};
-// ================= B.I Marketing =================
-const MKT={from:"",to:"",fonte:"",camp:"",seg:"b2b",perfil:new Set()};
 function ymd(d){return d.toISOString().slice(0,10);}
-const FONTES={"1":"Meta Ads","2":"Google Ads"};
-const PF_LABEL="Pessoa Física";
-const segMatch=p=> MKT.seg==="pf" ? p===PF_LABEL : (MKT.seg==="b2b" ? p!==PF_LABEL : true);
-const perfMatch=p=> MKT.perfil.size===0 ? true : MKT.perfil.has(p);
-function mktPreset(p){
-  const now=new Date(); const t=ymd(now);
-  if(p==="hoje"){MKT.from=t;MKT.to=t;}
-  else if(p==="ontem"){const y=new Date(now);y.setDate(y.getDate()-1);MKT.from=ymd(y);MKT.to=ymd(y);}
-  else if(p==="7"||p==="30"){const s=new Date(now);s.setDate(s.getDate()-(+p-1));MKT.from=ymd(s);MKT.to=t;}
-  else {MKT.from="";MKT.to="";}
-  document.getElementById("mkt-from").value=MKT.from; document.getElementById("mkt-to").value=MKT.to;
-  renderMarketing();
-}
-function mktCampOpts(){
-  const M=D.marketing||{}; const sel=document.getElementById("mkt-camp");
-  let camps=[];
-  if(MKT.fonte!=="2") camps=camps.concat((M.meta_camp||[]).map(c=>c.nome));
-  if(MKT.fonte!=="1") camps=camps.concat((M.google_camp||[]).map(c=>c.nome));
-  camps=[...new Set(camps)];
-  if(!camps.includes(MKT.camp)) MKT.camp="";
-  sel.innerHTML='<option value="">Todas as campanhas</option>'+camps.map(c=>`<option ${c===MKT.camp?"selected":""}>${c}</option>`).join("");
-}
-function mktPerfilBtnLabel(){
-  const n=MKT.perfil.size;
-  document.getElementById("mkt-perfil-btn").textContent = n===0?"Todos os perfis":(n===1?[...MKT.perfil][0]:`${n} perfis`);
-}
-function mktFillSelects(){
-  const M=D.marketing||{};
-  const fs=document.getElementById("mkt-fonte");
-  if(!fs.dataset.filled){
-    fs.innerHTML='<option value="">Todas as fontes</option><option value="1">Meta Ads</option><option value="2">Google Ads</option>';
-    document.getElementById("mkt-seg").value=MKT.seg;
-    // perfis B2B (exclui Pessoa Física — isso é o Segmento) no dropdown de checkboxes
-    const menu=document.getElementById("mkt-perfil-menu");
-    const perfis=(M.perfis||[]).filter(p=>p!==PF_LABEL);
-    menu.innerHTML=perfis.map(p=>`<label class="opt"><input type="checkbox" value="${p}"> ${p}</label>`).join("");
-    menu.querySelectorAll("input").forEach(inp=>inp.onchange=()=>{
-      inp.checked?MKT.perfil.add(inp.value):MKT.perfil.delete(inp.value);
-      mktPerfilBtnLabel(); renderMarketing();});
-    fs.dataset.filled="1";
-  }
-  mktCampOpts();
-}
-// funil visual (SVG trapézio) — steps decrescentes + perdido/obra futura à parte
-function mktFunilSVG(steps){
-  const top=steps[0].n||1, W=720,cx=W/2,maxW=300,segH=56,gap=7,H=steps.length*(segH+gap)+8;
-  const wv=n=>Math.max(n/top*maxW,30);
-  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-height:${H}px">`;
-  steps.forEach((s,i)=>{
-    const y=i*(segH+gap)+6, wt=wv(s.n), wb=wv(i<steps.length-1?steps[i+1].n:s.n*0.72);
-    const conv=i>0&&steps[i-1].n?`${Math.round(s.n/steps[i-1].n*100)}%`:"";
-    svg+=`<polygon points="${cx-wt/2},${y} ${cx+wt/2},${y} ${cx+wb/2},${y+segH} ${cx-wb/2},${y+segH}" fill="${s.c}"/>`;
-    svg+=`<text x="${cx}" y="${y+segH/2+6}" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">${int(s.n)}</text>`;
-    svg+=`<text x="${cx-maxW/2-16}" y="${y+segH/2+1}" text-anchor="end" fill="var(--ink)" font-size="13.5" font-weight="700">${s.l}</text>`;
-    if(conv) svg+=`<text x="${cx-maxW/2-16}" y="${y+segH/2+17}" text-anchor="end" fill="var(--muted)" font-size="11">${conv}</text>`;
-    if(s.val!=null) svg+=`<text x="${cx+maxW/2+16}" y="${y+segH/2+5}" fill="var(--muted)" font-size="12.5" font-weight="600">${brlK(s.val)}</text>`;
-  });
-  return svg+`</svg>`;
-}
-function renderMarketing(){
-  const M=D.marketing||{};
-  if(!M.funil){document.getElementById("mkt-body").innerHTML='<div class="card"><div class="empty">Sem dados de marketing ainda.</div></div>';return;}
-  mktFillSelects();
-  const F=MKT;
-  const inr=dt=>(!F.from||(dt&&dt>=F.from))&&(!F.to||(dt&&dt<=F.to));
-  const fonteOK=s=>!F.fonte||F.fonte===s;
-  const perfilEsp=MKT.perfil.size>0;
-  // ----- funil Bitrix (deals de Vendas fonte 1/2) -----
-  const funBase=(M.funil||[]).filter(r=>fonteOK(r.s)&&inr(r.dt)); // sem seg/perfil (p/ donut PF×B2B)
-  const fun=funBase.filter(r=>segMatch(r.p)&&perfMatch(r.p));
-  const g={contato:0,proposta:0,negociacao:0,obrafutura:0,ganho:0,perdido:0};
-  const gv={proposta:0,negociacao:0,obrafutura:0,ganho:0,perdido:0};
-  fun.forEach(r=>{if(g[r.seg]!=null)g[r.seg]++; if(gv[r.seg]!=null)gv[r.seg]+=r.o||0;});
-  const totNeg=fun.length;
-  const prop=g.proposta+g.negociacao+g.obrafutura+g.ganho;      // cumulativo
-  const propV=gv.proposta+gv.negociacao+gv.obrafutura+gv.ganho;
-  const nego=g.negociacao+g.obrafutura+g.ganho, negoV=gv.negociacao+gv.obrafutura+gv.ganho;
-  // ----- leads da plataforma -----
-  const metaBase=(M.meta_leads||[]).filter(l=>inr(l.dt)&&(!F.camp||l.c===F.camp)&&F.fonte!=="2"); // sem seg/perfil
-  const metaLeads=metaBase.filter(l=>segMatch(l.p)&&perfMatch(l.p));
-  let gDaily=(M.google_daily||[]).filter(r=>inr(r.dt)&&(!F.camp||r.c===F.camp));
-  if(F.fonte==="1"||F.seg==="pf"||perfilEsp) gDaily=[];   // Google não tem perfil
-  const metaLeadN=metaLeads.length;
-  const gLeadN=Math.round(gDaily.reduce((a,r)=>a+(r.n||0),0));
-  const totLeads=metaLeadN+gLeadN;
-  // ----- agregação por campanha (respeita data+fonte+camp; a partir dos diários) -----
-  const inCamp=r=>inr(r.dt)&&(!F.camp||r.c===F.camp);
-  const metaCampAgg={};   // nome -> {leads,gasto}
-  metaLeads.forEach(l=>{(metaCampAgg[l.c]=metaCampAgg[l.c]||{leads:0,gasto:0}).leads++;});
-  if(F.fonte!=="2") (M.meta_daily||[]).forEach(r=>{if(inCamp(r))(metaCampAgg[r.c]=metaCampAgg[r.c]||{leads:0,gasto:0}).gasto+=r.gasto||0;});
-  const gCampAgg={};      // nome -> {leads,gasto,wpp,form}
-  if(F.fonte!=="1"&&F.seg!=="pf"&&!perfilEsp){
-    (M.google_daily||[]).forEach(r=>{if(inCamp(r)){const a=gCampAgg[r.c]=gCampAgg[r.c]||{leads:0,gasto:0,wpp:0,form:0};a.leads+=r.n;if(r.ch==="wpp")a.wpp+=r.n;else if(r.ch==="form")a.form+=r.n;}});
-    (M.google_cost||[]).forEach(r=>{if(inCamp(r))(gCampAgg[r.c]=gCampAgg[r.c]||{leads:0,gasto:0,wpp:0,form:0}).gasto+=r.gasto||0;});
-  }
-  const invest=Object.values(metaCampAgg).reduce((a,c)=>a+c.gasto,0)+Object.values(gCampAgg).reduce((a,c)=>a+c.gasto,0);
-  const cpl=totLeads?invest/totLeads:0;
-  // ----- fcount -----
-  const br=d=>d?d.split("-").reverse().join("/"):"";
-  const nf=(F.from||F.to)?`${br(F.from)||"início"} → ${br(F.to)||"hoje"}`:"todo o período";
-  const segLbl={b2b:"B2B",pf:"Consumidor Final"}[F.seg]||"";
-  const chips=[F.fonte?FONTES[F.fonte]:"",F.camp,segLbl,MKT.perfil.size?`${MKT.perfil.size} perfil(is)`:""].filter(Boolean);
-  document.getElementById("mkt-fcount").innerHTML=`período ${nf}`+(chips.length?` · ${chips.length} filtro(s)`:"");
-  // ----- KPIs -----
-  const kc=(l,v,f,ic,tint)=>`<div class="kpi"><div class="kico ${tint}">${svgico(KIC[ic])}</div><div class="kbody"><div class="lbl">${l}</div><div class="big tnum">${v}</div><div class="foot">${f}</div></div></div>`;
-  const vaz=totLeads?Math.round((1-totNeg/totLeads)*100):0;
-  const kpis=[
-    kc("Total de Leads",int(totLeads),"da plataforma (Meta/Google)","trend","ico-blue"),
-    kc("Total de Negócios",int(totNeg),vaz>0?`${vaz}% viram card no CRM`:"no Bitrix","brief","ico-solid"),
-    kc("Custo por Lead",totLeads?brlK(cpl):"—",`investido ${brlK(invest)}`,"dollar","ico-green"),
-    kc("Em Negociação",int(nego),brlK(negoV),"clock","ico-amber"),
-    kc("Ganhos",int(g.ganho),brlK(gv.ganho),"trophy","ico-green"),
-    kc("Perdidos",int(g.perdido),brlK(gv.perdido),"tag","ico-red"),
-  ].join("");
-  // ----- funil -----
-  const steps=[
-    {l:"Leads B2B (CRM)",n:totNeg,c:"#2853a1"},
-    {l:"Proposta Comercial",n:prop,c:"#f0b429",val:propV},
-    {l:"Em Negociação",n:nego,c:"#d2691e",val:negoV},
-    {l:"Ganho",n:g.ganho,c:"#1f9d6b",val:gv.ganho},
-  ];
-  const funilHTML=mktFunilSVG(steps)+
-    `<div class="mkt-perdas">
-       <span class="mkt-chip" style="background:var(--bad-soft);color:var(--bad)">Perdido: <b>${int(g.perdido)}</b>${gv.perdido?" · "+brlK(gv.perdido):""}</span>
-       <span class="mkt-chip" style="background:var(--brand-soft);color:var(--brand)">Obra Futura: <b>${int(g.obrafutura)}</b>${gv.obrafutura?" · "+brlK(gv.obrafutura):""}</span>
-     </div>
-     <div class="fnl-foot"><b>${int(totLeads)}</b> leads na plataforma no recorte → <b>${int(totNeg)}</b> viraram negócio no CRM. A diferença vaza antes do CRM.</div>`;
-  // ----- distribuições -----
-  const perfCount={};                                  // segmento detalhado (respeita filtros)
-  fun.forEach(r=>{perfCount[r.p]=(perfCount[r.p]||0)+1;});
-  metaLeads.forEach(l=>{perfCount[l.p]=(perfCount[l.p]||0)+1;});
-  const pfCnt=metaBase.filter(l=>l.p===PF_LABEL).length;   // PF × B2B: só leads (split limpo do form Meta)
-  const b2bCnt=metaBase.filter(l=>l.p!==PF_LABEL).length;
-  // ----- daily 30d (leads plataforma por dia, respeita filtros) -----
-  const today=new Date(); const days=[];
-  for(let i=29;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);days.push(ymd(d));}
-  const dmap={}; days.forEach(d=>dmap[d]=0);
-  (M.meta_leads||[]).forEach(l=>{if(segMatch(l.p)&&perfMatch(l.p)&&fonteOK("1")&&(!F.camp||l.c===F.camp)&&dmap[l.dt]!=null)dmap[l.dt]++;});
-  if(F.seg!=="pf"&&!perfilEsp)(M.google_daily||[]).forEach(r=>{if(fonteOK("2")&&(!F.camp||r.c===F.camp)&&dmap[r.dt]!=null)dmap[r.dt]+=r.n;});
-  const maxD=Math.max(...days.map(d=>dmap[d]),1);
-  const dailyHTML=days.map((d,i)=>{const lbl=(i%5===0||i===days.length-1)?(+d.slice(8,10))+"/"+(+d.slice(5,7)):"";
-    return `<div class="mcol"><div class="bars"><div class="cr" style="width:72%;height:${Math.max(dmap[d]/maxD*100,dmap[d]?3:0)}%;background:var(--brand);border-radius:3px 3px 0 0" title="${d.split('-').reverse().join('/')}: ${Math.round(dmap[d])} leads"></div></div><div class="ml" style="font-size:10px">${lbl}</div></div>`;}).join("");
-  // ----- tabelas de campanha (agregadas por data/fonte/campanha) -----
-  const metaRows=Object.entries(metaCampAgg).sort((a,b)=>b[1].leads-a[1].leads).map(([nome,c])=>{
-    const cp=c.leads?c.gasto/c.leads:0;
-    return `<tr><td><b>${nome}</b></td><td class="r tnum">${int(c.leads)}</td><td class="r tnum">${c.leads?brlK(cp):"—"}</td><td class="r tnum">${brlK(c.gasto)}</td></tr>`;}).join("")
-    ||`<tr><td colspan="4" class="empty">Sem dados do Meta no recorte.</td></tr>`;
-  const gRows=Object.entries(gCampAgg).sort((a,b)=>b[1].leads-a[1].leads).map(([nome,c])=>{
-    const cp=c.leads?c.gasto/c.leads:0;
-    return `<tr><td><b>${nome}</b></td><td class="r tnum">${int(Math.round(c.leads))}</td><td class="r tnum">${c.leads?brlK(cp):"—"}</td><td class="r tnum">${int(Math.round(c.wpp))}</td><td class="r tnum">${int(Math.round(c.form))}</td><td class="r tnum">${brlK(c.gasto)}</td></tr>`;}).join("")
-    ||`<tr><td colspan="6" class="empty">Sem dados do Google no recorte.</td></tr>`;
-  // ----- monta o body -----
-  document.getElementById("mkt-body").innerHTML=`
-    <div class="kpis" style="grid-template-columns:repeat(3,1fr)">${kpis}</div>
-    <div class="eyebrow">Funil de vendas (B2B)</div>
-    <div class="card">${funilHTML}</div>
-    <div class="eyebrow">Origem &amp; perfil dos leads</div>
-    <div class="grid2">
-      <div class="card"><div class="cardh">Fonte · Meta × Google</div><div id="mkt-fonte-c"></div></div>
-      <div class="card"><div class="cardh">Perfil · Pessoa Física × B2B</div><div id="mkt-pfb2b"></div></div>
-    </div>
-    <div class="card" style="margin-top:14px"><div class="cardh">Segmento — perfil detalhado (B2B)</div><div id="mkt-segchart"></div></div>
-    <div class="eyebrow">Entrada de leads · últimos 30 dias</div>
-    <div class="card"><div class="months" id="mkt-daily" style="height:150px">${dailyHTML}</div></div>
-    <div class="eyebrow">Resultados por campanha</div>
-    <div class="card" style="overflow-x:auto"><div class="cardh">Meta Ads <span style="color:var(--muted);font-weight:500">· ${nf}</span></div>
-      <table><thead><tr><th>Campanha</th><th class="r">Leads</th><th class="r">CPL</th><th class="r">Investido</th></tr></thead><tbody>${metaRows}</tbody></table></div>
-    <div class="card" style="overflow-x:auto;margin-top:14px"><div class="cardh">Google Ads <span style="color:var(--muted);font-weight:500">· ${nf}</span></div>
-      <table><thead><tr><th>Campanha</th><th class="r">Leads</th><th class="r">CPL</th><th class="r">WhatsApp</th><th class="r">Formulário</th><th class="r">Investido</th></tr></thead><tbody>${gRows}</tbody></table></div>`;
-  // donuts/bars pós-inserção
-  makeDonutInto(document.getElementById("mkt-fonte-c"),[
-    {label:"Meta Ads",value:metaLeadN,color:"var(--brand)"},{label:"Google Ads",value:gLeadN,color:"var(--open)"}],int(metaLeadN+gLeadN),"leads");
-  makeDonutInto(document.getElementById("mkt-pfb2b"),[
-    {label:"B2B",value:b2bCnt,color:"var(--brand)"},{label:"Pessoa Física",value:pfCnt,color:"var(--muted)"}],int(b2bCnt+pfCnt),"leads");
-  const segArr=Object.entries(perfCount).filter(([k])=>k!==PF_LABEL).map(([k,n])=>({label:k,n,disp:int(n)})).sort((a,b)=>b.n-a.n);
-  renderBars(document.getElementById("mkt-segchart"),segArr,"var(--brand)");
-}
-function makeDonutInto(el,data,top,bot){el.innerHTML=makeDonut(data,top,bot);}
-document.querySelectorAll(".mkt-presets button").forEach(btn=>btn.onclick=()=>{
-  document.querySelectorAll(".mkt-presets button").forEach(b=>b.classList.toggle("on",b===btn));
-  mktPreset(btn.dataset.p);
-});
-function mktClearPresets(){document.querySelectorAll(".mkt-presets button").forEach(b=>b.classList.remove("on"));}
-document.getElementById("mkt-from").onchange=e=>{MKT.from=e.target.value;mktClearPresets();renderMarketing();};
-document.getElementById("mkt-to").onchange=e=>{MKT.to=e.target.value;mktClearPresets();renderMarketing();};
-document.getElementById("mkt-fonte").onchange=e=>{MKT.fonte=e.target.value;mktCampOpts();renderMarketing();};
-document.getElementById("mkt-camp").onchange=e=>{MKT.camp=e.target.value;renderMarketing();};
-document.getElementById("mkt-seg").onchange=e=>{MKT.seg=e.target.value;renderMarketing();};
-// dropdown de Perfil (multi-seleção)
-const perfilBtn=document.getElementById("mkt-perfil-btn"), perfilMenu=document.getElementById("mkt-perfil-menu");
-perfilBtn.onclick=e=>{e.stopPropagation();perfilMenu.style.display=perfilMenu.style.display==="none"?"block":"none";};
-document.addEventListener("click",e=>{if(!perfilMenu.contains(e.target)&&e.target!==perfilBtn)perfilMenu.style.display="none";});
-document.getElementById("mkt-reset").onclick=()=>{MKT.from="";MKT.to="";MKT.fonte="";MKT.camp="";MKT.seg="b2b";MKT.perfil.clear();
-  ["mkt-from","mkt-to","mkt-fonte","mkt-camp"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
-  document.getElementById("mkt-seg").value="b2b";
-  perfilMenu.querySelectorAll("input").forEach(i=>i.checked=false); mktPerfilBtnLabel();
-  mktClearPresets();document.querySelector('.mkt-presets [data-p="tudo"]').classList.add("on");renderMarketing();};
 // ================= B.I Funil (comercial) =================
 const FUN={from:"",to:"",vd:"",cat:"",src:"",base:"alt"};
 const BX="https://biomassadobrasil.bitrix24.com.br/crm/deal/details/";
@@ -1430,4 +1339,403 @@ document.getElementById("fun-base").onchange=e=>{FUN.base=e.target.value;renderF
 document.getElementById("fun-reset").onclick=()=>{FUN.vd="";FUN.cat="";FUN.src="";FUN.base="alt";["fun-vd","fun-cat","fun-src"].forEach(id=>document.getElementById(id).value="");document.getElementById("fun-base").value="alt";document.getElementById("fun-per").value="mes";funDateRow().style.display="none";funPreset("mes");};
 renderTiny();
 refresh();
+// ================= Tráfego Pago (Meta Ads + Google Ads) =================
+// Dados vêm de /trafego.json (atualizado de hora em hora pelo servidor), separado do resto do BI.
+let TP=null, TP_EM=0;
+const TPF={meta:{p:"7d",ini:"",fim:"",camp:""},google:{p:"7d",ini:"",fim:"",camp:""}};
+const tpEsc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const tpOk=n=>n!=null&&isFinite(n);
+const tpBRL=(n,d=2)=>tpOk(n)?"R$ "+n.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
+const tpBRLc=n=>tpOk(n)?(n>=10000?tpBRL(n,0):tpBRL(n)):"—";
+const tpN=n=>tpOk(n)?Math.round(n).toLocaleString("pt-BR"):"—";
+const tpN1=n=>tpOk(n)?n.toLocaleString("pt-BR",{maximumFractionDigits:1}):"—";
+const tpPct=(n,d=0)=>tpOk(n)?n.toLocaleString("pt-BR",{maximumFractionDigits:d})+"%":"—";
+const tpDiv=(a,b)=>b?a/b:null;
+const tpAdd=(iso,n)=>{const d=new Date(iso+"T12:00:00Z");d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10);};
+const tpDays=(a,b)=>Math.round((new Date(b+"T12:00:00Z")-new Date(a+"T12:00:00Z"))/864e5)+1;
+const tpBr=iso=>iso?iso.slice(8,10)+"/"+iso.slice(5,7):"";
+const tpBrY=iso=>iso?iso.slice(8,10)+"/"+iso.slice(5,7)+"/"+iso.slice(0,4):"";
+const tpHora=iso=>{if(!iso)return"";const d=new Date(iso);return isNaN(d)?"":d.toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",timeZone:"America/Sao_Paulo"}).replace(",","");};
+const TPI={
+  users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  money:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+  tag:'<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>',
+  brief:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+  radar:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  check:'<polyline points="20 6 9 17 4 12"/>',
+  wpp:'<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>',
+  form:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/>',
+  click:'<path d="M9 9l5 12 1.8-5.2L21 14z"/><path d="M7.2 2.2L8 5.1"/><path d="M5.1 8l-2.9-.8"/><path d="M14 4.1L12 6"/><path d="M6 12l-1.9 2"/>',
+  ext:'<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>',
+  play:'<polygon points="6 4 20 12 6 20 6 4" fill="#fff" stroke="none"/>',
+};
+const tpSvg=(k,extra="")=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ${extra}>${TPI[k]}</svg>`;
+const TP_LOGO={
+  meta:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M3 15c0-4 2-8 4.5-8 3.5 0 5.5 10 9 10 2 0 3.5-2 3.5-5s-1.5-5-3.5-5c-3 0-5 6-7 9-1.2 1.8-2.4 2.5-3.5 2.5C4.3 18.5 3 17.3 3 15z"/></svg>',
+  google:'<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.6 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.8h3.6c2-1.9 3.3-4.7 3.3-8.1z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.8c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.9A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.8 14.1a6.6 6.6 0 0 1 0-4.2V7H2.1a11 11 0 0 0 0 10z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7l3.7 2.9C6.7 7.3 9.1 5.4 12 5.4z"/></svg>',
+  geral:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/></svg>',
+};
+
+function abrirTrafego(){
+  const box=document.getElementById("view-trafego");
+  if(TP && Date.now()-TP_EM<10*60e3) return;          // recarrega no máx. a cada 10 min
+  fetch("trafego.json",{cache:"no-store"}).then(r=>{
+    if(r.status===503) throw new Error("gerando");
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    return r.json();
+  }).then(d=>{TP=d;TP_EM=Date.now();renderTrafego();}).catch(e=>{
+    box.innerHTML=`<div class="tp-loading">${e.message==="gerando"?"Gerando os dados de Tráfego Pago pela primeira vez… a página tenta de novo em 20 segundos.":"Não consegui carregar os dados de Tráfego Pago ("+tpEsc(e.message)+")."}</div>`;
+    if(e.message==="gerando") setTimeout(abrirTrafego,20000);
+  });
+}
+
+function tpRange(f,hoje){
+  if(f.p==="hoje") return {ini:hoje,fim:hoje,pini:tpAdd(hoje,-1),pfim:tpAdd(hoje,-1),key:"hoje"};
+  if(f.p==="ontem"){const o=tpAdd(hoje,-1);return {ini:o,fim:o,pini:tpAdd(hoje,-2),pfim:tpAdd(hoje,-2),key:"ontem"};}
+  if(f.p==="7d") return {ini:tpAdd(hoje,-6),fim:hoje,pini:tpAdd(hoje,-13),pfim:tpAdd(hoje,-7),key:"7d"};
+  let ini=f.ini||tpAdd(hoje,-29), fim=f.fim||hoje; if(ini>fim)[ini,fim]=[fim,ini];
+  const n=tpDays(ini,fim); return {ini,fim,pini:tpAdd(ini,-n),pfim:tpAdd(ini,-1),key:null};
+}
+function tpSum(rows,ini,fim,camp){
+  const t={g:0,i:0,k:0,l:0,cv:0,w:0,f:0};
+  for(const r of rows||[]){ if(r.d<ini||r.d>fim||(camp&&r.c!==camp)) continue; for(const k in t) t[k]+=r[k]||0; }
+  return t;
+}
+let TP_NOCMP=false;   // "Hoje" é dia em andamento: não compara com o dia inteiro de ontem
+function tpDelta(cur,prev,lowerBetter){
+  if(TP_NOCMP) return "";
+  if(!tpOk(cur)||!tpOk(prev)) return "";
+  if(prev===0) return cur>0?`<span class="tp-delta eq">novo</span>`:"";
+  const p=(cur-prev)/prev*100;
+  if(Math.abs(p)<0.5) return `<span class="tp-delta eq">= 0%</span>`;
+  const good=lowerBetter?p<0:p>0;
+  return `<span class="tp-delta ${good?"up":"dn"}" title="vs. período anterior">${p>0?"▲":"▼"} ${Math.abs(p).toLocaleString("pt-BR",{maximumFractionDigits:0})}%</span>`;
+}
+const tpKpi=k=>`<div class="tp-kpi${k.hl?" hl":""}"><div class="l">${tpSvg(k.ic)}${k.l}</div><div class="v"${k.id?` id="${k.id}"`:""}>${k.v}</div><div class="f"${k.id?` id="${k.id}-f"`:""}>${k.d||""}${k.f?`<span>${k.f}</span>`:""}</div></div>`;
+function tpTags(arr,max=8){
+  if(!arr||!arr.length) return '<span class="tp-empty">—</span>';
+  const vis=arr.slice(0,max).map(x=>`<span class="tp-tag">${tpEsc(x)}</span>`).join("");
+  const rest=arr.slice(max);
+  return `<div class="tp-tags">${vis}${rest.length?`<span class="tp-tag more" data-more='${tpEsc(JSON.stringify(rest))}'>+${rest.length}</span>`:""}</div>`;
+}
+function tpHBars(items,opt={}){
+  const tot=items.reduce((s,x)=>s+x.n,0), max=Math.max(1,...items.map(x=>x.n));
+  if(!tot) return '<div class="tp-empty">Sem respostas no período.</div>';
+  return items.map(x=>`<div class="tp-hb"><div class="nm" title="${tpEsc(x.label)}">${tpEsc(x.label)}</div><div class="tr"><i style="width:${x.n/max*100}%;background:${x.color||opt.color||"var(--brand)"}"></i></div><div class="vv">${tpN(x.n)}<small>${tpPct(x.n/tot*100)}</small></div></div>`).join("");
+}
+function tpRing(pct,color){
+  const r=30,c=2*Math.PI*r,v=Math.max(0,Math.min(100,pct||0));
+  return `<svg viewBox="0 0 74 74"><circle cx="37" cy="37" r="${r}" fill="none" stroke="var(--line2)" stroke-width="9"/><circle cx="37" cy="37" r="${r}" fill="none" stroke="${color}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${c*v/100} ${c}" transform="rotate(-90 37 37)"/><text x="37" y="41" text-anchor="middle" font-size="15" font-weight="800" fill="var(--ink)">${Math.round(v)}%</text></svg>`;
+}
+// gráfico diário: barras empilhadas (quantidade) + linha (investimento)
+function tpChart(days,stacks,line,sel){
+  const W=1000,H=250,pl=34,pr=52,pt=14,pb=26,iw=W-pl-pr,ih=H-pt-pb,n=days.length;
+  const tot=days.map((_,i)=>stacks.reduce((s,st)=>s+(st.v[i]||0),0));
+  const maxB=Math.max(1,...tot), maxL=Math.max(1,...line.v);
+  const bw=iw/n, bx=i=>pl+i*bw;
+  let g="";
+  for(let t=0;t<=4;t++){const y=pt+ih-ih*t/4;g+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" stroke="var(--line2)"/><text class="ax" x="${pl-6}" y="${y+3}" text-anchor="end">${tpN(maxB*t/4)}</text><text class="ax" x="${W-pr+6}" y="${y+3}">${maxL*t/4>=1000?(maxL*t/4/1000).toFixed(1).replace(".",",")+"k":Math.round(maxL*t/4)}</text>`;}
+  days.forEach((d,i)=>{
+    let y=pt+ih; const op=sel&&(d<sel[0]||d>sel[1])?.32:1;
+    stacks.forEach(st=>{const h=ih*(st.v[i]||0)/maxB; y-=h; if(h>0) g+=`<rect x="${bx(i)+bw*.18}" y="${y}" width="${bw*.64}" height="${h}" rx="2" fill="${st.color}" opacity="${op}"><title>${tpBrY(d)} · ${st.name}: ${tpN1(st.v[i])}</title></rect>`;});
+    const step=Math.ceil(n/12);
+    if(i%step===0||i===n-1) g+=`<text class="ax" x="${bx(i)+bw/2}" y="${H-8}" text-anchor="middle">${tpBr(d)}</text>`;
+  });
+  const pts=line.v.map((v,i)=>`${bx(i)+bw/2},${pt+ih-ih*v/maxL}`).join(" ");
+  g+=`<polyline points="${pts}" fill="none" stroke="${line.color}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  line.v.forEach((v,i)=>{g+=`<circle cx="${bx(i)+bw/2}" cy="${pt+ih-ih*v/maxL}" r="${n>45?1.6:3}" fill="var(--panel)" stroke="${line.color}" stroke-width="2"><title>${tpBrY(days[i])} · Investimento: ${tpBRL(v)}</title></circle>`;});
+  return `<svg viewBox="0 0 ${W} ${H}" role="img">${g}</svg>
+    <div class="tp-leg">${stacks.map(s=>`<span><i style="background:${s.color}"></i>${s.name}</span>`).join("")}<span><i style="background:${line.color};height:3px;vertical-align:3px"></i>Investimento (R$, eixo da direita)</span></div>`;
+}
+function tpChartDays(r){ // período curto -> mostra 14 dias com o período destacado
+  const n=tpDays(r.ini,r.fim), ini=n<7?tpAdd(r.fim,-13):r.ini, out=[];
+  for(let d=ini;d<=r.fim;d=tpAdd(d,1)) out.push(d);
+  return {days:out,sel:n<7?[r.ini,r.fim]:null};
+}
+function tpFilters(plat,camps){
+  const f=TPF[plat];
+  return `<div class="tp-filters" id="tp-${plat}-filters">
+    <span class="fllbl">Período</span>
+    <span class="tp-seg2">${[["hoje","Hoje"],["ontem","Ontem"],["7d","7 dias"],["custom","Personalizado"]].map(([k,l])=>`<button data-plat="${plat}" data-p="${k}" class="${f.p===k?"on":""}">${l}</button>`).join("")}</span>
+    <span class="tp-dates" ${f.p==="custom"?"":"hidden"}><input type="date" data-plat="${plat}" data-d="ini" value="${f.ini}"><span class="drsep">até</span><input type="date" data-plat="${plat}" data-d="fim" value="${f.fim}"></span>
+    <span class="fllbl" style="margin-left:6px">Campanha</span>
+    <select class="tp-sel" data-plat="${plat}" data-camp="1"><option value="">Todas as ativas (${camps.length})</option>${camps.map(c=>`<option value="${c.id}">${tpEsc(c.nome)}</option>`).join("")}</select>
+    <span class="tp-per" id="tp-${plat}-per"></span>
+  </div>`;
+}
+function tpAnalises(bloco,plat){
+  const A=TP.analises||{}, b=(A[plat])||null;
+  if(!b) return '<div class="tp-card"><div class="tp-empty">As análises aparecem após a próxima atualização.</div></div>';
+  const fonte=A.fonte==="ia"?`<span class="src">✦ Análise por IA (Claude) · ${tpHora(A.em)}</span>`:`<span class="src rg">Regras automáticas · ${tpHora(A.em)}</span>`;
+  const col=(cls,ic,t,arr)=>`<div class="col ${cls}"><h5><span>${ic}</span>${t}</h5>${arr&&arr.length?`<ul>${arr.map(x=>`<li>${tpEsc(x)}</li>`).join("")}</ul>`:'<div class="tp-empty">Nada a destacar.</div>'}</div>`;
+  return `<div class="tp-ai-head">${fonte}<span class="tp-note" style="margin:0">Base: últimos 7 dias vs. 7 dias anteriores, e últimos 30 dias. Não muda com o filtro.</span></div>
+    ${b.resumo?`<div class="tp-ai-res">${tpEsc(b.resumo)}</div>`:""}
+    <div class="tp-ai">${col("b","✓","O que está bom",b.bom)}${col("c","?","O que é curioso",b.curioso)}${col("m","↗","O que pode melhorar",b.melhorar)}</div>`;
+}
+function tpStatus(B){
+  if(!B) return "";
+  return B.ok?`<span class="tp-status ok">● Atualizado ${tpHora(B.atualizado_em)}</span>`:`<span class="tp-status bad">● Sem atualizar${B.atualizado_em?" desde "+tpHora(B.atualizado_em):""}</span>`;
+}
+function tpWarn(B,nome){
+  if(!B||B.ok) return "";
+  return `<div class="tp-warn">${tpSvg("radar",'width="18" height="18" style="flex:0 0 auto;color:var(--bad)"')}<div><b>${nome} não está atualizando.</b> ${tpEsc(B.erro||"")} ${B.atualizado_em?`Os números abaixo são da última atualização que funcionou (${tpHora(B.atualizado_em)}).`:"Ainda não há nenhum dado salvo desta plataforma."}</div></div>`;
+}
+
+function renderTrafego(){
+  const box=document.getElementById("view-trafego"), M=TP.meta||{}, G=TP.google||{};
+  box.innerHTML=`
+  <nav class="tp-nav"><a href="#tp-geral">Resumo geral</a><a href="#tp-meta">Meta Ads</a><a href="#tp-google">Google Ads</a>
+    <span class="tp-upd">Dados de ${tpHora(TP.gerado_em)} · atualiza de hora em hora</span></nav>
+  <section id="tp-geral" class="tp-sec"></section>
+  <section id="tp-meta" class="tp-sec"></section>
+  <section id="tp-google" class="tp-sec"></section>`;
+  box.querySelectorAll(".tp-nav a").forEach(a=>a.onclick=e=>{e.preventDefault();document.querySelector(a.getAttribute("href")).scrollIntoView({behavior:"smooth"});});
+  renderTpGeral(); renderTpMeta(); renderTpGoogle();
+  box.onclick=e=>{
+    const m=e.target.closest(".tp-tag.more");
+    if(m){const rest=JSON.parse(m.dataset.more);m.insertAdjacentHTML("beforebegin",rest.map(x=>`<span class="tp-tag">${tpEsc(x)}</span>`).join(""));m.remove();return;}
+    const bd=e.target.closest("[data-vermais]");
+    if(bd){const t=bd.parentElement.querySelector(".bd");t.classList.toggle("open");bd.textContent=t.classList.contains("open")?"ver menos":"ver texto";return;}
+    const b=e.target.closest(".tp-seg2 button");
+    if(b){const f=TPF[b.dataset.plat];f.p=b.dataset.p;
+      const fl=document.getElementById(`tp-${b.dataset.plat}-filters`);
+      fl.querySelectorAll(".tp-seg2 button").forEach(x=>x.classList.toggle("on",x===b));
+      fl.querySelector(".tp-dates").hidden=f.p!=="custom";
+      if(f.p==="custom"){const B=TP[b.dataset.plat],r=tpRange(f,B.hoje);const [i1,i2]=fl.querySelectorAll(".tp-dates input");i1.value=f.ini=r.ini;i2.value=f.fim=r.fim;}
+      (b.dataset.plat==="meta"?renderTpMetaDyn:renderTpGoogleDyn)();}
+  };
+  box.onchange=e=>{
+    const t=e.target, plat=t.dataset.plat; if(!plat) return;
+    if(t.dataset.d) TPF[plat][t.dataset.d]=t.value;
+    if(t.dataset.camp) TPF[plat].camp=t.value;
+    (plat==="meta"?renderTpMetaDyn:renderTpGoogleDyn)();
+  };
+}
+
+// ---------- Resumo geral (fixo: últimos 7 dias vs 7 anteriores) ----------
+function renderTpGeral(){
+  const M=TP.meta||{}, G=TP.google||{}, el=document.getElementById("tp-geral");
+  const per=(B,a,b)=>B.hoje?[tpAdd(B.hoje,-a),tpAdd(B.hoje,-b)]:null;
+  const mc=M.hoje?tpSum(M.diario,...per(M,6,0)):{g:0,l:0}, mp=M.hoje?tpSum(M.diario,...per(M,13,7)):{g:0,l:0};
+  const gc=G.hoje?tpSum(G.diario,...per(G,6,0)):{g:0,cv:0}, gp=G.hoje?tpSum(G.diario,...per(G,13,7)):{g:0,cv:0};
+  const L=mc.l+gc.cv, Lp=mp.l+gp.cv, I=mc.g+gc.g, Ip=mp.g+gp.g;
+  const gOk=G.ok&&G.campanhas&&G.campanhas.length;
+  const share=(a,b)=>a+b?a/(a+b)*100:0;
+  el.innerHTML=`
+  <div class="tp-hero"><div class="tp-logo geral">${TP_LOGO.geral}</div><div><h2>Resumo geral</h2><div class="tp-sub">Meta + Google somados · últimos 7 dias comparados com os 7 anteriores</div></div></div>
+  ${gOk?"":`<div class="tp-note" style="color:var(--bad);font-weight:650">⚠ Google Ads fora do resumo: o acesso está vencido (veja a seção do Google).</div>`}
+  <div class="tp-kpis" style="margin-top:14px">
+    ${tpKpi({ic:"users",l:"Leads totais",v:tpN(L),d:tpDelta(L,Lp),f:gOk?`${tpN(mc.l)} Meta · ${tpN(gc.cv)} Google`:"só Meta",hl:1})}
+    ${tpKpi({ic:"money",l:"Investimento total",v:tpBRLc(I),d:tpDelta(I,Ip),f:gOk?`${tpBRL(mc.g,0)} Meta · ${tpBRL(gc.g,0)} Google`:""})}
+    ${tpKpi({ic:"tag",l:"Custo por lead médio",v:tpBRL(tpDiv(I,L)),d:tpDelta(tpDiv(I,L),tpDiv(Ip,Lp),true)})}
+  </div>
+  ${gOk?`<div class="tp-card" style="margin-top:12px"><h4>Divisão entre plataformas</h4><div class="d">Quanto cada uma recebe de verba e entrega de leads (7 dias)</div>
+    <div class="tp-src">
+      <div><div class="nm">Investimento</div><div class="tp-split"><i style="width:${share(mc.g,gc.g)}%;background:var(--meta)"></i><i style="width:${share(gc.g,mc.g)}%;background:#34a853"></i></div><div class="sm">Meta ${tpPct(share(mc.g,gc.g))} · Google ${tpPct(share(gc.g,mc.g))}</div></div>
+      <div><div class="nm">Leads</div><div class="tp-split"><i style="width:${share(mc.l,gc.cv)}%;background:var(--meta)"></i><i style="width:${share(gc.cv,mc.l)}%;background:#34a853"></i></div><div class="sm">Meta ${tpPct(share(mc.l,gc.cv))} · Google ${tpPct(share(gc.cv,mc.l))}</div></div>
+    </div></div>`:""}`;
+}
+
+// ---------- Meta ----------
+function tpPublico(s,multi){
+  const p=s.publico, seg=Object.entries(p.segmentacao||{});
+  return `<div class="tp-pub">${multi?`<div style="font-weight:700;font-size:12.5px;margin-bottom:4px">${tpEsc(s.nome)} · ${tpBRL(s.orcamento_dia)}/dia</div>`:""}
+    <div class="row"><span class="k">Tipo de público</span><span>${p.advantage?'<span class="tp-tag adv">Advantage+ · a Meta expande sozinha</span>':'<span class="tp-tag">Segmentação manual</span>'}</span></div>
+    <div class="row"><span class="k">Idade</span><span>${tpEsc(p.idade)}</span></div>
+    <div class="row"><span class="k">Gênero</span><span>${tpEsc(p.genero)}</span></div>
+    <div class="row"><span class="k">Regiões</span>${tpTags(p.locais,10)}</div>
+    <div class="row"><span class="k">Posicionamentos</span><span>${tpEsc(p.posicionamentos)}</span></div>
+    ${seg.length?`<div class="tp-seg">${seg.map(([k,v])=>`<div class="lbl">${tpEsc(k)} (${v.length})</div>${tpTags(v,6)}`).join("")}</div>`:`<div class="row"><span class="k">Segmentação</span><span class="tp-empty" style="padding:0">Sem interesses/cargos: público aberto${p.advantage?" (Advantage+)":""}</span></div>`}
+  </div>`;
+}
+function tpMetaAd(a){
+  if(!a) return '<div class="tp-empty">Nenhum anúncio ativo.</div>';
+  return `<div class="tp-ad">
+    <div class="th" style="background-image:url('${tpEsc(a.thumb||"")}')">${a.tipo?`<span class="tipo">${tpEsc(a.tipo)}</span>`:""}${a.tipo==="Vídeo"?`<div class="play"><span>${tpSvg("play",'width="18" height="18"')}</span></div>`:""}</div>
+    <div class="tx"><div class="tt">${tpEsc(a.titulo||a.nome)}</div>${a.texto?`<div class="bd">${tpEsc(a.texto)}</div><a href="#" class="tp-note" data-vermais="1" onclick="return false" style="display:inline-block;margin-top:4px;color:var(--brand);font-weight:700">ver texto</a>`:""}
+    ${a.cta?`<div class="tp-note" style="margin-top:6px">Botão: <b style="color:var(--ink)">${tpEsc(a.cta)}</b></div>`:""}</div>
+    <div class="lnk">${a.preview?`<a class="tp-btn pri" href="${tpEsc(a.preview)}" target="_blank" rel="noopener">${tpSvg("ext",'width="13" height="13"')}Ver prévia</a>`:""}${a.instagram?`<a class="tp-btn" href="${tpEsc(a.instagram)}" target="_blank" rel="noopener">Instagram</a>`:""}</div>
+  </div>`;
+}
+function renderTpMeta(){
+  const M=TP.meta||{}, el=document.getElementById("tp-meta"), C=M.campanhas||[];
+  el.innerHTML=`
+  <div class="tp-hero"><div class="tp-logo meta">${TP_LOGO.meta}</div><div><h2>Meta Ads</h2><div class="tp-sub">Facebook e Instagram${M.conta?" · conta "+tpEsc(M.conta):""}</div></div>${tpStatus(M)}</div>
+  ${tpWarn(M,"A Meta")}
+  <div class="tp-h3">Campanhas ativas <span class="n">${C.length}</span></div>
+  ${C.length?`<div class="tp-camps">${C.map(c=>`
+    <div class="tp-camp">
+      <div class="tp-camp-h"><div class="st"><i></i>Ativa</div><div class="nm">${tpEsc(c.nome)}</div></div>
+      <div class="tp-facts">
+        <div class="tp-fact"><div class="k">Orçamento</div><div class="v big">${c.orcamento_dia?tpBRL(c.orcamento_dia)+"<small style='font-size:12px;color:var(--muted)'>/dia</small>":c.orcamento_total?tpBRL(c.orcamento_total)+" total":"—"}</div></div>
+        <div class="tp-fact"><div class="k">Objetivo</div><div class="v">${tpEsc(c.objetivo)}</div></div>
+        <div class="tp-fact"><div class="k">Otimização</div><div class="v">${tpEsc(c.otimizacao)}</div></div>
+        <div class="tp-fact"><div class="k">Lance</div><div class="v">${tpEsc(c.lance)}</div></div>
+        <div class="tp-fact"><div class="k">No ar desde</div><div class="v">${tpBrY(c.inicio)}</div></div>
+      </div>
+      <div class="tp-body"><div>${c.conjuntos.map(s=>tpPublico(s,c.conjuntos.length>1)).join('<hr style="border:none;border-top:1px solid var(--line2);margin:12px 0">')}</div>
+        <div>${c.anuncios.map(tpMetaAd).join('<div style="height:10px"></div>')||tpMetaAd(null)}</div></div>
+    </div>`).join("")}</div>`:`<div class="tp-card"><div class="tp-empty">Nenhuma campanha ativa na Meta agora.</div></div>`}
+  ${C.length?tpFilters("meta",C):""}
+  <div id="tp-meta-dyn"></div>
+  <div class="tp-h3">Análises · Meta</div>${tpAnalises(M,"meta")}`;
+  if(C.length) renderTpMetaDyn();
+}
+function renderTpMetaDyn(){
+  const M=TP.meta, f=TPF.meta, r=tpRange(f,M.hoje), el=document.getElementById("tp-meta-dyn");
+  const camp=f.camp||null, C=M.campanhas;
+  TP_NOCMP=f.p==="hoje";
+  document.getElementById("tp-meta-per").textContent=f.p==="hoje"?`${tpBr(r.ini)} · dia em andamento (sem comparação)`:`${tpBr(r.ini)}${r.fim!==r.ini?" → "+tpBr(r.fim):""} · comparado com ${tpBr(r.pini)}${r.pfim!==r.pini?" → "+tpBr(r.pfim):""}`;
+  const s=tpSum(M.diario,r.ini,r.fim,camp), p=tpSum(M.diario,r.pini,r.pfim,camp);
+  const inP=(x,a,b)=>x.d>=a&&x.d<=b&&(!camp||x.c===camp);
+  const L=M.leads.filter(x=>inP(x,r.ini,r.fim)), Lp=M.leads.filter(x=>inP(x,r.pini,r.pfim));
+  const b2b=L.filter(x=>x.b2b).length, b2bp=Lp.filter(x=>x.b2b).length;
+  const alc=k=>k&&M.alcance[k]?(camp?M.alcance[k].camp[camp]:M.alcance[k].total):null;
+  const reach=alc(r.key), reachp=r.key?alc(r.key+"_prev"):null;
+  el.innerHTML=`
+  <div class="tp-kpis">
+    ${tpKpi({ic:"users",l:"Leads",v:tpN(s.l),d:tpDelta(s.l,p.l),f:L.length?`${tpN(b2b)} B2B (${tpPct(b2b/L.length*100)})`:"",hl:1})}
+    ${tpKpi({ic:"money",l:"Investimento",v:tpBRLc(s.g),d:tpDelta(s.g,p.g)})}
+    ${tpKpi({ic:"tag",l:"Custo por lead",v:tpBRL(tpDiv(s.g,s.l)),d:tpDelta(tpDiv(s.g,s.l),tpDiv(p.g,p.l),true)})}
+    ${tpKpi({ic:"brief",l:"Custo por lead B2B",v:tpBRL(tpDiv(s.g,b2b)),d:tpDelta(tpDiv(s.g,b2b),tpDiv(p.g,b2bp),true),f:`${tpN(b2b)} leads B2B`})}
+    ${tpKpi({ic:"eye",l:"Impressões",v:tpN(s.i),d:tpDelta(s.i,p.i),f:`CTR do link ${tpPct(tpDiv(s.k,s.i)*100,2)}`})}
+    ${tpKpi({ic:"radar",l:"Alcance",id:"tp-meta-reach",v:r.key?tpN(reach):"…",d:r.key?tpDelta(reach,reachp):"",f:r.key&&reach?`frequência ${tpN1(s.i/reach)}`:""})}
+  </div>
+  <div class="tp-card" style="margin-top:14px"><h4>Leads por dia</h4><div class="d">Barras: leads do formulário (B2B × Pessoa Física/Outro) · linha: investimento</div><div class="tp-chart" id="tp-meta-chart"></div></div>
+  <div class="tp-h3">Quem são os leads <span class="n">${tpN(L.length)} respostas</span></div>
+  <div class="tp-grid2" id="tp-meta-q" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,255px),1fr))"></div>
+  <div class="tp-h3">Campanhas no período</div>
+  <div class="tp-card tp-tblw" id="tp-meta-tbl"></div>`;
+  // gráfico
+  const cd=tpChartDays(r), by={};
+  M.leads.forEach(x=>{if(!camp||x.c===camp){const o=by[x.d]=by[x.d]||[0,0];o[x.b2b?0:1]++;}});
+  const gd={}; M.diario.forEach(x=>{if(!camp||x.c===camp) gd[x.d]=(gd[x.d]||0)+x.g;});
+  document.getElementById("tp-meta-chart").innerHTML=tpChart(cd.days,
+    [{name:"B2B",color:"var(--b2b)",v:cd.days.map(d=>(by[d]||[0])[0])},{name:"Pessoa Física / Outro",color:"var(--pf)",v:cd.days.map(d=>(by[d]||[0,0])[1])}],
+    {color:"#f59e0b",v:cd.days.map(d=>gd[d]||0)},cd.sel);
+  // qualidade dos leads
+  const cnt=(arr,k)=>{const o={};arr.forEach(x=>{if(x[k])o[x[k]]=(o[x[k]]||0)+1;});return Object.entries(o).sort((a,b)=>b[1]-a[1]);};
+  const perf=cnt(L,"pf").map(([k,n])=>({label:k,n,color:["Pessoa Física","Outro","Sem resposta"].includes(k)?"var(--pf)":"var(--b2b)"}));
+  const empresas=L.filter(x=>x.b2b), porte=["Pequeno","Médio","Grande"].map(k=>({label:k,n:empresas.filter(x=>x.po===k).length}));
+  const comPorte=porte.reduce((a,x)=>a+x.n,0);
+  const plat=["Instagram","Facebook"].map(k=>{const a=L.filter(x=>x.pl===k);return {k,n:a.length,b:a.filter(x=>x.b2b).length};});
+  const ordM=["Até 100 m²","100 a 500 m²","500 a 1.000 m²","Acima de 1.000 m²"];
+  const metr=ordM.map(k=>({label:k,n:L.filter(x=>x.m===k).length,color:"#0ea5a4"}));
+  const metrB=ordM.map(k=>({label:k,n:empresas.filter(x=>x.m===k).length,color:"#0ea5a4"}));
+  document.getElementById("tp-meta-q").innerHTML=`
+    <div class="tp-card"><h4>Perfil</h4><div class="d">Resposta a "Qual é o seu perfil?" · azul = B2B</div>
+      <div class="tp-ring">${tpRing(L.length?b2b/L.length*100:0,"var(--b2b)")}<div class="t"><b>${tpN(b2b)}</b> de ${tpN(L.length)} leads são B2B<br>Pessoa Física: ${tpN(L.filter(x=>x.pf==="Pessoa Física").length)}</div></div>
+      ${tpHBars(perf)}</div>
+    <div class="tp-card"><h4>Porte da empresa</h4><div class="d">Só leads B2B que responderam (Pessoa Física sem porte é desconsiderada)</div>
+      ${comPorte?tpHBars(porte,{color:"var(--brand)"})+`<div class="tp-note">${tpN(comPorte)} de ${tpN(empresas.length)} empresas informaram o porte.</div>`:'<div class="tp-empty">Nenhuma empresa informou o porte no período.</div>'}</div>
+    <div class="tp-card"><h4>Fonte</h4><div class="d">Onde a pessoa preencheu o formulário</div>
+      <div class="tp-split">${plat.map(x=>`<i style="width:${L.length?x.n/L.length*100:0}%;background:${x.k==="Instagram"?"var(--ig)":"var(--meta)"}"></i>`).join("")}</div>
+      <div class="tp-src">${plat.map(x=>`<div><div class="nm"><i style="background:${x.k==="Instagram"?"var(--ig)":"var(--meta)"}"></i>${x.k}</div><div class="big">${tpN(x.n)}</div><div class="sm">${tpPct(L.length?x.n/L.length*100:0)} dos leads<br><b style="color:var(--ink)">${tpPct(x.n?x.b/x.n*100:0)} B2B</b> (${tpN(x.b)})</div></div>`).join("")}</div></div>
+    <div class="tp-card"><h4>Tamanho da obra</h4><div class="d">Metragem de alvenaria informada · todos os leads / só B2B</div>
+      ${tpHBars(metr)}<div class="tp-note" style="margin:10px 0 4px;font-weight:700">Só B2B</div>${tpHBars(metrB)}</div>`;
+  // tabela por campanha
+  const rows=C.map(c=>{const t=tpSum(M.diario,r.ini,r.fim,c.id), lc=M.leads.filter(x=>x.c===c.id&&x.d>=r.ini&&x.d<=r.fim), b=lc.filter(x=>x.b2b).length;
+    return {c,t,n:lc.length,b,cpl:tpDiv(t.g,t.l),cplb:tpDiv(t.g,b),reach:r.key&&M.alcance[r.key]?M.alcance[r.key].camp[c.id]:null};});
+  const ok=rows.filter(x=>x.cplb!=null), bestC=ok.length>1?ok.reduce((a,b)=>a.cplb<=b.cplb?a:b):null, bestB=rows.length>1?rows.reduce((a,b)=>a.b>=b.b?a:b):null;
+  const T=tpSum(M.diario,r.ini,r.fim), TB=M.leads.filter(x=>x.d>=r.ini&&x.d<=r.fim), tb=TB.filter(x=>x.b2b).length;
+  document.getElementById("tp-meta-tbl").innerHTML=`<table class="tp-tbl"><thead><tr><th>Campanha</th><th>Investimento</th><th>Leads</th><th>Custo/lead</th><th>Leads B2B</th><th>% B2B</th><th>Custo/lead B2B</th><th>Impressões</th><th>Alcance</th><th>CTR link</th></tr></thead><tbody>
+    ${rows.map(x=>`<tr class="${x===bestC?"best":""}"><td>${tpEsc(x.c.nome)}${x===bestC?'<span class="tp-crown">menor custo B2B</span>':""}${x===bestB&&x.b?'<span class="tp-crown">mais B2B</span>':""}</td>
+      <td>${tpBRL(x.t.g)}</td><td>${tpN(x.t.l)}</td><td>${tpBRL(x.cpl)}</td><td>${tpN(x.b)}</td><td>${tpPct(x.n?x.b/x.n*100:null)}</td><td><b>${tpBRL(x.cplb)}</b></td><td>${tpN(x.t.i)}</td><td>${x.reach!=null?tpN(x.reach):"—"}</td><td>${tpPct(tpDiv(x.t.k,x.t.i)*100,2)}</td></tr>`).join("")}
+    <tr class="tr-tot"><td>Total</td><td>${tpBRL(T.g)}</td><td>${tpN(T.l)}</td><td>${tpBRL(tpDiv(T.g,T.l))}</td><td>${tpN(tb)}</td><td>${tpPct(TB.length?tb/TB.length*100:null)}</td><td>${tpBRL(tpDiv(T.g,tb))}</td><td>${tpN(T.i)}</td><td>${r.key&&M.alcance[r.key]?tpN(M.alcance[r.key].total):"—"}</td><td>${tpPct(tpDiv(T.k,T.i)*100,2)}</td></tr>
+    </tbody></table><div class="tp-note">Leads e custo por lead seguem o Gerenciador de Anúncios. "B2B" vem da resposta de perfil no formulário (empresas; Pessoa Física e "Outro" não contam). Datas no fuso da conta da Meta (${tpEsc(M.fuso||"")}${M.fuso==="America/Los_Angeles"?": o dia vira por volta das 4h–5h de Brasília":""}).</div>`;
+  TP_NOCMP=false;
+  // alcance de período personalizado: pergunta ao servidor (Meta ao vivo)
+  if(!r.key){
+    const q=(a,b)=>fetch(`api/trafego/alcance?ini=${a}&fim=${b}${camp?"&camps="+camp:""}`).then(x=>x.json());
+    Promise.all([q(r.ini,r.fim),q(r.pini,r.pfim)]).then(([a,b])=>{
+      const v=document.getElementById("tp-meta-reach"); if(!v) return;
+      if(a.erro){v.textContent="—";return;}
+      v.textContent=tpN(a.reach);
+      document.getElementById("tp-meta-reach-f").innerHTML=tpDelta(a.reach,b.erro?null:b.reach)+(a.reach?`<span>frequência ${tpN1(s.i/a.reach)}</span>`:"");
+    }).catch(()=>{const v=document.getElementById("tp-meta-reach");if(v)v.textContent="—";});
+  }
+}
+
+// ---------- Google ----------
+function tpGoogleAd(a,total){
+  if(!a) return '<div class="tp-empty">Nenhum anúncio de pesquisa ativo.</div>';
+  let dom=""; try{dom=new URL(a.url).hostname.replace(/^www\./,"");}catch(e){dom=a.url||"";}
+  const path=[dom,a.p1,a.p2].filter(Boolean).join(" › ");
+  return `<div class="tp-gad"><div class="sp">Patrocinado</div><div class="url">${tpEsc(path)}</div>
+    <div class="hl">${tpEsc((a.titulos||[]).slice(0,3).join(" | "))}</div>
+    <div class="ds">${tpEsc((a.descricoes||[]).slice(0,2).join(" "))}</div>
+    <div class="ft"><span class="tp-note" style="margin:0">${(a.titulos||[]).length} títulos · ${(a.descricoes||[]).length} descrições${a.forca?` · força: <b style="color:var(--ink)">${tpEsc(a.forca)}</b>`:""}${total>1?` · +${total-1} anúncio(s)`:""}</span>${a.url?`<a class="tp-btn" href="${tpEsc(a.url)}" target="_blank" rel="noopener">${tpSvg("ext",'width="13" height="13"')}Página</a>`:""}</div></div>
+    <div class="tp-note">Prévia montada com os textos reais do anúncio. O Google combina títulos e descrições automaticamente.</div>`;
+}
+function renderTpGoogle(){
+  const G=TP.google||{}, el=document.getElementById("tp-google"), C=G.campanhas||[];
+  el.innerHTML=`
+  <div class="tp-hero"><div class="tp-logo google">${TP_LOGO.google}</div><div><h2>Google Ads</h2><div class="tp-sub">Rede de Pesquisa${G.fuso?" · fuso "+tpEsc(G.fuso):""}</div></div>${tpStatus(G)}</div>
+  ${tpWarn(G,"O Google Ads")}
+  ${C.length?`<div class="tp-h3">Campanhas ativas <span class="n">${C.length}</span></div>
+  <div class="tp-camps">${C.map(c=>`
+    <div class="tp-camp">
+      <div class="tp-camp-h"><div class="st"><i></i>Ativa</div><div class="nm">${tpEsc(c.nome)}</div></div>
+      <div class="tp-facts">
+        <div class="tp-fact"><div class="k">Orçamento</div><div class="v big">${tpBRL(c.orcamento_dia)}<small style='font-size:12px;color:var(--muted)'>/dia</small></div></div>
+        <div class="tp-fact"><div class="k">Tipo</div><div class="v">${tpEsc(c.tipo)}</div></div>
+        <div class="tp-fact"><div class="k">Lance</div><div class="v">${tpEsc(c.lance)}${c.cpa_alvo?` · CPA ${tpBRL(c.cpa_alvo)}`:""}</div></div>
+        <div class="tp-fact"><div class="k">Redes</div><div class="v">${tpEsc(c.redes)}</div></div>
+        <div class="tp-fact"><div class="k">No ar desde</div><div class="v">${tpBrY(c.inicio)}</div></div>
+      </div>
+      <div class="tp-body g"><div class="tp-pub">
+          <div class="row"><span class="k">Regiões</span>${tpTags(c.locais,10)}</div>
+          <div class="tp-seg"><div class="lbl">Palavras-chave (${c.palavras.length}) · mais clicadas em 30 dias primeiro</div>
+            <div class="tp-kw">${c.palavras.slice(0,14).map(k=>`<span title="${tpN(k.cl)} cliques · ${tpN1(k.cv)} conv. · ${tpBRL(k.g)} em 30 dias${k.qs?" · índice de qualidade "+k.qs+"/10":""}">${tpEsc(k.t)}<i>${tpEsc(k.m||"")}</i></span>`).join("")}${c.palavras.length>14?`<span class="tp-tag more" data-more='${tpEsc(JSON.stringify(c.palavras.slice(14).map(k=>k.t)))}'>+${c.palavras.length-14}</span>`:""}</div></div>
+          <div class="row" style="margin-top:8px"><span class="k">Negativas</span><span>${tpN(c.negativas)} palavras negativas</span></div>
+        </div>
+        <div>${tpGoogleAd(c.anuncios[0],c.anuncios.length)}</div></div>
+    </div>`).join("")}</div>
+  ${tpFilters("google",C)}
+  <div id="tp-google-dyn"></div>
+  <div class="tp-h3">Análises · Google</div>${tpAnalises(G,"google")}`
+  :`<div class="tp-card" style="margin-top:14px"><h4>Sem dados do Google Ads</h4><div class="d" style="margin:0">Assim que o acesso for renovado, esta seção mostra: campanhas ativas (orçamento, lance, regiões, palavras-chave e prévia do anúncio), os números de Conversões, WhatsApp, Formulário, Investimento, Custo por lead, Impressões, Cliques e CPC, os termos de pesquisa e as análises.</div></div>`}`;
+  if(C.length) renderTpGoogleDyn();
+}
+function renderTpGoogleDyn(){
+  const G=TP.google, f=TPF.google, r=tpRange(f,G.hoje), el=document.getElementById("tp-google-dyn");
+  const camp=f.camp||null, C=G.campanhas;
+  TP_NOCMP=f.p==="hoje";
+  document.getElementById("tp-google-per").textContent=f.p==="hoje"?`${tpBr(r.ini)} · dia em andamento (sem comparação)`:`${tpBr(r.ini)}${r.fim!==r.ini?" → "+tpBr(r.fim):""} · comparado com ${tpBr(r.pini)}${r.pfim!==r.pini?" → "+tpBr(r.pfim):""}`;
+  const s=tpSum(G.diario,r.ini,r.fim,camp), p=tpSum(G.diario,r.pini,r.pfim,camp);
+  const outros=Math.max(0,s.cv-s.w-s.f);
+  el.innerHTML=`
+  <div class="tp-kpis">
+    ${tpKpi({ic:"users",l:"Conversões",v:tpN1(s.cv),d:tpDelta(s.cv,p.cv),hl:1,f:outros>=0.5?`${tpN1(outros)} de outras ações`:""})}
+    ${tpKpi({ic:"wpp",l:"WhatsApp",v:tpN1(s.w),d:tpDelta(s.w,p.w),f:s.cv?tpPct(s.w/s.cv*100)+" das conversões":""})}
+    ${tpKpi({ic:"form",l:"Formulário",v:tpN1(s.f),d:tpDelta(s.f,p.f),f:s.cv?tpPct(s.f/s.cv*100)+" das conversões":""})}
+    ${tpKpi({ic:"money",l:"Investimento",v:tpBRLc(s.g),d:tpDelta(s.g,p.g)})}
+    ${tpKpi({ic:"tag",l:"Custo por lead",v:tpBRL(tpDiv(s.g,s.cv)),d:tpDelta(tpDiv(s.g,s.cv),tpDiv(p.g,p.cv),true)})}
+    ${tpKpi({ic:"eye",l:"Impressões",v:tpN(s.i),d:tpDelta(s.i,p.i)})}
+    ${tpKpi({ic:"click",l:"Cliques",v:tpN(s.k),d:tpDelta(s.k,p.k),f:`CTR ${tpPct(tpDiv(s.k,s.i)*100,2)}`})}
+    ${tpKpi({ic:"money",l:"CPC",v:tpBRL(tpDiv(s.g,s.k)),d:tpDelta(tpDiv(s.g,s.k),tpDiv(p.g,p.k),true),f:"custo por clique"})}
+  </div>
+  <div class="tp-card" style="margin-top:14px"><h4>Conversões por dia</h4><div class="d">Barras: WhatsApp × Formulário × outras ações · linha: investimento</div><div class="tp-chart" id="tp-google-chart"></div></div>
+  <div class="tp-h3">Termos de pesquisa</div><div class="tp-card tp-tblw" id="tp-google-termos"></div>
+  <div class="tp-h3">Campanhas no período</div><div class="tp-card tp-tblw" id="tp-google-tbl"></div>`;
+  const cd=tpChartDays(r), by={};
+  G.diario.forEach(x=>{if(!camp||x.c===camp){const o=by[x.d]=by[x.d]||{w:0,f:0,o:0,g:0};o.w+=x.w;o.f+=x.f;o.o+=Math.max(0,x.cv-x.w-x.f);o.g+=x.g;}});
+  document.getElementById("tp-google-chart").innerHTML=tpChart(cd.days,
+    [{name:"WhatsApp",color:"#25a244",v:cd.days.map(d=>(by[d]||{}).w||0)},{name:"Formulário",color:"var(--brand)",v:cd.days.map(d=>(by[d]||{}).f||0)},{name:"Outras",color:"var(--pf)",v:cd.days.map(d=>(by[d]||{}).o||0)}],
+    {color:"#f59e0b",v:cd.days.map(d=>(by[d]||{}).g||0)},cd.sel);
+  const tk=(f.p==="custom"&&tpDays(r.ini,r.fim)>7)?"30d":"7d";
+  const nomeC=id=>(C.find(c=>c.id===id)||{}).nome||"";
+  const termos=((G.termos||{})[tk]||[]).filter(t=>!camp||t.c===camp).slice(0,25);
+  document.getElementById("tp-google-termos").innerHTML=termos.length?`<table class="tp-tbl"><thead><tr><th>O que a pessoa pesquisou</th><th>Campanha</th><th>Cliques</th><th>Impressões</th><th>Conversões</th><th>Custo</th></tr></thead><tbody>
+    ${termos.map(t=>`<tr><td>${tpEsc(t.t)}${t.cv===0&&t.g>=10?'<span class="tp-crown" style="color:var(--bad);background:var(--bad-soft)">gasto sem conversão</span>':""}</td><td style="text-align:right;white-space:normal;font-size:11.5px;color:var(--muted)">${tpEsc(nomeC(t.c))}</td><td>${tpN(t.k)}</td><td>${tpN(t.i)}</td><td>${tpN1(t.cv)}</td><td>${tpBRL(t.g)}</td></tr>`).join("")}
+    </tbody></table><div class="tp-note">Mostrando os termos dos últimos ${tk==="7d"?"7":"30"} dias (o Google não libera termos por dia). Termos marcados gastaram R$ 10+ sem converter: candidatos a palavra negativa.</div>`:'<div class="tp-empty">Sem termos de pesquisa no período.</div>';
+  const rows=C.map(c=>{const t=tpSum(G.diario,r.ini,r.fim,c.id);return {c,t,cpl:tpDiv(t.g,t.cv)};});
+  const ok=rows.filter(x=>x.cpl!=null), best=ok.length>1?ok.reduce((a,b)=>a.cpl<=b.cpl?a:b):null;
+  const T=tpSum(G.diario,r.ini,r.fim);
+  document.getElementById("tp-google-tbl").innerHTML=`<table class="tp-tbl"><thead><tr><th>Campanha</th><th>Investimento</th><th>Conversões</th><th>WhatsApp</th><th>Formulário</th><th>Custo/lead</th><th>Cliques</th><th>CTR</th><th>CPC</th></tr></thead><tbody>
+    ${rows.map(x=>`<tr class="${x===best?"best":""}"><td>${tpEsc(x.c.nome)}${x===best?'<span class="tp-crown">menor custo/lead</span>':""}</td><td>${tpBRL(x.t.g)}</td><td>${tpN1(x.t.cv)}</td><td>${tpN1(x.t.w)}</td><td>${tpN1(x.t.f)}</td><td><b>${tpBRL(x.cpl)}</b></td><td>${tpN(x.t.k)}</td><td>${tpPct(tpDiv(x.t.k,x.t.i)*100,2)}</td><td>${tpBRL(tpDiv(x.t.g,x.t.k))}</td></tr>`).join("")}
+    <tr class="tr-tot"><td>Total</td><td>${tpBRL(T.g)}</td><td>${tpN1(T.cv)}</td><td>${tpN1(T.w)}</td><td>${tpN1(T.f)}</td><td>${tpBRL(tpDiv(T.g,T.cv))}</td><td>${tpN(T.k)}</td><td>${tpPct(tpDiv(T.k,T.i)*100,2)}</td><td>${tpBRL(tpDiv(T.g,T.k))}</td></tr></tbody></table>`;
+  TP_NOCMP=false;
+}
 </script>
