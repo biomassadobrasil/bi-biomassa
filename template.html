@@ -643,6 +643,13 @@
   .tp-ai2 li b{color:var(--ink)}
   :is(#view-trafego,#view-comercial) .tp-camp{border-radius:20px}
   /* ===== Comercial ===== */
+  .tp-big.rd{background:radial-gradient(120% 140% at 100% 0%,#fca5a5 0%,transparent 55%),linear-gradient(150deg,#ef4444,#991b1b);border-color:transparent;color:#fff}
+  .tp-big.rd .lb,.tp-big.rd .vl,.tp-big.rd .sub b{color:#fff} .tp-big.rd .cmp,.tp-big.rd .sub{color:rgba(255,255,255,.88)}
+  .tp-big.rd .ic{background:rgba(255,255,255,.18);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
+  .tp-big.rd .tp-delta.up{background:rgba(255,255,255,.95);color:#15803d}.tp-big.rd .tp-delta.dn{background:rgba(255,255,255,.95);color:#b91c1c}.tp-big.rd .tp-delta.eq{background:rgba(255,255,255,.25);color:#fff}
+  #view-comercial .tp-bigs{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:1250px){#view-comercial .tp-bigs{grid-template-columns:repeat(2,1fr)}} @media(max-width:640px){#view-comercial .tp-bigs{grid-template-columns:1fr}}
+  #view-comercial .tp-big .vl{font-size:clamp(26px,2.4vw,36px)}
   .tp-big.cm-big .lb{font-size:18px;font-weight:800;margin-top:2px}
   .tp-big.yl{background:radial-gradient(120% 140% at 100% 0%,#fcd34d 0%,transparent 55%),linear-gradient(150deg,#f59e0b,#b45309);border-color:transparent;color:#fff}
   .tp-big.gr{background:radial-gradient(120% 140% at 100% 0%,#4ade80 0%,transparent 55%),linear-gradient(150deg,#16a34a,#14532d);border-color:transparent;color:#fff}
@@ -1600,6 +1607,7 @@ function renderCmDyn(){
   const neg=D.filter(x=>cmIn(x.dc,R)), negP=D.filter(x=>cmIn(x.dc,P));
   const pro=D.filter(x=>cmIn(x.pd,R)), proP=D.filter(x=>cmIn(x.pd,P));
   const ven=D.filter(x=>cmIn(x.won,R)), venP=D.filter(x=>cmIn(x.won,P));
+  const per=D.filter(x=>cmIn(x.lost,R)), perP=D.filter(x=>cmIn(x.lost,P));
   const sum=(a,k)=>a.reduce((s,x)=>s+(x[k]||0),0);
   // mini-gráficos por dia
   const cd=tpChartDays(r), conta=(a,k)=>{const o={};a.forEach(x=>{if(x[k])o[x[k]]=(o[x[k]]||0)+1;});return cd.days.map(d=>o[d]||0);};
@@ -1607,7 +1615,7 @@ function renderCmDyn(){
   const conv=(a)=>{const n=a.length,p=a.filter(x=>x.np>0).length,pw=a.filter(x=>x.np>0&&x.won).length,w=a.filter(x=>x.won).length;return {n,p,pw,w,np:tpDiv(p*100,n),pv:tpDiv(pw*100,p),nv:tpDiv(w*100,n)};};
   const C=conv(neg), Cp=conv(negP);
   const big=(o)=>`<div class="tp-big cm-big${o.hl?" hl":""}${o.cls?" "+o.cls:""}"><div class="ic ${o.ic2||""}">${tpSvg(o.ic)}</div>
-    <div class="bd"><div class="lb">${o.l}</div><div class="vl">${o.v}</div><div class="sub">${o.sub}</div><div class="cmp">${TP_NOCMP?"<span>dia em andamento</span>":tpDelta(o.cur,o.prev)+`<span>${o.cmpl||"valor vs. período anterior"}</span>`}</div></div><div class="spark">${o.spark}</div></div>`;
+    <div class="bd"><div class="lb">${o.l}</div><div class="vl">${o.v}</div><div class="sub">${o.sub}</div><div class="cmp">${TP_NOCMP?"<span>dia em andamento</span>":tpDelta(o.cur,o.prev,o.lb)+`<span>${o.cmpl||"valor vs. período anterior"}</span>`}</div></div><div class="spark">${o.spark}</div></div>`;
   const ring=(t,p,a,num,lbl,b,cur,prev,c)=>`<div class="tp-qc"><h4>${t}</h4><div class="d">${a}</div>
     <div class="tp-donut">${tpDonut(p||0,c,"conversão")}<div><div class="bn">${tpN(num)} ${TP_NOCMP?"":tpDelta(cur,prev)}</div><div class="bl">${lbl}</div><div class="bs">${b}</div></div></div></div>`;
   // situação atual dos negócios do período: TODAS as etapas, na ordem do funil (nomes iguais nas 2 pipelines somam)
@@ -1617,10 +1625,9 @@ function renderCmDyn(){
   const corE=n=>{const t=n.toLowerCase();return t.includes("ganho")?"#16a34a":t.includes("perdido")?"#dc2626":t.includes("negocia")?"#2563eb":t.includes("sem retorno")?"#f59e0b":t.includes("renutri")?"#7c3aed":
     t.includes("novo")?"#64748b":t.includes("tentativa")?"#0ea5e9":t.includes("apresenta")?"#6366f1":t.includes("proposta")?"#3b82f6":t.includes("obra")?"#14b8a6":"#9aa7bd";};
   // Em aberto = pipeline de hoje (qualquer data de criação) · Ganho/Perdido = o que foi ganho/perdido NO período (mesma regra de Vendas e Motivos)
-  const sit=ordE.map(e=>{const a=e==="Ganho"?D.filter(x=>cmIn(x.won,R)):e==="Perdido"?D.filter(x=>cmIn(x.lost,R))
-      :D.filter(x=>x.g!=="ganho"&&x.g!=="perdido"&&nomeE(x).toLowerCase()===e.toLowerCase());return {l:e,c:corE(e),n:a.length,o:sum(a,"o")};});
+  const sit=ordE.filter(e=>e!=="Ganho"&&e!=="Perdido").map(e=>{const a=neg.filter(x=>x.g!=="ganho"&&x.g!=="perdido"&&nomeE(x).toLowerCase()===e.toLowerCase());return {l:e,c:corE(e),n:a.length,o:sum(a,"o")};});
   // motivos de perda (perdidos no período)
-  const per=D.filter(x=>cmIn(x.lost,R)), mot={};per.forEach(x=>{const k=x.mot||"Sem motivo informado";mot[k]=(mot[k]||0)+1;});
+  const mot={};per.forEach(x=>{const k=x.mot||"Sem motivo informado";mot[k]=(mot[k]||0)+1;});
   const outros=per.filter(x=>x.mot==="Outro"), om={};outros.forEach(x=>{const k=x.mo||"Sem descrição";om[k]=(om[k]||0)+1;});
   const outroArr=Object.entries(om).sort((a,b)=>b[1]-a[1]).map(([k,n])=>({label:k,n,color:["Outros casos","Sem descrição"].includes(k)?"#cbd5e1":"#94a3b8"}));
   const motArr=Object.entries(mot).sort((a,b)=>b[1]-a[1]).map(([k,n],i)=>({label:k,n,color:k==="Sem motivo informado"||k==="Outro"?"#9aa7bd":["#dc2626","#ef4444","#f87171","#fca5a5","#fecaca","#fee2e2"][Math.min(i,5)]}));
@@ -1629,21 +1636,17 @@ function renderCmDyn(){
   const srcArr=Object.entries(src).sort((a,b)=>b[1].n-a[1].n), srcMax=Math.max(1,...srcArr.map(x=>x[1].n));
   const SRC_COR=["#2563eb","#16a34a","#f59e0b","#7c3aed","#e11d48","#0891b2","#0d9488","#ea580c","#64748b"];
   el.innerHTML=`
-  <div class="tp-panel" style="margin-top:16px">${tpHead("bars","O que está sendo negociado","<b>Em aberto</b>: tudo que está no funil hoje, de qualquer data · <b>Ganho</b> e <b>Perdido</b>: fechados no período","",TPC.blue)}
-    ${(()=>{const gan=sit.find(x=>x.l==="Ganho")||{n:0,o:0}, per=sit.find(x=>x.l==="Perdido")||{n:0,o:0}, abertas=sit.filter(x=>x.l!=="Ganho"&&x.l!=="Perdido"), abO=abertas.reduce((a,x)=>a+x.o,0), abN=abertas.reduce((a,x)=>a+x.n,0), totO=abO||1, fech=gan.n+per.n, fechO=(gan.o+per.o)||1;
-      return `<div class="cm-wl">
-        <div class="a"><div class="t">${tpSvg("clock")}Em aberto hoje</div><div class="v">${tpBRL(abO,0)}</div><div class="s"><b>${tpN(abN)}</b> negócio${abN===1?"":"s"} no funil agora</div></div>
-        <div class="w"><div class="t">${tpSvg("check")}Ganho no período</div><div class="v">${tpBRL(gan.o,0)}</div><div class="s"><b>${tpN(gan.n)}</b> de ${tpN(fech)} fechados (${tpPct(fech?gan.n/fech*100:0)}) · ${tpPct((gan.o)/fechO*100)} do valor fechado</div></div>
-        <div class="l"><div class="t">${tpSvg("tool")}Perdido no período</div><div class="v">${tpBRL(per.o,0)}</div><div class="s"><b>${tpN(per.n)}</b> de ${tpN(fech)} fechados (${tpPct(fech?per.n/fech*100:0)}) · ${tpPct(per.o/fechO*100)} do valor fechado</div></div>
-      </div>
-      <div class="tp-stack" style="height:22px;margin-top:18px" title="Proporcional ao valor">${abertas.filter(x=>x.o).map(x=>`<i title="${x.l}: ${tpBRL(x.o,0)}" style="width:${x.o/totO*100}%;background:${x.c}"></i>`).join("")}</div>
-      <div class="tp-note" style="margin:-4px 0 10px">Etapas em aberto hoje · barra proporcional ao valor</div>
-      <div class="cm-sit">${abertas.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> negócio${x.n===1?"":"s"} · ${tpPct(x.o/totO*100)} do valor em aberto</div></div>`).join("")}</div>`;})()}
-  </div>
   <div class="tp-bigs">
     ${big({hl:1,ic:"users",l:"Negócios",v:tpN(neg.length),sub:`negócio${neg.length===1?"":"s"} criado${neg.length===1?"":"s"} no período`,cur:neg.length,prev:negP.length,cmpl:"vs. período anterior",spark:tpSpark(conta(D,"dc"),"rgba(255,255,255,.75)",true)})}
     ${big({cls:"yl",ic:"form",l:"Propostas",v:tpBRL(sum(pro,"pv"),0),sub:`<b>${tpN(pro.length)}</b> proposta${pro.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(pro.length,proP.length)} · só a última de cada card`,cur:sum(pro,"pv"),prev:sum(proP,"pv"),spark:tpSpark(conta(D,"pd"),"rgba(255,255,255,.85)")})}
     ${big({cls:"gr",ic:"check",l:"Vendas",v:tpBRL(sum(ven,"o"),0),sub:`<b>${tpN(ven.length)}</b> venda${ven.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(ven.length,venP.length)} · ticket médio ${tpBRL(tpDiv(sum(ven,"o"),ven.length),0)}`,cur:sum(ven,"o"),prev:sum(venP,"o"),spark:tpSpark(conta(D,"won"),"rgba(255,255,255,.85)")})}
+    ${big({cls:"rd",ic:"tool",l:"Perdidos",v:tpBRL(sum(per,"o"),0),sub:`<b>${tpN(per.length)}</b> negócio${per.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(per.length,perP.length,true)} · motivos mais abaixo`,cur:sum(per,"o"),prev:sum(perP,"o"),lb:1,spark:tpSpark(conta(D,"lost"),"rgba(255,255,255,.85)")})}
+  </div>
+  <div class="tp-panel" style="margin-top:22px">${tpHead("bars","O que está sendo negociado",`Etapa atual dos negócios criados no período que ainda estão em aberto · ${tpN(sit.reduce((a,x)=>a+x.n,0))} de ${tpN(neg.length)}`,"",TPC.blue)}
+    ${(()=>{const abertas=sit, abO=abertas.reduce((a,x)=>a+x.o,0), abN=abertas.reduce((a,x)=>a+x.n,0), totO=abO||1;
+      return `      <div class="tp-stack" style="height:22px;margin-top:4px" title="Proporcional ao valor">${abertas.filter(x=>x.o).map(x=>`<i title="${x.l}: ${tpBRL(x.o,0)}" style="width:${x.o/totO*100}%;background:${x.c}"></i>`).join("")}</div>
+      <div class="tp-note" style="margin:-4px 0 10px">Barra proporcional ao valor em cada etapa</div>
+      <div class="cm-sit">${abertas.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> negócio${x.n===1?"":"s"} · ${tpPct(x.o/totO*100)} do valor em aberto</div></div>`).join("")}</div>`;})()}
   </div>
   ${tpHead("trend","Taxas de conversão","Dos negócios criados no período, o que aconteceu com eles até hoje","",TPC.green)}
   <div class="cm-g cm-g3">
