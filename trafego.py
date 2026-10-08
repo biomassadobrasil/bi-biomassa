@@ -234,9 +234,10 @@ def build_meta():
         for i in _paginar(meta, f"{acct}/insights", {
                 "level": "campaign", "time_increment": 1, "filtering": filt,
                 "time_range": json.dumps({"since": since, "until": hoje.isoformat()}),
-                "fields": "campaign_id,spend,impressions,clicks,inline_link_clicks,actions", "limit": 500}):
+                "fields": "campaign_id,spend,impressions,reach,clicks,inline_link_clicks,actions", "limit": 500}):
             diario.append({"c": i["campaign_id"], "d": i["date_start"], "g": round(float(i.get("spend") or 0), 2),
                             "i": int(i.get("impressions") or 0), "k": int(i.get("inline_link_clicks") or 0),
+                            "r": int(i.get("reach") or 0),   # alcance do dia: só p/ tendência (não se soma)
                             "l": _leads_n(i.get("actions"))})
 
     # ---- alcance por período (não dá pra somar dia a dia: pergunta pronto à Meta) ----
