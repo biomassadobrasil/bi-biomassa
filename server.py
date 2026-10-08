@@ -7,6 +7,7 @@ from flask import Flask, Response, request, jsonify
 from apscheduler.schedulers.background import BackgroundScheduler
 import generate
 import trafego
+import comercial
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 INDEX = os.path.join(HERE, "index.html")
@@ -63,6 +64,20 @@ def trafego_alcance():
         except Exception as e: return jsonify({"erro": str(e)[:200]}), 502
     return jsonify(_alc_cache[key])
 
+def regenerar_comercial():
+    try:
+        comercial.atualizar()
+    except Exception:
+        print("[COMERCIAL] erro ao gerar:\n" + traceback.format_exc())
+
+@app.route("/comercial.json")
+def comercial_json():
+    if not os.path.exists(comercial.OUT):
+        return jsonify({"carregando": True}), 503
+    r = Response(open(comercial.OUT, encoding="utf-8").read(), mimetype="application/json")
+    r.headers["Cache-Control"] = "no-store"
+    return r
+
 @app.route("/trafego/atualizar")
 def trafego_atualizar():
     regenerar_trafego()
@@ -73,12 +88,14 @@ tz = ZoneInfo("America/Sao_Paulo")
 sched = BackgroundScheduler(timezone=tz)
 sched.add_job(regenerar, "cron", hour=8, minute=0)
 sched.add_job(regenerar, "cron", hour=12, minute=30)
-sched.add_job(regenerar_trafego, "cron", minute=5)   # Tráfego Pago: de hora em hora
+sched.add_job(regenerar_trafego, "cron", minute=5)    # Tráfego Pago: de hora em hora
+sched.add_job(regenerar_comercial, "cron", minute=25) # Comercial: de hora em hora
 sched.start()
 
 # gera na subida (em thread pra não travar o boot do Railway)
 threading.Thread(target=regenerar, daemon=True).start()
 threading.Thread(target=regenerar_trafego, daemon=True).start()
+threading.Thread(target=regenerar_comercial, daemon=True).start()
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "8080"))

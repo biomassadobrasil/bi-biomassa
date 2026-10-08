@@ -1,5 +1,6 @@
 index.html
 trafego.json*
+comercial.json*
 __pycache__/
 *.pyc
 .venv/

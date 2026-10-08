@@ -458,9 +458,7 @@ def run():
         import traceback; print("[BI] Tiny falhou (segue sem):\n"+traceback.format_exc()); payload["tiny"]=None
     # Meta/Google agora ficam na aba Tráfego Pago (trafego.py, de hora em hora)
     payload.pop("mkt_vendas",None)
-    # ---- B.I Funil (comercial: deals + propostas + ligações) ----
-    try: payload["funil"]=build_funil(stages,sources,deals)
-    except Exception: import traceback; print("[BI] Funil falhou:\n"+traceback.format_exc()); payload["funil"]=None
+    # B.I Funil foi substituído pela aba Comercial (comercial.py, de hora em hora)
     tpl=open(os.path.join(HERE,"template.html"),encoding="utf-8").read()
     hoje=datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
     html=tpl.replace("__DATA__", json.dumps(payload,ensure_ascii=False)).replace("__GENDATE__", hoje)

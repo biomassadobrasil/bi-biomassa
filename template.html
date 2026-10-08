@@ -383,7 +383,7 @@
   .vsfill{height:100%;border-radius:6px}
   @media(max-width:820px){.vsrow{grid-template-columns:1fr auto;gap:6px}.vshead,.vsrow .vsside.l .vstrack,.vsrow .vsside .vstrack{display:none}.vsrow .vsside{gap:6px}}
   /* ===== Tráfego Pago ===== */
-  #view-trafego{--meta:#1877f2;--ig:#d62976;--gg:#1a73e8;--b2b:var(--brand);--pf:#9aa7bd}
+  #view-trafego,#view-comercial{--meta:#1877f2;--ig:#d62976;--gg:#1a73e8;--b2b:var(--brand);--pf:#9aa7bd}
   .tp-nav{position:sticky;top:0;z-index:35;display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:10px 0 12px;
     background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px)}
   .tp-nav a{font-size:13px;font-weight:700;color:var(--muted);text-decoration:none;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);display:inline-flex;align-items:center;gap:8px}
@@ -550,27 +550,27 @@
   .tp-chip svg{width:14px;height:14px}
   .tp-chip.amber{background:var(--open-soft);color:var(--open)} .tp-chip.green{background:var(--good-soft);color:var(--good)} .tp-chip.red{background:var(--bad-soft);color:var(--bad)}
   .tp-chip.plain{background:var(--panel);color:var(--ink);border:1px solid var(--line);box-shadow:var(--shadow);font-weight:650;padding:8px 14px}
-  #view-trafego .tp-filters{position:static;margin:0;padding:6px;border-radius:14px;gap:8px;box-shadow:var(--shadow);background:var(--panel)}
-  #view-trafego .tp-filters .fl{font-size:12.5px;font-weight:700;color:var(--ink);margin-left:6px}
+  :is(#view-trafego,#view-comercial) .tp-filters{position:static;margin:0;padding:6px;border-radius:14px;gap:8px;box-shadow:var(--shadow);background:var(--panel)}
+  :is(#view-trafego,#view-comercial) .tp-filters .fl{font-size:12.5px;font-weight:700;color:var(--ink);margin-left:6px}
   .tp-date{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:10px;padding:5px 9px;background:var(--panel)}
   .tp-date svg{width:15px;height:15px;color:var(--muted)}
   .tp-date input{border:none!important;padding:0!important;background:transparent!important;font:inherit;font-size:12.5px;color:var(--ink);color-scheme:light dark}
   .tp-ref{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;cursor:pointer;color:var(--brand)}
   .tp-ref:hover{border-color:var(--brand)} .tp-ref svg{width:16px;height:16px}
   /* KPI v2 */
-  #view-trafego .tp-kpi{border-radius:18px;padding:16px 18px 16px;min-height:132px}
-  #view-trafego .tp-kpi .l{font-size:13.5px;font-weight:700;color:var(--ink);gap:10px}
-  #view-trafego .tp-kpi .ki{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+  :is(#view-trafego,#view-comercial) .tp-kpi{border-radius:18px;padding:16px 18px 16px;min-height:132px}
+  :is(#view-trafego,#view-comercial) .tp-kpi .l{font-size:13.5px;font-weight:700;color:var(--ink);gap:10px}
+  :is(#view-trafego,#view-comercial) .tp-kpi .ki{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
     background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c)}
-  #view-trafego .tp-kpi .ki svg{width:17px;height:17px;color:inherit}
-  #view-trafego .tp-kpi .v{font-size:28px;margin-top:12px}
-  #view-trafego .tp-kpi .f{max-width:58%;position:relative;z-index:1}
-  #view-trafego .tp-kpi .ks{position:absolute;right:14px;bottom:14px;width:40%;height:42px;pointer-events:none}
-  #view-trafego .tp-kpi .ks svg{width:100%;height:100%;display:block}
-  #view-trafego .tp-kpi.hl{background:radial-gradient(120% 140% at 100% 0%,#2f63c4 0%,transparent 55%),linear-gradient(150deg,#22489a,#142f66)}
-  #view-trafego .tp-kpi.hl .l{color:#fff} #view-trafego .tp-kpi.hl .ki{background:rgba(255,255,255,.15);color:#fff}
-  #view-trafego .tp-kpi.hl .tp-delta.up{background:#1f9d6b;color:#fff} #view-trafego .tp-kpi.hl .tp-delta.dn{background:#d64550;color:#fff}
-  #view-trafego .tp-delta{font-size:12px;padding:3px 9px}
+  :is(#view-trafego,#view-comercial) .tp-kpi .ki svg{width:17px;height:17px;color:inherit}
+  :is(#view-trafego,#view-comercial) .tp-kpi .v{font-size:28px;margin-top:12px}
+  :is(#view-trafego,#view-comercial) .tp-kpi .f{max-width:58%;position:relative;z-index:1}
+  :is(#view-trafego,#view-comercial) .tp-kpi .ks{position:absolute;right:14px;bottom:14px;width:40%;height:42px;pointer-events:none}
+  :is(#view-trafego,#view-comercial) .tp-kpi .ks svg{width:100%;height:100%;display:block}
+  :is(#view-trafego,#view-comercial) .tp-kpi.hl{background:radial-gradient(120% 140% at 100% 0%,#2f63c4 0%,transparent 55%),linear-gradient(150deg,#22489a,#142f66)}
+  :is(#view-trafego,#view-comercial) .tp-kpi.hl .l{color:#fff} :is(#view-trafego,#view-comercial) .tp-kpi.hl .ki{background:rgba(255,255,255,.15);color:#fff}
+  :is(#view-trafego,#view-comercial) .tp-kpi.hl .tp-delta.up{background:#1f9d6b;color:#fff} :is(#view-trafego,#view-comercial) .tp-kpi.hl .tp-delta.dn{background:#d64550;color:#fff}
+  :is(#view-trafego,#view-comercial) .tp-delta{font-size:12px;padding:3px 9px}
   /* card grande (gráfico, tabelas) */
   .tp-panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:20px 22px;min-width:0}
   .tp-panel .tp-head{margin:0 0 14px}
@@ -641,7 +641,30 @@
   .tp-ai2 li::before{content:"";position:absolute;left:0;top:7px;width:8px;height:8px;border-radius:50%;background:var(--c)}
   .tp-ai2 li+li{margin-top:9px}
   .tp-ai2 li b{color:var(--ink)}
-  #view-trafego .tp-camp{border-radius:20px}
+  :is(#view-trafego,#view-comercial) .tp-camp{border-radius:20px}
+  /* ===== Comercial ===== */
+  .cm-g{display:grid;gap:16px}.cm-g3{grid-template-columns:repeat(3,1fr)}.cm-g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:1000px){.cm-g3,.cm-g2{grid-template-columns:1fr}}
+  .cm-sit{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:6px}
+  @media(max-width:1000px){.cm-sit{grid-template-columns:repeat(3,1fr)}} @media(max-width:560px){.cm-sit{grid-template-columns:repeat(2,1fr)}}
+  .cm-sit>div{border:1px solid var(--line2);border-radius:14px;padding:12px 14px;background:color-mix(in srgb,var(--c) 6%,var(--panel))}
+  .cm-sit .t{font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:7px}
+  .cm-sit .t i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+  .cm-sit .n{font-size:26px;font-weight:800;letter-spacing:-.02em;margin-top:6px}
+  .cm-sit .s{font-size:12px;color:var(--muted)}
+  .cm-src .r{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(50px,1fr) 64px 92px;gap:12px;align-items:center;padding:8px 0;font-size:13.5px}
+  .cm-src .r+.r{border-top:1px solid var(--line2)}
+  .cm-src .nm{display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+  .cm-src .nm i{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .cm-src .rt{height:10px;border-radius:999px;background:var(--line2);overflow:hidden}.cm-src .rt i{display:block;height:100%;border-radius:999px}
+  .cm-src .q,.cm-src .w{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+  .cm-src small{display:block;font-size:10.5px;color:var(--muted);font-weight:600}
+  .cm-src .w{color:var(--good)}
+  .cm-vt td{vertical-align:top}
+  .cm-cell{display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:92px}
+  .cm-cell b{font-size:14px}.cm-cell small{font-size:11px;color:var(--muted);font-weight:600}
+  .cm-bar{display:block;width:100%;height:6px;border-radius:999px;background:var(--line2);overflow:hidden;margin-top:4px}
+  .cm-bar i{display:block;height:100%;border-radius:999px}
   /* resumo geral */
   .tp-hero .tp-right{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
   .tp-pick{font:inherit;font-size:13.5px;font-weight:650;color:var(--ink);background:var(--panel);border:1px solid var(--line);
@@ -694,23 +717,13 @@
   <aside class="sidebar">
     <div class="sb-logo" id="bi-switch" title="Trocar B.I">
       <svg viewBox="885 -25 2005 575"><path fill="#2853a1" d="M897.83,377.97s108.87-30.81,285.53-92.44c161.82-56.45,276.21,7.84,336.89,28.76,59.57,20.54,142.07,99.52,199.26-61.63,45.19-127.36,110.93-88.33,110.93-88.33,0,0,35.23,12.66,133.52,119.14,98.6,106.82,138.88,74.54,138.88,74.54,0,0,40.45,5.62,278.23-208.67L2546.76,0h327.19l-505.33,449.87s-63.68,69.84-174.61,71.9c-51.51.95-102.71-20.54-152.01-61.63-53.61-44.67-129.41-110.93-184.88-164.33-23.11-22.26-39.42-25.61-51.35-24.65-40.99,3.28-36.98,57.52-61.63,96.55-17.99,28.49-31.12,82.17-106.82,82.17s-97.81-36.29-154.06-67.79c-51.35-28.76-94.54-85.42-221.85-80.11-98.6,4.11-105.4,14.79-199.26,36.98-113.6,26.85-164.33,39.03-164.33,39.03Z"/></svg>
-      <span class="bi-cur" id="bi-cur">Bitrix ▾</span>
+      <span class="bi-cur" id="bi-cur">Comercial ▾</span>
       <div class="bi-menu" id="bi-menu">
-        <div class="bi-opt active" data-view="bitrix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="12"/><line x1="10" y1="20" x2="10" y2="4"/><line x1="16" y1="20" x2="16" y2="9"/><line x1="21" y1="20" x2="3" y2="20"/></svg><span>B.I Bitrix</span></div>
+        <div class="bi-opt active" data-view="comercial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span>Comercial</span></div>
         <div class="bi-opt" data-view="trafego"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/></svg><span>Tráfego Pago</span></div>
-        <div class="bi-opt" data-view="funil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 4 21 4 14 12 14 19 10 21 10 12 3 4"/></svg><span>B.I Funil</span></div>
       </div>
     </div>
     <div class="sb-div"></div>
-    <div class="sb-secnav">
-      <div class="sb-ic active" data-tip="Início"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-      <div class="sb-ic" data-tip="Funis de venda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></div>
-      <div class="sb-ic" data-tip="Performance por vendedor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-      <div class="sb-ic" data-tip="Origem dos negócios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
-      <div class="sb-ic" data-tip="Tipo de cliente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
-      <div class="sb-ic" data-tip="Produto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22" x2="12" y2="12"/></svg></div>
-      <div class="sb-ic" data-tip="Clientes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-    </div>
     <div class="sb-sp"></div>
     <div class="sb-ic" data-tip="Sair"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
   </aside>
@@ -718,81 +731,10 @@
   <header class="pagehead">
     <div class="brand"><svg class="logo-svg" viewBox="0 0 3805.24 1411.91" role="img" aria-label="Biomassa"><g fill="var(--wordmark)"><path d="M0,1073.06V485.12h217.72c47.6,0,86.23,6.47,115.91,19.39,29.67,12.93,51.57,31.29,65.67,55.09s21.16,52.16,21.16,85.06c0,25.87-5,46.58-14.98,62.14-10,15.58-21.9,28.07-35.7,37.46-13.81,9.41-26.89,18.22-39.23,26.44l-11.46-20.27c22.33,4.12,43.77,12.2,64.35,24.24,20.56,12.05,37.46,28.51,50.69,49.36,13.22,20.87,19.83,46.87,19.83,78.01,0,39.97-9.12,72.58-27.33,97.84-18.22,25.27-43.63,43.78-76.25,55.53-32.61,11.76-70.08,17.63-112.39,17.63H0ZM96.96,730.17h132.22c15.27,0,29.97-1.9,44.07-5.73,14.1-3.82,25.85-11.31,35.26-22.48,9.39-11.16,14.1-27.62,14.1-49.36,0-32.9-9.26-55.38-27.77-67.43-18.51-12.04-43.05-18.07-73.6-18.07h-124.29v163.07ZM97.84,991.97h139.27c20.56,0,39.8-2.49,57.74-7.49,17.92-4.99,32.31-14.39,43.19-28.21,10.87-13.8,16.31-33.34,16.31-58.62,0-19.39-3.53-34.96-10.58-46.72-7.05-11.75-16.31-20.71-27.77-26.88-11.46-6.17-24.39-10.27-38.78-12.34-14.41-2.05-28.65-3.08-42.75-3.08H97.84v183.35Z"/><path d="M565.02,560.05v-83.74h98.73v83.74h-98.73ZM567.67,1073.06v-439.86h92.55l.88,439.86h-93.44Z"/><path d="M983.72,1086.29c-71.7,0-125.03-20.27-159.99-60.82-34.97-40.55-52.45-98.42-52.45-173.65,0-79.91,18.07-138.53,54.21-175.85,36.14-37.31,88.29-55.97,156.46-55.97,48.77,0,89.03,8.97,120.76,26.88,31.73,17.93,55.23,44.23,70.52,78.89,15.27,34.68,22.92,76.69,22.92,126.05,0,74.64-18.37,132.37-55.09,173.21-36.73,40.85-89.18,61.26-157.34,61.26ZM982.84,1007.83c29.97,0,53.77-6.61,71.4-19.83,17.63-13.22,30.41-31.58,38.34-55.09,7.93-23.5,11.9-50.53,11.9-81.1,0-34.07-4.12-62.58-12.34-85.5-8.24-22.92-21.16-40.11-38.78-51.57-17.63-11.46-41.14-17.19-70.52-17.19s-52.89,6.17-70.52,18.51-30.27,29.97-37.9,52.89c-7.64,22.92-11.46,50.55-11.46,82.86,0,48.78,9.1,86.98,27.33,114.59,18.21,27.63,49.06,41.43,92.56,41.43Z"/><path d="M1687.12,780.42v292.65h-92.55v-280.31c0-11.16-1.32-22.17-3.97-33.06-2.64-10.87-7.64-20.85-14.98-29.97-7.35-9.1-17.93-16.31-31.73-21.6-13.81-5.29-31.88-7.93-54.21-7.93-15.87,0-31.73,1.47-47.6,4.41-15.87,2.95-31.15,7.05-45.84,12.34v356.12h-92.55v-406.36c12.92-6.46,27.46-12.48,43.63-18.07,16.16-5.58,33.34-10.43,51.57-14.54,18.21-4.1,36.72-7.34,55.53-9.7,18.8-2.34,37.02-3.53,54.65-3.53,41.72,0,75.5,5.73,101.37,17.19,25.85,11.46,45.09,29.09,57.74,52.89,12.63,23.8,18.95,53.63,18.95,89.47ZM1581.35,689.62c18.8-15.27,39.51-27.9,62.14-37.9,22.62-9.99,46.13-17.63,70.52-22.92,24.38-5.29,48.33-7.93,71.84-7.93,41.72,0,75.5,5.73,101.37,17.19,25.85,11.46,45.09,29.09,57.74,52.89,12.63,23.8,18.95,53.63,18.95,89.47v292.65h-92.56v-280.31c0-11.16-1.32-22.17-3.97-33.06-2.64-10.87-7.64-20.85-14.99-29.97-7.35-9.1-17.93-16.31-31.73-21.6-13.81-5.29-31.88-7.93-54.21-7.93-15.87,0-31.73,2.36-47.6,7.05-15.87,4.71-31.15,12.05-45.84,22.04l-91.67-39.67Z"/><path d="M2254.78,1086.29c-22.92,0-44.96-2.2-66.11-6.61s-40.41-11.9-57.74-22.48c-17.34-10.58-31.16-25.12-41.43-43.63-10.29-18.51-15.43-41.57-15.43-69.2,0-32.9,6.46-59.94,19.39-81.1,12.92-21.16,31.43-37.02,55.53-47.6,24.09-10.58,52.89-15.87,86.38-15.87,22.33,0,42.45,1.76,60.38,5.29,17.92,3.53,34.07,8.37,48.48,14.54,14.39,6.17,26.58,13.08,36.58,20.71l9.7,60.82c-12.93-8.81-30.27-16.31-52.01-22.48-21.75-6.17-45.26-9.25-70.52-9.25-33.5,0-58.92,5.88-76.25,17.63-17.34,11.76-26,29.39-26,52.89,0,17.63,4.99,31.88,14.98,42.75,9.99,10.88,22.48,18.81,37.46,23.8,14.99,5,30.7,7.49,47.16,7.49,34.67,0,60.23-2.34,76.69-7.05,16.44-4.7,24.68-15.56,24.68-32.62v-185.11c0-31.14-9.41-53.91-28.21-68.31-18.81-14.39-45.55-21.6-80.21-21.6-24.68,0-50.24,3.97-76.69,11.9s-48.19,18.95-65.23,33.06v-86.38c16.45-11.16,40.4-20.12,71.84-26.89,31.43-6.75,63.91-10.14,97.4-10.14,16.45,0,33.06,1.62,49.8,4.85,16.75,3.24,32.46,8.24,47.16,14.98,14.68,6.76,27.77,15.87,39.23,27.33,11.46,11.46,20.41,25.43,26.88,41.87,6.46,16.46,9.7,35.85,9.7,58.18v211.55c0,28.8-8.97,50.99-26.89,66.55-17.93,15.58-42.17,26.16-72.72,31.73-30.56,5.58-65.23,8.37-104.01,8.37Z"/><path d="M2716.67,1086.29c-31.73,0-58.62-3.39-80.66-10.14-22.04-6.75-43.63-15.12-64.79-25.12v-87.27c15.27,9.41,30.26,17.78,44.96,25.12,14.68,7.35,30.11,13.08,46.28,17.19,16.16,4.12,34.23,6.17,54.21,6.17,25.26,0,45.09-5.29,59.5-15.87,14.39-10.58,21.6-23.8,21.6-39.67,0-13.51-4.56-24.09-13.66-31.73-9.12-7.63-20.71-14.1-34.82-19.39-14.1-5.29-28.8-10.58-44.07-15.87-15.87-4.1-31.73-8.95-47.6-14.54-15.87-5.58-30.41-13.22-43.63-22.92-13.22-9.7-23.8-22.17-31.73-37.46-7.93-15.27-11.9-34.07-11.9-56.41,0-24.68,4.99-45.69,14.99-63.03,9.99-17.33,23.06-31.43,39.23-42.31,16.16-10.87,34.07-18.8,53.77-23.8,19.68-4.99,38.92-7.49,57.74-7.49,31.14.59,56.55,4.41,76.25,11.46,19.68,7.05,38.92,15.58,57.74,25.56l.88,79.33c-21.16-11.16-41.14-20.85-59.94-29.09-18.81-8.22-40.55-12.34-65.23-12.34-22.92,0-42.02,4.27-57.3,12.78-15.29,8.53-22.92,21.02-22.92,37.46,0,14.1,4.26,25.27,12.78,33.5,8.51,8.24,19.68,14.7,33.5,19.39,13.8,4.71,28.65,9.41,44.51,14.1,14.68,4.71,29.97,9.56,45.84,14.54,15.87,5,30.55,12.2,44.07,21.6,13.51,9.41,24.53,21.75,33.06,37.02,8.51,15.29,12.78,35.26,12.78,59.94-.59,32.92-9.25,59.65-26,80.21-16.75,20.58-38.65,35.56-65.67,44.96-27.04,9.39-54.96,14.1-83.74,14.1Z"/><path d="M3128.31,1086.29c-31.73,0-58.62-3.39-80.66-10.14-22.04-6.75-43.63-15.12-64.79-25.12v-87.27c15.27,9.41,30.26,17.78,44.96,25.12,14.68,7.35,30.11,13.08,46.28,17.19,16.16,4.12,34.23,6.17,54.21,6.17,25.26,0,45.09-5.29,59.5-15.87,14.39-10.58,21.6-23.8,21.6-39.67,0-13.51-4.56-24.09-13.66-31.73-9.12-7.63-20.71-14.1-34.82-19.39-14.1-5.29-28.8-10.58-44.07-15.87-15.87-4.1-31.73-8.95-47.6-14.54-15.87-5.58-30.41-13.22-43.63-22.92-13.22-9.7-23.8-22.17-31.73-37.46-7.93-15.27-11.9-34.07-11.9-56.41,0-24.68,4.99-45.69,14.99-63.03,9.99-17.33,23.06-31.43,39.23-42.31,16.16-10.87,34.07-18.8,53.77-23.8,19.68-4.99,38.92-7.49,57.74-7.49,31.14.59,56.55,4.41,76.25,11.46,19.68,7.05,38.92,15.58,57.74,25.56l.88,79.33c-21.16-11.16-41.14-20.85-59.94-29.09-18.81-8.22-40.55-12.34-65.23-12.34-22.92,0-42.02,4.27-57.3,12.78-15.29,8.53-22.92,21.02-22.92,37.46,0,14.1,4.26,25.27,12.78,33.5,8.51,8.24,19.68,14.7,33.5,19.39,13.8,4.71,28.65,9.41,44.51,14.1,14.68,4.71,29.97,9.56,45.84,14.54,15.87,5,30.55,12.2,44.07,21.6,13.51,9.41,24.53,21.75,33.06,37.02,8.51,15.29,12.78,35.26,12.78,59.94-.59,32.92-9.25,59.65-26,80.21-16.75,20.58-38.65,35.56-65.67,44.96-27.04,9.39-54.96,14.1-83.74,14.1Z"/><path d="M3572.57,1086.29c-22.92,0-44.96-2.2-66.11-6.61s-40.41-11.9-57.74-22.48c-17.34-10.58-31.16-25.12-41.43-43.63-10.29-18.51-15.43-41.57-15.43-69.2,0-32.9,6.46-59.94,19.39-81.1,12.92-21.16,31.43-37.02,55.53-47.6,24.09-10.58,52.89-15.87,86.38-15.87,22.33,0,42.45,1.76,60.38,5.29,17.92,3.53,34.07,8.37,48.48,14.54,14.39,6.17,26.58,13.08,36.58,20.71l9.7,60.82c-12.93-8.81-30.27-16.31-52.01-22.48-21.75-6.17-45.26-9.25-70.52-9.25-33.5,0-58.92,5.88-76.25,17.63-17.34,11.76-26,29.39-26,52.89,0,17.63,4.99,31.88,14.98,42.75,9.99,10.88,22.48,18.81,37.46,23.8,14.99,5,30.7,7.49,47.16,7.49,34.67,0,60.23-2.34,76.69-7.05,16.44-4.7,24.68-15.56,24.68-32.62v-185.11c0-31.14-9.41-53.91-28.21-68.31-18.81-14.39-45.55-21.6-80.21-21.6-24.68,0-50.24,3.97-76.69,11.9s-48.19,18.95-65.23,33.06v-86.38c16.45-11.16,40.4-20.12,71.84-26.89,31.43-6.75,63.91-10.14,97.4-10.14,16.45,0,33.06,1.62,49.8,4.85,16.75,3.24,32.46,8.24,47.16,14.98,14.68,6.76,27.77,15.87,39.23,27.33,11.46,11.46,20.41,25.43,26.88,41.87,6.46,16.46,9.7,35.85,9.7,58.18v211.55c0,28.8-8.97,50.99-26.89,66.55-17.93,15.58-42.17,26.16-72.72,31.73-30.56,5.58-65.23,8.37-104.01,8.37Z"/></g><path fill="var(--brand)" d="M897.83,377.97s108.87-30.81,285.53-92.44c161.82-56.45,276.21,7.84,336.89,28.76,59.57,20.54,142.07,99.52,199.26-61.63,45.19-127.36,110.93-88.33,110.93-88.33,0,0,35.23,12.66,133.52,119.14,98.6,106.82,138.88,74.54,138.88,74.54,0,0,40.45,5.62,278.23-208.67L2546.76,0h327.19l-505.33,449.87s-63.68,69.84-174.61,71.9c-51.51.95-102.71-20.54-152.01-61.63-53.61-44.67-129.41-110.93-184.88-164.33-23.11-22.26-39.42-25.61-51.35-24.65-40.99,3.28-36.98,57.52-61.63,96.55-17.99,28.49-31.12,82.17-106.82,82.17s-97.81-36.29-154.06-67.79c-51.35-28.76-94.54-85.42-221.85-80.11-98.6,4.11-105.4,14.79-199.26,36.98-113.6,26.85-164.33,39.03-164.33,39.03Z"/><text fill="var(--muted)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif" font-size="205" font-weight="500" transform="translate(2 1351.43)">Sua obra da fundação ao acabamento</text></svg></div>
     <div class="ph-right">
-      <h1>B.I Comercial</h1>
+      <h1>B.I Biomassa</h1>
       <div class="sub"><span class="dot"></span>Dados ao vivo do Bitrix24 · Negócios · gerado em __GENDATE__</div>
     </div>
   </header>
-
-  <div id="view-bitrix">
-  <div class="filterbar" id="filterbar">
-    <span class="fllbl">Filtros</span>
-    <!-- dropdowns injetados -->
-    <button class="reset" id="reset">limpar filtros</button>
-  </div>
-  <div class="fcount" id="fcount"></div>
-
-  <div class="eyebrow" id="sec-visao">Visão geral · resultado dos filtros</div>
-  <div class="topgrid">
-    <div class="kpis" id="kpis"></div>
-    <div class="card statuscard"><div class="cardh">Situação dos negócios</div><div id="donut-status"></div></div>
-  </div>
-
-  <div class="eyebrow" id="funil-eyebrow">Distribuição · receita ganha por funil</div>
-  <div class="card" id="card-funil"><div id="donut-funil"></div></div>
-
-  <div class="eyebrow" id="cmp-eyebrow">Comparativo dos funis · receita ganha</div>
-  <div class="card" id="cmp-card"><div id="cmp"></div></div>
-
-  <div class="eyebrow" id="sec-funil">Funil de vendas · negócios em aberto por etapa</div>
-  <div class="funnels" id="funnels"></div>
-
-  <div class="eyebrow" id="sec-vendedor">Performance por vendedor</div>
-  <div class="card" style="overflow-x:auto">
-    <table id="vendtbl"><thead><tr>
-      <th>Responsável</th><th class="r">Negócios</th>
-      <th class="r">Ganhos</th><th class="r">Taxa</th>
-      <th class="r">Perdas</th><th class="r">Taxa</th>
-      <th class="r">Valor ganho</th>
-    </tr></thead><tbody></tbody></table>
-  </div>
-
-  <div class="eyebrow">Pipeline em aberto por vendedor</div>
-  <div class="card"><div id="chart-pipe-vend"></div></div>
-
-  <div class="eyebrow" id="sec-evolucao">Evolução · criados × ganhos por mês</div>
-  <div class="card">
-    <div class="months" id="months"></div>
-    <div class="legend"><span><i style="background:var(--brand-soft)"></i>Criados</span><span><i style="background:var(--good)"></i>Ganhos</span></div>
-  </div>
-
-  <div class="eyebrow">Receita ganha (R$) por mês</div>
-  <div class="card"><div class="months" id="months-rev"></div></div>
-
-  <div class="eyebrow" id="sec-graficos">Origem dos negócios ganhos</div>
-  <div class="card"><div id="chart-origem"></div></div>
-
-  <div class="eyebrow" id="sec-tipo">Tipo de cliente</div>
-  <div class="grid2">
-    <div class="card"><div class="cardh">Quantidade de negócios</div><div id="chart-tipo-qtd"></div></div>
-    <div class="card"><div class="cardh">Vendas (ganhos)</div><div id="chart-tipo-ganho"></div></div>
-  </div>
-
-  <div class="eyebrow" id="sec-produto">Produto</div>
-  <div class="grid2">
-    <div class="card"><div class="cardh">Quantidade de negócios por produto</div><div id="chart-prod-qtd"></div></div>
-    <div class="card"><div class="cardh">Vendas ganhas por produto</div><div id="chart-prod-ganho"></div></div>
-  </div>
-
-  <div class="eyebrow" id="sec-clientes">Clientes · quem mais compra</div>
-  <div class="kpis" id="cli-kpis" style="grid-template-columns:repeat(3,1fr);margin-bottom:14px"></div>
-  <div class="grid2">
-    <div class="card"><div class="cardh">Top clientes por receita ganha</div><div id="chart-cli"></div></div>
-    <div class="card" style="overflow-x:auto"><div class="cardh">Ranking de clientes</div>
-      <table id="clitbl"><thead><tr><th>Cliente</th><th class="r">Negócios</th><th class="r">Ganhos</th><th class="r">Valor ganho</th></tr></thead><tbody></tbody></table>
-    </div>
-  </div>
-
-  </div><!-- /view-bitrix -->
 
   <div id="view-tiny" style="display:none">
     <div class="tiny-alert">
@@ -830,33 +772,11 @@
     </div>
   </div><!-- /view-tiny -->
 
+  <div id="view-comercial"><div class="tp-loading">Carregando Comercial…</div></div>
+
   <div id="view-trafego" style="display:none"><div class="tp-loading">Carregando Tráfego Pago…</div></div>
 
-  <div id="view-funil" style="display:none">
-    <div class="fun-filters">
-      <div class="ff"><label>Vendedor</label><select id="fun-vd" class="tiny-select"></select></div>
-      <div class="ff"><label>Pipeline</label><select id="fun-cat" class="tiny-select"></select></div>
-      <div class="ff"><label>Origem</label><select id="fun-src" class="tiny-select"></select></div>
-      <div class="ff"><label>Período</label><select id="fun-per" class="tiny-select">
-        <option value="hoje">Hoje</option><option value="ontem">Ontem</option>
-        <option value="7">Últimos 7 dias</option><option value="mes" selected>Este mês</option>
-        <option value="mesant">Mês anterior</option><option value="custom">Personalizado…</option>
-      </select></div>
-      <div class="ff"><label>Base da data</label><select id="fun-base" class="tiny-select">
-        <option value="alt" selected>Alterado em (fechamento)</option>
-        <option value="cri">Criado em</option>
-      </select></div>
-      <button id="fun-reset" class="fun-clear"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v6h6"/><path d="M3 8a9 9 0 1 0 2.5-4.5L3 8"/></svg>Limpar filtros</button>
-    </div>
-    <div id="fun-daterow" class="fun-daterow" style="display:none">
-      <span class="fllbl">De</span><input type="date" id="fun-from" class="tiny-select" style="color-scheme:light dark">
-      <span class="drsep">até</span><input type="date" id="fun-to" class="tiny-select" style="color-scheme:light dark">
-    </div>
-    <div id="fun-fcount" class="fcount" style="margin:0 0 14px 2px"></div>
-    <div id="fun-body"></div>
-  </div>
-
-  <footer>Fontes: Bitrix24 (negócios, etapas e ligações) + BioHub (propostas comerciais) + Meta/Google Ads (marketing). Valores em BRL. Atualização automática 2× ao dia.</footer>
+  <footer>Fontes: Bitrix24 (negócios, etapas, propostas e ligações) + Meta Ads e Google Ads. Valores em BRL. Atualização automática de hora em hora.</footer>
 </div>
 </div>
 
@@ -898,125 +818,7 @@ const nrm=s=>(s||"").toLowerCase();
 function niceMax(x){if(x<=5)return 5;const p=Math.pow(10,Math.floor(Math.log10(x)));const n=x/p;const m=[1,2,3,5,10].find(k=>k>=n);return m*p;}
 const MESES=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 
-// estado dos filtros: cada um é um Set (vazio = todos)
-const FIL={cat:new Set(),st:new Set(),src:new Set(),vd:new Set(),pr:new Set(),tp:new Set()};
-const DATE={from:"",to:"",base:"dt"};   // base: "dt"=criação, "mt"=alteração
-const catOpts=D.order.map(c=>D.catNames[c]); // labels; value=id
-
-const DEFS=[
-  {k:"cat",label:"Funil",opts:catOpts},
-  {k:"st", label:"Etapa",opts:D.opt.st},
-  {k:"tp", label:"Tipo de cliente",opts:D.opt.tp},
-  {k:"pr", label:"Produto",opts:D.opt.pr},
-  {k:"src",label:"Fonte",opts:D.opt.src},
-  {k:"vd", label:"Vendedor",opts:D.opt.vd},
-];
-
-function recField(r,k){return k==="cat"?D.catNames[r.c]:r[k];}
-function inDate(r){
-  const d=r[DATE.base];
-  if(DATE.from && (!d || d<DATE.from)) return false;
-  if(DATE.to   && (!d || d>DATE.to))   return false;
-  return true;
-}
-function pass(r){
-  if(!inDate(r)) return false;
-  for(const k in FIL){ if(FIL[k].size && !FIL[k].has(recField(r,k))) return false; }
-  return true;
-}
-// contagem por opção respeitando os OUTROS filtros + range
-function countFor(k,opt){
-  let n=0; for(const r of D.recs){
-    if(!inDate(r)) continue;
-    let ok=true;
-    for(const kk in FIL){ if(kk===k) continue; if(FIL[kk].size && !FIL[kk].has(recField(r,kk))){ok=false;break;} }
-    if(ok && recField(r,k)===opt) n++;
-  } return n;
-}
-
-/* ---- construir dropdowns ---- */
-const bar=document.getElementById("filterbar");
-const resetBtn=document.getElementById("reset");
-DEFS.forEach(def=>{
-  const dd=document.createElement("div"); dd.className="dd";
-  const ficon=FIC[def.k]?`<svg class="fic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${FICP[FIC[def.k]]}</svg>`:"";
-  const btn=document.createElement("button"); btn.innerHTML=ficon+def.label; dd.appendChild(btn);
-  const panel=document.createElement("div"); panel.className="panel"; dd.appendChild(panel);
-  bar.insertBefore(dd,resetBtn);
-  btn.onclick=e=>{e.stopPropagation();document.querySelectorAll(".dd.open").forEach(x=>{if(x!==dd)x.classList.remove("open")});dd.classList.toggle("open");renderPanel();};
-  function renderPanel(){
-    panel.innerHTML="";
-    const all=document.createElement("label"); all.className="opt all";
-    all.innerHTML=`<input type="checkbox" ${FIL[def.k].size===0?"checked":""}><span>Todos</span>`;
-    all.querySelector("input").onchange=()=>{FIL[def.k].clear();refresh();renderPanel();};
-    panel.appendChild(all);
-    def.opts.forEach(o=>{
-      const c=countFor(def.k,o); if(c===0 && !FIL[def.k].has(o)) return;
-      const l=document.createElement("label"); l.className="opt";
-      l.innerHTML=`<input type="checkbox" ${FIL[def.k].has(o)?"checked":""}><span>${o}</span><span class="cnt">${int(c)}</span>`;
-      l.querySelector("input").onchange=ev=>{ev.target.checked?FIL[def.k].add(o):FIL[def.k].delete(o);refresh();renderPanel();};
-      panel.appendChild(l);
-    });
-  }
-  dd._sync=()=>{const n=FIL[def.k].size;btn.classList.toggle("on",n>0);
-    btn.innerHTML=ficon+def.label+(n>0?`<span class="badge">${n}</span>`:"");};
-  dd._render=renderPanel;
-});
-// ---- intervalo de datas (criação) ----
-const dateWrap=document.createElement("div"); dateWrap.className="daterange";
-dateWrap.innerHTML=`<span class="drlbl">Período por</span>
-  <span class="basetoggle"><button data-b="dt" class="on">Criação</button><button data-b="mt">Alteração</button></span>
-  <input type="date" id="dfrom" min="${D.dmin}" max="${D.dmax}">
-  <span class="drsep">até</span>
-  <input type="date" id="dto" min="${D.dmin}" max="${D.dmax}">`;
-bar.insertBefore(dateWrap,resetBtn);
-const dfrom=dateWrap.querySelector("#dfrom"), dto=dateWrap.querySelector("#dto");
-dfrom.onchange=()=>{DATE.from=dfrom.value;refresh();};
-dto.onchange=()=>{DATE.to=dto.value;refresh();};
-dateWrap.querySelectorAll(".basetoggle button").forEach(b=>b.onclick=()=>{
-  DATE.base=b.dataset.b;
-  dateWrap.querySelectorAll(".basetoggle button").forEach(x=>x.classList.toggle("on",x===b));
-  refresh();
-});
-
-document.addEventListener("click",()=>document.querySelectorAll(".dd.open").forEach(x=>x.classList.remove("open")));
-resetBtn.onclick=()=>{for(const k in FIL)FIL[k].clear();DATE.from="";DATE.to="";DATE.base="dt";
-  dfrom.value="";dto.value="";
-  dateWrap.querySelectorAll(".basetoggle button").forEach(x=>x.classList.toggle("on",x.dataset.b==="dt"));
-  refresh();};
-
-/* ---- cálculo ---- */
-function compute(rows){
-  const g={total:rows.length,won:0,lost:0,open:0,pipe:0,wonv:0,wonvn:0,negV:0,sumDays:0,nDays:0};
-  const perCat={}; const criados={},ganhos={},ganhosV={};   // keyed por "YYYY-MM"
-  const src={}; const perVend={}; const perTipo={}; const perCli={}; const perProd={};
-  for(const r of rows){
-    if(r.w==="open" && nrm(r.st).includes("negocia")) g.negV+=r.o;
-    if(r.cli){if(!perCli[r.cli])perCli[r.cli]={total:0,won:0,wonv:0};
-      perCli[r.cli].total++; if(r.w==="won"){perCli[r.cli].won++;perCli[r.cli].wonv+=r.o;}}
-    if(!perTipo[r.tp])perTipo[r.tp]={total:0,won:0,wonv:0};
-    perTipo[r.tp].total++; if(r.w==="won"){perTipo[r.tp].won++;perTipo[r.tp].wonv+=r.o;}
-    if(!perProd[r.pr])perProd[r.pr]={total:0,won:0,wonv:0};
-    perProd[r.pr].total++; if(r.w==="won"){perProd[r.pr].won++;perProd[r.pr].wonv+=r.o;}
-    if(!perVend[r.vd])perVend[r.vd]={total:0,won:0,lost:0,wonv:0,pipe:0};
-    const pv=perVend[r.vd]; pv.total++;
-    if(r.w==="won"){pv.won++;pv.wonv+=r.o;} else if(r.w==="lost"){pv.lost++;} else {pv.pipe+=r.o;}
-    if(!perCat[r.c])perCat[r.c]={won:0,lost:0,open:0,pipe:0,wonv:0,wonvn:0,total:0,stg:{}};
-    const pc=perCat[r.c]; pc.total++;
-    pc.stg[r.st]=pc.stg[r.st]||[0,0,r.w]; pc.stg[r.st][0]++; pc.stg[r.st][1]+=r.o;   // TODAS as etapas
-    if(r.w==="won"){g.won++;pc.won++;g.wonv+=r.o;pc.wonv+=r.o;if(r.o>0){g.wonvn++;pc.wonvn++;}
-      if(r.wd){ganhos[r.wd]=(ganhos[r.wd]||0)+1;ganhosV[r.wd]=(ganhosV[r.wd]||0)+r.o;}
-      if(r.dt&&r.cld){const dd=(Date.parse(r.cld)-Date.parse(r.dt))/864e5;if(dd>=0){g.sumDays+=dd;g.nDays++;}}
-      const s=r.src;src[s]=src[s]||[0,0];src[s][0]++;src[s][1]+=r.o;}
-    else if(r.w==="lost"){g.lost++;pc.lost++;}
-    else{g.open++;pc.open++;g.pipe+=r.o;pc.pipe+=r.o;}
-    if(r.dt){const ym=r.dt.slice(0,7);criados[ym]=(criados[ym]||0)+1;}
-  }
-  g.conv=g.total?g.won/g.total*100:0;   // ganhos ÷ total (inclui em aberto)
-  g.ticket=g.wonvn?g.wonv/g.wonvn:0;
-  g.tempoMedio=g.nDays?g.sumDays/g.nDays:0;
-  return {g,perCat,criados,ganhos,ganhosV,src,perVend,perTipo,perCli,perProd};
-}
+// helpers de gráfico (usados pela aba Tiny)
 // donut SVG a partir de [{label,value,color}]
 function makeDonut(data, centerTop, centerBot){
   const tot=data.reduce((a,d)=>a+d.value,0);
@@ -1041,185 +843,16 @@ function renderBars(el, data, color){
 const MESNUM={"01":"jan","02":"fev","03":"mar","04":"abr","05":"mai","06":"jun","07":"jul","08":"ago","09":"set","10":"out","11":"nov","12":"dez"};
 const ymLabel=ym=>MESNUM[ym.slice(5,7)]+"/"+ym.slice(2,4);
 
-/* ---- render ---- */
-function refresh(){
-  DEFS.forEach((_,i)=>{const dd=bar.querySelectorAll(".dd")[i];dd._sync();if(dd.classList.contains("open"))dd._render();});
-  const rows=D.recs.filter(pass);
-  const A=compute(rows), g=A.g;
-  const nFil=Object.values(FIL).reduce((a,s)=>a+(s.size>0?1:0),0);
-  const br=d=>d.split("-").reverse().join("/");
-  const baseTxt=DATE.base==="mt"?"alteração":"criação";
-  const per=(DATE.from||DATE.to)?` · ${baseTxt} ${DATE.from?br(DATE.from):"início"} → ${DATE.to?br(DATE.to):"hoje"}`:"";
-  document.getElementById("fcount").innerHTML=
-    `<b>${int(g.total)}</b> negócios no recorte`+(nFil?` · ${nFil} filtro(s)`:``)+per+((!nFil&&!per)?` · base completa`:``);
-
-  const kcard=k=>`<div class="kpi ${k.wide?"wide":""}"><div class="kico ${k.tint}">${svgico(KIC[k.ic])}</div>`+
-    `<div class="kbody"><div class="lbl">${k.l}</div><div class="big tnum">${k.v}</div><div class="foot">${k.f}</div></div>`+
-    (k.spark?`<div class="sparkwrap">${k.spark}</div>`:``)+`</div>`;
-  const revVals=[...new Set([...Object.keys(A.ganhosV)])].sort().map(y=>A.ganhosV[y]);
-  document.getElementById("kpis").innerHTML=[
-    {l:"Negócios",v:int(g.total),f:`${int(g.open)} em aberto`,ic:"brief",tint:"ico-blue"},
-    {l:"Valor em pipeline",v:brlK(g.pipe),f:"em aberto",ic:"dollar",tint:"ico-solid"},
-    {l:"Receita ganha",v:brlK(g.wonv),f:`<span class="chip c-good">${int(g.won)} ganhos</span>`,ic:"trophy",tint:"ico-green"},
-    {l:"Conversão (ganhos ÷ total)",v:g.total?g.conv.toFixed(1).replace(".",",")+"%":"—",
-      f:`<span class="chip c-good">${int(g.won)} de ${int(g.total)}</span>`,ic:"trend",tint:"ico-amber"},
-    {l:"Ticket médio",v:g.wonvn?brlK(g.ticket):"—",f:"por negócio ganho",ic:"tag",tint:"ico-blue"},
-    {l:"Tempo médio de fechamento",v:g.nDays?Math.round(g.tempoMedio)+" dias":"—",f:`da criação ao ganho · ${int(g.nDays)} neg.`,ic:"clock",tint:"ico-blue"},
-    {l:"Em negociação (R$)",v:brlK(g.negV),f:"pipeline quente",ic:"dollar",tint:"ico-amber",wide:true,spark:sparkArea(revVals,"#f0b429")},
-  ].map(kcard).join("");
-
-  // donut: situação dos negócios
-  document.getElementById("donut-status").innerHTML=makeDonut([
-    {label:"Ganhos",value:g.won,color:"var(--brand)"},
-    {label:"Perdidos",value:g.lost,color:"var(--bad)"},
-    {label:"Em aberto",value:g.open,color:"#f5c518"},
-  ], int(g.total), "negócios");
-  // donut: receita ganha por funil — some se houver só um funil no recorte
-  const FUNCOL=["var(--brand)","#d2691e","var(--good)","#8b5cf6"];
-  const funis=D.order.filter(c=>A.perCat[c]);
-  const umFunil=funis.length<=1;
-  document.getElementById("card-funil").style.display=umFunil?"none":"";
-  document.getElementById("funil-eyebrow").style.display=umFunil?"none":"";
-  if(!umFunil) document.getElementById("donut-funil").innerHTML=makeDonut(
-    funis.map((c,i)=>({label:D.catNames[c],value:A.perCat[c].wonv,color:FUNCOL[i%FUNCOL.length]})),
-    brlK(g.wonv), "ganho");
-
-  // comparativo (funis presentes) — some com só um funil
-  const cats=D.order.filter(c=>A.perCat[c]);
-  const umSo=cats.length<=1;
-  document.getElementById("cmp-eyebrow").style.display=umSo?"none":"";
-  document.getElementById("cmp-card").style.display=umSo?"none":"";
-  const maxWon=Math.max(...cats.map(c=>A.perCat[c].wonv),1);
-  document.getElementById("cmp").innerHTML= cats.length? cats.map(c=>{
-    const p=A.perCat[c],conv=p.total?p.won/p.total*100:0;
-    return `<div class="barrow"><div class="nm">${D.catNames[c]}</div>
-      <div class="track"><div class="fill" style="width:${Math.max(p.wonv/maxWon*100,p.wonv>0?2:0)}%"></div></div>
-      <div class="v tnum">${brlK(p.wonv)} <span style="color:var(--muted);font-weight:600">· ${p.total?conv.toFixed(0)+"%":"—"}</span></div></div>`;
-  }).join(""):`<div class="empty">Nenhum negócio no recorte.</div>`;
-
-  // funis — gráfico de barras (todas as etapas) + tabela
-  const BAR={won:"var(--good)",lost:"var(--bad)",neg:"#d2691e",open:"var(--brand)"};
-  const stKind=(s,w)=> w==="won"?"won" : w==="lost"?"lost" : nrm(s).includes("negocia")?"neg" : "open";
-  document.getElementById("funnels").innerHTML= cats.length? cats.map(c=>{
-    const p=A.perCat[c],conv=p.total?p.won/p.total*100:0,ticket=p.wonvn?p.wonv/p.wonvn:0;
-    const order=(D.stgOrder[c]||Object.keys(p.stg)).filter(s=>p.stg[s]);
-    const maxN=niceMax(Math.max(...order.map(s=>p.stg[s][0]),1));
-    const bars=order.map(s=>{const [n,v,w]=p.stg[s];
-      return `<div class="brow"><div class="blabel" title="${s}">${s}</div>
-        <div class="btrack"><div class="bfill" style="width:${n/maxN*100}%;background:${BAR[stKind(s,w)]}"></div><span class="bval tnum">${int(n)}</span></div></div>`;}).join("");
-    const ticks=[0,.25,.5,.75,1].map(f=>`<span>${int(Math.round(maxN*f))}</span>`).join("");
-    const rowsT=order.map(s=>{const [n,v,w]=p.stg[s],k=stKind(s,w);
-      const lbl=k==="open"?s:`<span class="schip s-${k}">${s}</span>`;
-      return `<tr><td>${lbl}</td><td class="r tnum">${int(n)}</td><td class="r tnum">${brl0(v)}</td></tr>`;}).join("");
-    return `<div class="card fcard">
-      <h3>${D.catNames[c]} — <span style="color:var(--muted);font-weight:600">${int(p.total)} negócios</span></h3>
-      <div class="fmeta"><span><b class="tnum">${brlK(p.pipe)}</b> pipeline</span>
-        <span><b class="tnum">${p.total?conv.toFixed(0)+"%":"—"}</b> conversão</span>
-        <span><b class="tnum">${ticket>0?brlK(ticket):"—"}</b> ticket</span>
-        <span><span class="chip c-good">${int(p.won)} ganhos</span> <span class="chip c-bad">${int(p.lost)} perd.</span> <span class="chip c-open">${int(p.open)} abertos</span></span></div>
-      <div class="fgrid">
-        <div class="fchart"><div class="bars">${bars}</div><div class="axis"><div class="axsp"></div><div class="axticks">${ticks}</div></div></div>
-        <div class="ftable"><table class="stgtbl"><thead><tr><th>Estágio</th><th class="r">Qtd</th><th class="r">Valor</th></tr></thead><tbody>${rowsT}</tbody></table></div>
-      </div></div>`;
-  }).join(""):`<div class="card"><div class="empty">Nenhum negócio no recorte.</div></div>`;
-
-  // performance por vendedor
-  const vArr=Object.entries(A.perVend).map(([nm,p])=>({nm,...p})).sort((a,b)=>b.wonv-a.wonv);
-  document.querySelector("#vendtbl tbody").innerHTML= vArr.length? vArr.map(v=>{
-    const tg=v.total?v.won/v.total*100:0, tp=v.total?v.lost/v.total*100:0;
-    return `<tr><td><b>${v.nm}</b></td><td class="r tnum">${int(v.total)}</td>
-      <td class="r tnum" style="color:var(--good)">${int(v.won)}</td><td class="r tnum">${tg.toFixed(1).replace(".",",")}%</td>
-      <td class="r tnum" style="color:var(--bad)">${int(v.lost)}</td><td class="r tnum">${tp.toFixed(1).replace(".",",")}%</td>
-      <td class="r tnum"><b>${brl0(v.wonv)}</b></td></tr>`;}).join("")
-    :`<tr><td colspan="7" class="empty">Nenhum negócio no recorte.</td></tr>`;
-
-  // pipeline em aberto por vendedor
-  renderBars(document.getElementById("chart-pipe-vend"),
-    Object.entries(A.perVend).map(([nm,p])=>({label:nm,n:Math.round(p.pipe),disp:brlK(p.pipe)}))
-      .filter(d=>d.n>0).sort((a,b)=>b.n-a.n), "var(--open)");
-
-  // ---- clientes (exclui ruído: sem cliente / sem nome / sem título) ----
-  const ruido=c=>{const t=nrm(c);return c.startsWith("—")||t.includes("sem nome")||t.includes("sem titulo")||t.includes("sem título");};
-  const cli=Object.entries(A.perCli).filter(([k])=>!ruido(k)).map(([nm,p])=>({nm,...p}));
-  const cliComGanho=cli.filter(c=>c.won>0);
-  const totCliWonv=cliComGanho.reduce((a,c)=>a+c.wonv,0);
-  const topCli=[...cliComGanho].sort((a,b)=>b.wonv-a.wonv)[0];
-  document.getElementById("cli-kpis").innerHTML=[
-    {l:"Clientes distintos",v:int(cli.length),f:"no recorte",ic:"users",tint:"ico-blue"},
-    {l:"Ticket médio por cliente",v:cliComGanho.length?brlK(totCliWonv/cliComGanho.length):"—",f:`${int(cliComGanho.length)} clientes com compra`,ic:"dollar",tint:"ico-green"},
-    {l:"Maior cliente",v:topCli?brlK(topCli.wonv):"—",f:topCli?topCli.nm:"—",ic:"trophy",tint:"ico-amber"},
-  ].map(kcard).join("");
-  renderBars(document.getElementById("chart-cli"),
-    [...cliComGanho].sort((a,b)=>b.wonv-a.wonv).slice(0,12).map(c=>({label:c.nm,n:Math.round(c.wonv),disp:brlK(c.wonv)})), "var(--brand)");
-  const cliRank=[...cli].sort((a,b)=>b.wonv-a.wonv||b.total-a.total).slice(0,25);
-  document.querySelector("#clitbl tbody").innerHTML= cliRank.length? cliRank.map(c=>
-    `<tr><td><b>${c.nm}</b></td><td class="r tnum">${int(c.total)}</td><td class="r tnum" style="color:var(--good)">${int(c.won)}</td><td class="r tnum"><b>${brl0(c.wonv)}</b></td></tr>`).join("")
-    :`<tr><td colspan="4" class="empty">Nenhum cliente no recorte.</td></tr>`;
-
-  // meses (ano-mês presentes no recorte, ordenados; limita aos últimos 18)
-  let yms=[...new Set([...Object.keys(A.criados),...Object.keys(A.ganhos),...Object.keys(A.ganhosV)])].sort();
-  if(yms.length>18) yms=yms.slice(-18);
-  const maxM=Math.max(...yms.map(y=>A.criados[y]||0),1);
-  document.getElementById("months").innerHTML= yms.length? yms.map(y=>{
-    const cr=A.criados[y]||0,gn=A.ganhos[y]||0;
-    return `<div class="mcol"><div class="bars"><div class="cr" style="height:${cr/maxM*100}%" title="${cr} criados"></div><div class="gn" style="height:${gn/maxM*100}%" title="${gn} ganhos"></div></div><div class="ml">${ymLabel(y)}</div></div>`;
-  }).join("") : `<div class="empty" style="width:100%;align-self:center">Sem dados no recorte.</div>`;
-
-  // receita ganha (R$) por mês
-  const maxRev=Math.max(...yms.map(y=>A.ganhosV[y]||0),1);
-  document.getElementById("months-rev").innerHTML= yms.length? yms.map(y=>{
-    const rv=A.ganhosV[y]||0;
-    return `<div class="mcol"><div class="bars"><div class="gn" style="width:60%;height:${rv/maxRev*100}%" title="${brl0(rv)}"></div></div><div class="ml">${ymLabel(y)}</div></div>`;
-  }).join("") : `<div class="empty" style="width:100%;align-self:center">Sem dados no recorte.</div>`;
-
-  // origem dos ganhos (gráfico) — barra = qtd de ganhos, rótulo com receita
-  const srcArr=Object.entries(A.src).map(([k,v])=>({label:k,n:v[0],extra:brlK(v[1])}))
-    .sort((a,b)=>b.n-a.n);
-  renderBars(document.getElementById("chart-origem"), srcArr, "var(--good)");
-
-  // tipo de cliente (inclui "— não informado")
-  const tipos=Object.entries(A.perTipo);
-  renderBars(document.getElementById("chart-tipo-qtd"),
-    tipos.map(([k,p])=>({label:k,n:p.total})).sort((a,b)=>b.n-a.n), "var(--brand)");
-  renderBars(document.getElementById("chart-tipo-ganho"),
-    tipos.map(([k,p])=>({label:k,n:p.won,extra:brlK(p.wonv)})).filter(d=>d.n>0).sort((a,b)=>b.n-a.n), "var(--good)");
-
-  // produto (inclui "— não informado")
-  const prods=Object.entries(A.perProd);
-  renderBars(document.getElementById("chart-prod-qtd"),
-    prods.map(([k,p])=>({label:k,n:p.total})).sort((a,b)=>b.n-a.n), "var(--brand)");
-  renderBars(document.getElementById("chart-prod-ganho"),
-    prods.map(([k,p])=>({label:k,n:p.won,extra:brlK(p.wonv)})).filter(d=>d.n>0).sort((a,b)=>b.n-a.n), "var(--good)");
-}
-// ---- navegação de seções (só do Bitrix) ----
-const NAV={"Início":"__top","Funis de venda":"sec-funil","Performance por vendedor":"sec-vendedor",
-  "Clientes":"sec-clientes","Origem dos negócios":"sec-graficos","Tipo de cliente":"sec-tipo","Produto":"sec-produto"};
-document.querySelectorAll(".sb-secnav .sb-ic").forEach(el=>{
-  el.onclick=()=>{
-    const tgt=NAV[el.getAttribute("data-tip")];
-    if(tgt==="__top"||!tgt){window.scrollTo({top:0,behavior:"smooth"});}
-    else{const node=document.getElementById(tgt); if(node)node.scrollIntoView({behavior:"smooth",block:"start"});}
-    document.querySelectorAll(".sb-secnav .sb-ic").forEach(x=>x.classList.remove("active"));
-    el.classList.add("active");
-  };
-});
-// botão Sair -> topo
-document.querySelectorAll('.sidebar > .sb-ic[data-tip="Sair"]').forEach(el=>el.onclick=()=>window.scrollTo({top:0,behavior:"smooth"}));
 // ---- seletor de B.I no logo (onda) ----
 function setView(v){
-  document.getElementById("view-bitrix").style.display=(v==="bitrix")?"":"none";
-  document.getElementById("view-tiny").style.display=(v==="tiny")?"":"none";
-  document.getElementById("view-funil").style.display=(v==="funil")?"":"none";
-  document.getElementById("view-trafego").style.display=(v==="trafego")?"":"none";
-  document.querySelector(".sb-secnav").style.display=(v==="bitrix")?"":"none";
+  ["comercial","trafego","tiny"].forEach(k=>{document.getElementById("view-"+k).style.display=(v===k)?"":"none";});
   document.querySelectorAll(".bi-opt").forEach(o=>o.classList.toggle("active",o.dataset.view===v));
-  const nome={tiny:"Tiny",funil:"Funil",trafego:"Tráfego"}[v]||"Bitrix";
-  document.getElementById("bi-cur").textContent=nome+" ▾";
-  const subs={tiny:"Dados do Tiny · pedidos/vendas",funil:"Comercial · funil, ligações e produtividade",bitrix:"Dados ao vivo do Bitrix24 · Negócios",trafego:"Tráfego Pago · Meta Ads e Google Ads · atualiza de hora em hora"};
-  document.querySelector(".ph-right .sub").innerHTML='<span class="dot"></span>'+subs[v]+(v==="trafego"?'':' · gerado em __GENDATE__');
+  document.getElementById("bi-cur").textContent={tiny:"Tiny",trafego:"Tráfego",comercial:"Comercial"}[v]+" ▾";
+  const subs={tiny:"Dados do Tiny · pedidos/vendas · gerado em __GENDATE__",comercial:"Comercial · Bitrix · atualiza de hora em hora",trafego:"Tráfego Pago · Meta Ads e Google Ads · atualiza de hora em hora"};
+  document.querySelector(".ph-right .sub").innerHTML='<span class="dot"></span>'+subs[v];
   if(v==="tiny") renderTiny();
   if(v==="trafego") abrirTrafego();
-  if(v==="funil") renderFunil();
+  if(v==="comercial") abrirComercial();
   window.scrollTo({top:0});
 }
 const biSwitch=document.getElementById("bi-switch");
@@ -1292,208 +925,6 @@ document.getElementById("tiny-reset").onclick=()=>{TINYF.vd="";TINYF.q="";TINYF.
   document.getElementById("tiny-vd").value="";document.getElementById("tiny-search").value="";
   document.getElementById("tiny-from").value="";document.getElementById("tiny-to").value="";renderTiny();};
 function ymd(d){return d.toISOString().slice(0,10);}
-// ================= B.I Funil (comercial) =================
-const FUN={from:"",to:"",vd:"",cat:"",src:"",base:"alt"};
-const BX="https://biomassadobrasil.bitrix24.com.br/crm/deal/details/";
-function hojeBR(){return new Date().toLocaleDateString("en-CA",{timeZone:"America/Sao_Paulo"});} // YYYY-MM-DD em Brasília
-function funPreset(p){
-  const t=hojeBR(), base=new Date(t+"T12:00:00");
-  if(p==="hoje"){FUN.from=t;FUN.to=t;}
-  else if(p==="ontem"){const y=new Date(base);y.setDate(y.getDate()-1);FUN.from=ymd(y);FUN.to=ymd(y);}
-  else if(p==="7"){const s=new Date(base);s.setDate(s.getDate()-6);FUN.from=ymd(s);FUN.to=t;}
-  else if(p==="mes"){FUN.from=t.slice(0,8)+"01";FUN.to=t;}
-  else if(p==="mesant"){const f=new Date(base.getFullYear(),base.getMonth()-1,1),l=new Date(base.getFullYear(),base.getMonth(),0);FUN.from=ymd(f);FUN.to=ymd(l);}
-  document.getElementById("fun-from").value=FUN.from;document.getElementById("fun-to").value=FUN.to;
-  renderFunil();
-}
-function funFill(){
-  const F=D.funil; const vs=document.getElementById("fun-vd");
-  if(vs.dataset.filled)return;
-  const vopt=Object.entries(F.vend).map(([k,n])=>`<option value="${k}">${n}${F.niveis[k]?" — "+F.niveis[k]:""}</option>`).join("");
-  vs.innerHTML='<option value="">Todos os vendedores</option>'+vopt;
-  document.getElementById("fun-cat").innerHTML='<option value="">Todos os pipelines</option>'+Object.entries(F.pipelines).map(([k,n])=>`<option value="${k}">${n}</option>`).join("");
-  document.getElementById("fun-src").innerHTML='<option value="">Todas as origens</option>'+(F.sources||[]).map(s=>`<option>${s}</option>`).join("");
-  vs.dataset.filled="1";
-}
-const funInP=(dt,from,to)=>dt&&(!from||dt>=from)&&(!to||dt<=to);
-function funTrapezoid(steps){
-  const top=steps[0].n||1, W=640, cx=268, maxW=440, segH=62, gap=5, H=steps.length*(segH+gap)+30;
-  const wv=n=>Math.max(Math.min(n/top,1)*maxW,64);
-  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-height:${H+8}px">`;
-  svg+=`<text x="580" y="16" text-anchor="middle" fill="var(--muted)" font-size="11.5" font-weight="600">% dos recebidos</text>`;
-  steps.forEach((s,i)=>{
-    const y=26+i*(segH+gap), wt=wv(s.n), wb=wv(i<steps.length-1?steps[i+1].n:s.n), pct=Math.round(s.n/top*100);
-    const dark=(s.c==="#9cc0ef"||s.c==="#f0b429");   // texto escuro em fundo claro
-    const tc=dark?"#0d1524":"#fff";
-    svg+=`<polygon points="${cx-wt/2},${y} ${cx+wt/2},${y} ${cx+wb/2},${y+segH} ${cx-wb/2},${y+segH}" fill="${s.c}"/>`;
-    svg+=`<text x="${cx}" y="${y+segH/2-3}" text-anchor="middle" fill="${tc}" font-size="13" font-weight="700">${s.l}</text>`;
-    svg+=`<text x="${cx}" y="${y+segH/2+19}" text-anchor="middle" fill="${tc}" font-size="21" font-weight="800">${int(s.n)}</text>`;
-    svg+=`<line x1="${cx+Math.max(wt,wb)/2+8}" y1="${y+segH/2}" x2="548" y2="${y+segH/2}" stroke="var(--line)" stroke-dasharray="2 4"/>`;
-    svg+=`<text x="580" y="${y+segH/2+6}" text-anchor="middle" fill="var(--ink)" font-size="17" font-weight="800">${pct}%</text>`;
-    if(i<steps.length-1) svg+=`<text x="580" y="${y+segH+gap+7}" text-anchor="middle" fill="var(--muted)" font-size="13">↓</text>`;
-  });
-  return svg+`</svg>`;
-}
-function renderFunil(){
-  const F=D.funil;
-  if(!F){document.getElementById("fun-body").innerHTML='<div class="card"><div class="empty">Sem dados do funil ainda.</div></div>';return;}
-  funFill();
-  if(!FUN.from&&!FUN.to){const t=hojeBR();FUN.from=t.slice(0,8)+"01";FUN.to=t;
-    document.getElementById("fun-from").value=FUN.from;document.getElementById("fun-to").value=FUN.to;}
-  const from=FUN.from,to=FUN.to;
-  const dOK=d=>(!FUN.vd||d.vd===FUN.vd)&&(!FUN.cat||d.cat===FUN.cat)&&(!FUN.src||d.src===FUN.src);
-  const cOK=c=>(!FUN.vd||c.vd===FUN.vd);   // ligação responde a Vendedor+Período (não tem pipeline/origem)
-  const deals=F.deals.filter(dOK), calls=F.calls.filter(cOK);
-  const pOK=p=>(!FUN.vd||p.vd===FUN.vd);   // propostas (Tiny) respondem a Vendedor+Período
-  // ----- métricas por período (cada uma com sua data) -----
-  const receb=deals.filter(d=>funInP(d.dtc,from,to));
-  const tent=calls.filter(c=>funInP(c.dt,from,to));
-  const atend=tent.filter(c=>c.ok);
-  const props=(F.props||[]).filter(p=>pOK(p)&&(!FUN.cat||p.cat===FUN.cat)&&funInP(p.dt,from,to));   // propostas do BioHub
-  const wdt=d=>FUN.base==="cri"?d.dtc:d.dtw;   // base da data das VENDAS: criado x fechamento(alterado)
-  const vendas=deals.filter(d=>d.won&&funInP(wdt(d),from,to));
-  const taxaContato=tent.length?atend.length/tent.length*100:0;
-  const convGeral=receb.length?vendas.length/receb.length*100:0;
-  const convPV=props.length?vendas.length/props.length*100:0;   // proposta → venda
-  const valVendas=vendas.reduce((a,d)=>a+d.o,0);
-  const cReceb=receb.length, valProp=props.reduce((a,p)=>a+(p.valor||0),0);
-  const convFim=cReceb?Math.round(vendas.length/cReceb*100):0;
-  const pctBR=v=>v.toFixed(1).replace(".",",")+"%";
-  // comparação período anterior (mesma duração)
-  let deltaTxt="no período";
-  if(from&&to){const d1=new Date(from+"T12:00:00"),d2=new Date(to+"T12:00:00");const dur=Math.round((d2-d1)/864e5)+1;
-    const pe=new Date(d1);pe.setDate(pe.getDate()-1);const ps=new Date(pe);ps.setDate(ps.getDate()-dur+1);
-    const prev=deals.filter(d=>funInP(d.dtc,ymd(ps),ymd(pe))).length;
-    if(prev>0){const dl=Math.round((cReceb-prev)/prev*100);deltaTxt=`<span class="${dl>=0?'up':'dn'}">${dl>=0?"↑":"↓"} ${Math.abs(dl)}%</span> vs. período anterior`;}}
-  const br=d=>d?d.split("-").reverse().join("/"):"";
-  document.getElementById("fun-fcount").innerHTML=`Resumo do funil comercial · período <b>${br(from)}</b> → <b>${br(to)}</b>`;
-  // ícones
-  const IC={brief:KIC.brief,trophy:KIC.trophy,dollar:KIC.dollar,trend:KIC.trend,
-    phone:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>',
-    doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>',
-    users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
-    percent:'<line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>',
-    target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
-    medal:'<circle cx="12" cy="8" r="6"/><path d="M8.21 13.89 7 22l5-3 5 3-1.21-8.11"/>',
-    clock:'<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>',
-    xc:'<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>',
-    bolt:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>'};
-  // ----- KPIs (5) -----
-  const fk=(ic,bg,col,l,v,f)=>`<div class="fkpi"><div class="fkico" style="background:${bg};color:${col}">${svgico(IC[ic])}</div><div class="lbl">${l}</div><div class="big tnum">${v}</div><div class="foot">${f}</div></div>`;
-  const kpis=[
-    fk("brief","#004FC2","#fff","Negócios recebidos",int(cReceb),deltaTxt),
-    fk("phone","var(--brand-soft)","var(--brand)","Tentativas de ligação",int(tent.length),`${Math.round(tent.length/(cReceb||1)*100)}% dos recebidos`),
-    fk("doc","#f0b429","#fff","Propostas comerciais",int(props.length),`<span class="fval">${brl0(valProp)}</span>`),
-    fk("trophy","#1f9d6b","#fff","Vendas",int(vendas.length),`<span class="fval">${brl0(valVendas)}</span>`),
-    fk("dollar","#17356b","#fff","Conversão proposta → venda",pctBR(convPV),`${int(vendas.length)} vendas de ${int(props.length)} propostas`),
-  ].join("");
-  // ----- funil trapézio -----
-  const fsteps=[
-    {l:"Negócios recebidos",n:cReceb,c:"#004FC2"},
-    {l:"Propostas comerciais",n:props.length,c:"#f0b429"},
-    {l:"Vendas",n:vendas.length,c:"#1f9d6b"},
-  ];
-  const funilSVG=funTrapezoid(fsteps);
-  // ----- performance por vendedora -----
-  const vlist=(F.ordem||Object.keys(F.vend)).filter(k=>F.vend[k]);
-  const perV=vlist.map(vd=>{
-    const dv=F.deals.filter(d=>d.vd===vd&&(!FUN.cat||d.cat===FUN.cat)&&(!FUN.src||d.src===FUN.src));
-    const cv=F.calls.filter(c=>c.vd===vd);
-    const rb=dv.filter(d=>funInP(d.dtc,from,to)),
-          vn=dv.filter(d=>d.won&&funInP(wdt(d),from,to)),
-          te=cv.filter(c=>funInP(c.dt,from,to)),at=cv.filter(c=>funInP(c.dt,from,to)&&c.ok),
-          pr=props.filter(p=>p.vd===vd);
-    return {vd,nome:F.vend[vd],nivel:F.niveis[vd]||"",rb:rb.length,te:te.length,at:at.length,
-            tc:te.length?at.length/te.length*100:0,pr:pr.length,
-            pval:pr.reduce((a,p)=>a+(p.valor||0),0),
-            vn:vn.length,vval:vn.reduce((a,d)=>a+(d.o||0),0),conv:rb.length?vn.length/rb.length*100:0};
-  });
-  // ----- insights -----
-  const ins=[{ic:'trend',bg:'var(--brand-soft)',col:'var(--brand)',t:`Conversão negócio → venda: ${pctBR(convGeral)}`,s:`${int(vendas.length)} vendas de ${int(cReceb)} negócios recebidos.`}];
-  if(tent.length<10) ins.push({ic:'phone',bg:'var(--brand-soft)',col:'var(--brand)',t:'Baixo volume de ligações no período',s:`Apenas ${int(tent.length)} tentativa(s) de ligação registrada(s) (${Math.round(tent.length/(cReceb||1)*100)}% dos recebidos).`});
-  const totalPr=perV.reduce((a,v)=>a+v.pr,0), bestP=perV.slice().sort((a,b)=>b.pr-a.pr)[0];
-  if(bestP&&bestP.pr>0) ins.push({ic:'medal',bg:'#fdf0d0',col:'#c98a00',t:'Melhor desempenho em propostas',s:`${bestP.nome} concentrou ${Math.round(bestP.pr/totalPr*100)}% das propostas comerciais do período.`});
-  const bestC=perV.slice().filter(v=>v.rb>=3).sort((a,b)=>b.conv-a.conv)[0];
-  if(bestC&&ins.length<4) ins.push({ic:'target',bg:'var(--good-soft)',col:'var(--good)',t:'Melhor taxa de conversão',s:`${bestC.nome} converte ${pctBR(bestC.conv)} dos negócios em venda.`});
-  const insHTML=ins.slice(0,4).map(x=>`<div class="insrow"><div class="insico" style="background:${x.bg};color:${x.col}">${svgico(IC[x.ic])}</div><div class="instxt"><b>${x.t}</b><span>${x.s}</span></div></div>`).join("");
-  // ----- resumo (melhores do período) -----
-  const winBy=k=>perV.slice().sort((a,b)=>b[k]-a[k])[0]||{nome:"—"};
-  const wP=winBy('pr'), wV=winBy('vn'), wC=perV.slice().filter(v=>v.rb>=1).sort((a,b)=>b.conv-a.conv)[0]||{nome:"—",conv:0};
-  const chip=(ic,bg,col,lbl,val)=>`<div class="perfchip"><div class="pcico" style="background:${bg};color:${col}">${svgico(IC[ic])}</div><div><div class="pclbl">${lbl}</div><div class="pcval">${val}</div></div></div>`;
-  const perfChips=chip('doc','var(--brand-soft)','var(--brand)','Maior volume de propostas',`${wP.nome} (${int(wP.pr)})`)+
-    chip('trophy','var(--good-soft)','var(--good)','Mais vendas',`${wV.nome} (${int(wV.vn)})`)+
-    chip('trend','#efe9fb','#7c5cd6','Melhor conversão',`${wC.nome} (${pctBR(wC.conv)})`);
-  // ----- ranking da equipe (tabela, N vendedoras) -----
-  const rk=perV.slice().sort((a,b)=>b.vn-a.vn||b.rb-a.rb);
-  const cols=[['brief','Negócios','rb'],['phone','Tentativas','te'],['doc','Propostas','pr'],['trophy','Vendas','vn'],['trend','Conversão','conv%']];
-  const rankTable=`<table class="rank"><thead><tr><th>Vendedor(a)</th>${cols.map(c=>`<th class="r">${c[1]}</th>`).join("")}</tr></thead><tbody>`+
-    rk.map(v=>`<tr><td><span class="pvav">${(v.nome||'?')[0]}</span>${v.nome}</td>`+
-      cols.map(c=>{const pct=c[2].endsWith('%');const key=pct?c[2].slice(0,-1):c[2];const val=pct?v[key].toFixed(1).replace('.',',')+'%':int(v[key]);
-        return `<td class="r tnum${c[2]==='vn'?' hi':''}">${val}</td>`;}).join("")+`</tr>`).join("")+`</tbody></table>`;
-  // ----- propostas por etapa (BioHub / Bitrix) -----
-  const GRUP=F.gruposEtapa||{};
-  const GORD=['em_andamento','ganho','obra_futura','renutrida','perdido'].filter(g=>GRUP[g]);
-  const gcol=g=>(GRUP[g]||{}).cor||'var(--muted)';
-  const glbl=g=>(GRUP[g]||{}).label||g;
-  const gico={em_andamento:'clock',ganho:'trophy',obra_futura:'brief',renutrida:'target',perdido:'xc'};
-  const perS={}; vlist.forEach(vd=>perS[vd]=Object.fromEntries([...GORD.map(g=>[g,0]),['val',0],['tot',0]]));
-  const totG=Object.fromEntries(GORD.map(g=>[g,0])), valG=Object.fromEntries(GORD.map(g=>[g,0]));
-  props.forEach(p=>{const g=p.grp; if(perS[p.vd]&&g in totG){perS[p.vd][g]++;perS[p.vd].val+=p.valor||0;perS[p.vd].tot++;totG[g]++;valG[g]+=p.valor||0;}});
-  const totAll=props.length||1;
-  const statCards=GORD.map(g=>`<div class="statcard" style="background:${gcol(g)}14"><div class="scico" style="background:${gcol(g)}">${svgico(IC[gico[g]||'brief'])}</div><div class="sclbl" style="color:${gcol(g)}">${glbl(g)}</div><div class="scbig">${int(totG[g])}</div><div class="scsub">${Math.round(totG[g]/totAll*100)}% do total</div><div class="scval" style="color:${gcol(g)}">${brl0(valG[g])}</div></div>`).join("");
-  const leg=GORD.map(g=>`<span class="leg"><span class="ldot" style="background:${gcol(g)}"></span>${glbl(g)}</span>`).join("");
-  const stk=o=>{const t=GORD.reduce((a,g)=>a+o[g],0)||1;return `<div class="stkbar">`+GORD.map(g=>o[g]?`<div class="stkseg" style="width:${o[g]/t*100}%;background:${gcol(g)}" title="${glbl(g)}: ${o[g]}">${o[g]}</div>`:"").join("")+`</div>`;};
-  const propRows=vlist.map(vd=>{const o=perS[vd];
-    return `<div class="propvrow"><div class="pvname"><span class="pvav">${(F.vend[vd]||"?")[0]}</span>${F.vend[vd]}</div>${stk(o)}<div class="r tnum">${int(o.tot)}</div><div class="r tnum">${brl0(o.val)}</div></div>`;}).join("");
-  const totRow=`<div class="propvrow tot"><div class="pvname"><b>Total geral</b></div>${stk(totG)}<div class="r tnum"><b>${int(props.length)}</b></div><div class="r tnum"><b>${brl0(valProp)}</b></div></div>`;
-  const leitura=`<b>${wP.nome}</b> lidera em volume de propostas`+(wC.nome!=="—"?`, enquanto <b>${wC.nome}</b> tem a melhor conversão${wV.nome===wC.nome?" e mais vendas":""}`:"")+` no período.`;
-  // ----- origem dos negócios (recebidos no período, por fonte) -----
-  const orig={}; receb.forEach(d=>{const s=d.src||"Sem fonte";orig[s]=(orig[s]||0)+1;});
-  const origArr=Object.entries(orig).sort((a,b)=>b[1]-a[1]);
-  const omax=Math.max(...origArr.map(x=>x[1]),1);
-  const origHTML=origArr.length?origArr.map(([k,n])=>`<div class="orow"><span class="olbl" title="${k}">${k}</span><div class="otrack"><div class="ofill" style="width:${Math.max(n/omax*100,2)}%"></div></div><span class="oval tnum">${int(n)}<span class="opct">${Math.round(n/(cReceb||1)*100)}%</span></span></div>`).join(""):'<div class="empty" style="color:var(--muted);padding:8px 0">Sem negócios no recorte.</div>';
-  // ----- monta -----
-  document.getElementById("fun-body").innerHTML=`
-    <div class="kpis" style="grid-template-columns:repeat(5,1fr)">${kpis}</div>
-    <div class="gfun">
-      <div class="card"><div class="cardh">Funil comercial</div>${funilSVG}
-        <div class="mkt-perdas"><span class="mkt-chip" style="background:var(--brand-soft);color:var(--brand)">Proposta → venda: <b>${pctBR(convPV)}</b></span><span class="mkt-chip" style="background:var(--good-soft);color:var(--good)">Negócio → venda: <b>${pctBR(convGeral)}</b></span></div></div>
-      <div class="card"><div class="cardh">Insights do período</div><div class="insights">${insHTML}</div></div>
-    </div>
-    <div class="eyebrow">Performance da equipe</div>
-    <div class="card" style="overflow-x:auto">
-      <div class="perfhead">
-        <div class="perftitle"><div class="phico">${svgico(IC.users)}</div><div><div class="pht">Performance da equipe</div><div class="phs">Ranking de resultados no período · ordenado por vendas</div></div></div>
-        <div class="perfchips">${perfChips}</div>
-      </div>
-      ${rankTable}
-    </div>
-    <div class="eyebrow">Origem dos negócios</div>
-    <div class="card"><div class="origem">${origHTML}</div>
-      <div class="fnl-foot">Negócios recebidos no período por fonte de origem (Bitrix).</div></div>
-    <div class="eyebrow">Propostas comerciais por etapa · Bitrix</div>
-    <div class="card" style="overflow-x:auto">
-      <div class="perfhead"><div class="perftitle"><div class="phico">${svgico(IC.doc)}</div><div><div class="pht">Propostas comerciais por etapa</div><div class="phs">Distribuição e valor das propostas no período · fonte BioHub/Bitrix</div></div></div></div>
-      <div class="statcards" style="grid-template-columns:repeat(${GORD.length||1},1fr)">${statCards}</div>
-      <div class="pdhead"><span class="propleg" style="grid-column:1/3">Distribuição por vendedora ${leg}</span><span class="r">Propostas</span><span class="r">Valor total</span></div>
-      ${propRows}${totRow}
-      <div class="leitura">${svgico(IC.bolt)}<div><b>Leitura rápida:</b> ${leitura}</div></div>
-    </div>`;
-}
-const funDateRow=()=>document.getElementById("fun-daterow");
-document.getElementById("fun-per").onchange=e=>{const v=e.target.value;
-  funDateRow().style.display=(v==="custom")?"flex":"none";
-  if(v==="custom") renderFunil(); else funPreset(v);};
-function funCustom(){document.getElementById("fun-per").value="custom";funDateRow().style.display="flex";}
-document.getElementById("fun-from").onchange=e=>{FUN.from=e.target.value;funCustom();renderFunil();};
-document.getElementById("fun-to").onchange=e=>{FUN.to=e.target.value;funCustom();renderFunil();};
-document.getElementById("fun-vd").onchange=e=>{FUN.vd=e.target.value;renderFunil();};
-document.getElementById("fun-cat").onchange=e=>{FUN.cat=e.target.value;renderFunil();};
-document.getElementById("fun-src").onchange=e=>{FUN.src=e.target.value;renderFunil();};
-document.getElementById("fun-base").onchange=e=>{FUN.base=e.target.value;renderFunil();};
-document.getElementById("fun-reset").onclick=()=>{FUN.vd="";FUN.cat="";FUN.src="";FUN.base="alt";["fun-vd","fun-cat","fun-src"].forEach(id=>document.getElementById(id).value="");document.getElementById("fun-base").value="alt";document.getElementById("fun-per").value="mes";funDateRow().style.display="none";funPreset("mes");};
-renderTiny();
-refresh();
 // ================= Tráfego Pago (Meta Ads + Google Ads) =================
 // Dados vêm de /trafego.json (atualizado de hora em hora pelo servidor), separado do resto do BI.
 let TP=null, TP_EM=0;
@@ -1550,6 +981,7 @@ function tpRange(f,hoje){
   if(f.p==="ontem"){const o=tpAdd(hoje,-1);return {ini:o,fim:o,pini:tpAdd(hoje,-2),pfim:tpAdd(hoje,-2),key:"ontem"};}
   if(f.p==="7d") return {ini:tpAdd(hoje,-6),fim:hoje,pini:tpAdd(hoje,-13),pfim:tpAdd(hoje,-7),key:"7d"};
   if(f.p==="30d") return {ini:tpAdd(hoje,-29),fim:hoje,pini:tpAdd(hoje,-59),pfim:tpAdd(hoje,-30),key:"30d"};
+  if(f.p==="mes"){const ini=hoje.slice(0,8)+"01",pf=tpAdd(ini,-1),pd=pf.slice(0,8)+hoje.slice(8,10);return {ini,fim:hoje,pini:pf.slice(0,8)+"01",pfim:pd<pf?pd:pf,key:null};}
   if(f.p==="mesant"){const fim=tpAdd(hoje.slice(0,8)+"01",-1),ini=fim.slice(0,8)+"01",pfim=tpAdd(ini,-1);return {ini,fim,pini:pfim.slice(0,8)+"01",pfim,key:null};}
   let ini=f.ini||tpAdd(hoje,-29), fim=f.fim||hoje; if(ini>fim)[ini,fim]=[fim,ini];
   const n=tpDays(ini,fim); return {ini,fim,pini:tpAdd(ini,-n),pfim:tpAdd(ini,-1),key:null};
@@ -1981,4 +1413,134 @@ function renderTpGoogleDyn(){
     tpInfo("Conversões arredondadas: o Google às vezes divide uma conversão entre campanhas (atribuição baseada em dados).");
   TP_NOCMP=false;
 }
+// ================= B.I Comercial (Bitrix) =================
+// Dados de /comercial.json (de hora em hora). Cada número usa a data do próprio evento:
+// negócio = criação · proposta = última proposta do card · venda = entrada em Ganho.
+// Conversões usam a "safra": negócios criados no período e o que aconteceu com eles até hoje.
+let CM=null, CM_EM=0;
+const CMF={p:"mes",ini:"",fim:"",v:"",c:"",vp:"mes",vini:"",vfim:""};
+const CM_G=[["negociacao","Em negociação","#2563eb"],["semretorno","Sem retorno","#f59e0b"],["renutricao","Renutrição","#7c3aed"],["ganho","Ganhos","#16a34a"],["perdido","Perdidos","#dc2626"],["outras","Outras etapas abertas","#9aa7bd"]];
+const CM_PER=[["hoje","Hoje"],["ontem","Ontem"],["7d","7 dias"],["mes","Este mês"],["mesant","Mês anterior"],["custom","Personalizado"]];
+function abrirComercial(){
+  const box=document.getElementById("view-comercial");
+  if(CM && Date.now()-CM_EM<10*60e3) return;
+  fetch("comercial.json",{cache:"no-store"}).then(r=>{if(r.status===503)throw new Error("gerando");if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
+  .then(d=>{CM=d;CM_EM=Date.now();renderComercial();}).catch(e=>{
+    box.innerHTML=`<div class="tp-loading">${e.message==="gerando"?"Gerando os dados do Comercial pela primeira vez… a página tenta de novo em 30 segundos.":"Não consegui carregar o Comercial ("+tpEsc(e.message)+")."}</div>`;
+    if(e.message==="gerando") setTimeout(abrirComercial,30000);
+  });
+}
+const cmHoras=h=>!tpOk(h)?"—":h<1?Math.round(h*60)+" min":h<48?tpN1(h)+" h":tpN1(h/24)+" dias";
+const cmMed=a=>{const s=a.filter(tpOk).sort((x,y)=>x-y);if(!s.length)return null;const m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2;};
+const cmIn=(d,r)=>d&&d>=r[0]&&d<=r[1];
+function cmSeg(id,p,opts){return `<span class="tp-seg2" id="${id}">${opts.map(([k,l])=>`<button data-cmp="${k}" class="${p===k?"on":""}">${l}</button>`).join("")}</span>`;}
+function cmDates(pre,show,ini,fim){return `<span class="tp-dates" ${show?"":"hidden"}><label class="tp-date">${tpSvg("cal")}<input type="date" id="${pre}-ini" value="${ini||""}"></label><span class="drsep">→</span><label class="tp-date">${tpSvg("cal")}<input type="date" id="${pre}-fim" value="${fim||""}"></label></span>`;}
+function cmRange(p,ini,fim){return tpRange({p,ini,fim},CM.hoje);}
+
+function renderComercial(){
+  const box=document.getElementById("view-comercial");
+  box.innerHTML=`
+  <div class="tp-hero" style="margin-top:6px"><div class="tp-logo geral">${tpSvg("brief",'style="color:#fff"')}</div>
+    <div><h2>Comercial</h2><div class="tp-sub">Bitrix · Vendas Internas e LightWall · atualiza de hora em hora</div></div>
+    <span class="tp-status ok">● Atualizado ${tpHora(CM.gerado_em)}</span></div>
+  ${tpHead("users","Resultados",'<span id="cm-per"></span>',`<div class="tp-filters">
+      <span class="fl">Período</span>${cmSeg("cm-seg",CMF.p,CM_PER)}${cmDates("cm",CMF.p==="custom",CMF.ini,CMF.fim)}
+      <span class="fl">Vendedor</span><select class="tp-sel" id="cm-v"><option value="">Todos</option>${Object.entries(CM.vend).map(([k,n])=>`<option value="${k}" ${CMF.v===k?"selected":""}>${n}</option>`).join("")}</select>
+      <span class="fl">Pipeline</span><select class="tp-sel" id="cm-c"><option value="">Todos</option>${Object.entries(CM.pipes).map(([k,n])=>`<option value="${k}" ${CMF.c===k?"selected":""}>${n}</option>`).join("")}</select>
+    </div><button class="tp-ref" id="cm-ref" title="Recarregar os dados">${tpSvg("refresh")}</button>`,TPC.blue)}
+  <div id="cm-dyn"></div>
+  ${tpHead("users","Desempenho por vendedor",'Não muda com o filtro de vendedor · <span id="cm-vper"></span>',`<div class="tp-filters"><span class="fl">Período</span>${cmSeg("cm-vseg",CMF.vp,CM_PER)}${cmDates("cm-v",CMF.vp==="custom",CMF.vini,CMF.vfim)}</div>`,TPC.purple)}
+  <div id="cm-vend"></div>`;
+  const seg=(id,key,ik,fk,fn)=>{
+    document.getElementById(id).onclick=e=>{const b=e.target.closest("button");if(!b)return;CMF[key]=b.dataset.cmp;
+      if(CMF[key]==="custom"&&!CMF[ik]){CMF[ik]=CM.hoje.slice(0,8)+"01";CMF[fk]=CM.hoje;}renderComercial();};
+  };
+  seg("cm-seg","p","ini","fim"); seg("cm-vseg","vp","vini","vfim");
+  [["cm-ini","ini"],["cm-fim","fim"],["cm-v-ini","vini"],["cm-v-fim","vfim"]].forEach(([id,k])=>{const i=document.getElementById(id);if(i)i.onchange=e=>{CMF[k]=e.target.value;renderComercial();};});
+  document.getElementById("cm-v").onchange=e=>{CMF.v=e.target.value;renderCmDyn();};
+  document.getElementById("cm-c").onchange=e=>{CMF.c=e.target.value;renderCmDyn();renderCmVend();};
+  document.getElementById("cm-ref").onclick=()=>{CM_EM=0;abrirComercial();};
+  renderCmDyn(); renderCmVend();
+}
+
+function renderCmDyn(){
+  const r=cmRange(CMF.p,CMF.ini,CMF.fim), R=[r.ini,r.fim], P=[r.pini,r.pfim], el=document.getElementById("cm-dyn");
+  TP_NOCMP=CMF.p==="hoje";
+  document.getElementById("cm-per").textContent=tpPerTxt({p:CMF.p},r);
+  const D=CM.deals.filter(x=>(!CMF.v||x.v===CMF.v)&&(!CMF.c||x.c===CMF.c));
+  const neg=D.filter(x=>cmIn(x.dc,R)), negP=D.filter(x=>cmIn(x.dc,P));
+  const pro=D.filter(x=>cmIn(x.pd,R)), proP=D.filter(x=>cmIn(x.pd,P));
+  const ven=D.filter(x=>cmIn(x.won,R)), venP=D.filter(x=>cmIn(x.won,P));
+  const sum=(a,k)=>a.reduce((s,x)=>s+(x[k]||0),0);
+  // mini-gráficos por dia
+  const cd=tpChartDays(r), conta=(a,k)=>{const o={};a.forEach(x=>{if(x[k])o[x[k]]=(o[x[k]]||0)+1;});return cd.days.map(d=>o[d]||0);};
+  // conversões (safra: criados no período)
+  const conv=(a)=>{const n=a.length,p=a.filter(x=>x.np>0).length,pw=a.filter(x=>x.np>0&&x.won).length,w=a.filter(x=>x.won).length;return {n,p,pw,w,np:tpDiv(p*100,n),pv:tpDiv(pw*100,p),nv:tpDiv(w*100,n)};};
+  const C=conv(neg), Cp=conv(negP);
+  const big=(o)=>`<div class="tp-big${o.hl?" hl":""}"><div class="ic ${o.ic2||""}">${tpSvg(o.ic)}</div>
+    <div class="bd"><div class="lb">${o.l}</div><div class="vl">${o.v}</div><div class="sub">${o.sub}</div><div class="cmp">${TP_NOCMP?"<span>dia em andamento</span>":tpDelta(o.cur,o.prev)+"<span>vs. período anterior</span>"}</div></div><div class="spark">${o.spark}</div></div>`;
+  const ring=(t,p,a,num,lbl,b,cur,prev,c)=>`<div class="tp-qc"><h4>${t}</h4><div class="d">${a}</div>
+    <div class="tp-donut">${tpDonut(p||0,c,"conversão")}<div><div class="bn">${tpN(num)} ${TP_NOCMP?"":tpDelta(cur,prev)}</div><div class="bl">${lbl}</div><div class="bs">${b}</div></div></div></div>`;
+  // situação atual dos negócios do período
+  const sit=CM_G.map(([g,l,c])=>{const a=neg.filter(x=>x.g===g);return {g,l,c,n:a.length,o:sum(a,"o")};});
+  const outrasNomes=[...new Set(neg.filter(x=>x.g==="outras").map(x=>((CM.etapas[x.c]||[]).find(s=>s.id===x.st)||{}).nome).filter(Boolean))];
+  // motivos de perda (perdidos no período)
+  const per=D.filter(x=>cmIn(x.lost,R)), mot={};per.forEach(x=>{const k=x.mot||"Sem motivo informado";mot[k]=(mot[k]||0)+1;});
+  const motArr=Object.entries(mot).sort((a,b)=>b[1]-a[1]).map(([k,n],i)=>({label:k,n,color:k==="Sem motivo informado"||k==="Outro"?"#9aa7bd":["#dc2626","#ef4444","#f87171","#fca5a5","#fecaca","#fee2e2"][Math.min(i,5)]}));
+  // origem
+  const src={};neg.forEach(x=>{const o=src[x.src]=src[x.src]||{n:0,w:0,o:0};o.n++;if(x.won){o.w++;o.o+=x.o;}});
+  const srcArr=Object.entries(src).sort((a,b)=>b[1].n-a[1].n), srcMax=Math.max(1,...srcArr.map(x=>x[1].n));
+  const SRC_COR=["#2563eb","#16a34a","#f59e0b","#7c3aed","#e11d48","#0891b2","#0d9488","#ea580c","#64748b"];
+  el.innerHTML=`
+  <div class="tp-bigs">
+    ${big({hl:1,ic:"users",l:"Negócios",v:tpN(neg.length),sub:`${tpBRL(sum(neg,"o"),0)} em valor`,cur:neg.length,prev:negP.length,spark:tpSpark(conta(D,"dc"),"rgba(255,255,255,.75)",true)})}
+    ${big({ic:"form",ic2:"ic-blue",l:"Propostas feitas",v:tpN(pro.length),sub:`${tpBRL(sum(pro,"pv"),0)} · só a última proposta de cada card`,cur:pro.length,prev:proP.length,spark:tpSpark(conta(D,"pd"),"#2563eb")})}
+    ${big({ic:"check",ic2:"ic-green",l:"Vendas feitas",v:tpN(ven.length),sub:`${tpBRL(sum(ven,"o"),0)} · ticket médio ${tpBRL(tpDiv(sum(ven,"o"),ven.length),0)}`,cur:ven.length,prev:venP.length,spark:tpSpark(conta(D,"won"),"#16a34a")})}
+  </div>
+  ${tpHead("trend","Taxas de conversão","Dos negócios criados no período, o que aconteceu com eles até hoje","",TPC.green)}
+  <div class="cm-g cm-g3">
+    ${ring("Negócio → Proposta",C.np,"Negócios do período que receberam proposta",C.p,"com proposta",`de ${tpN(C.n)} negócios · ${tpPct(C.np,1)}`,C.np,Cp.np,"#2563eb")}
+    ${ring("Proposta → Venda",C.pv,"Negócios com proposta que viraram venda",C.pw,"vendas",`de ${tpN(C.p)} com proposta · ${tpPct(C.pv,1)}`,C.pv,Cp.pv,"#7c3aed")}
+    ${ring("Negócio → Venda",C.nv,"Negócios do período que viraram venda",C.w,"vendas",`de ${tpN(C.n)} negócios · ${tpPct(C.nv,1)}`,C.nv,Cp.nv,"#16a34a")}
+  </div>
+  <div class="tp-panel" style="margin-top:30px">${tpHead("bars","O que está sendo negociado",`Situação atual dos ${tpN(neg.length)} negócios criados no período`,"",TPC.blue)}
+    <div class="tp-stack" style="height:26px">${sit.filter(s=>s.n).map(s=>`<i title="${s.l}: ${s.n}" style="width:${s.n/Math.max(1,neg.length)*100}%;background:${s.c}"></i>`).join("")}</div>
+    <div class="cm-sit">${sit.map(s=>`<div style="--c:${s.c}"><div class="t"><i></i>${s.l}</div><div class="n">${tpN(s.n)}</div><div class="s">${tpPct(neg.length?s.n/neg.length*100:0)} · ${tpBRL(s.o,0)}</div></div>`).join("")}</div>
+    ${outrasNomes.length?tpInfo(`<b>Outras etapas abertas</b>: ${outrasNomes.map(tpEsc).join(", ")}.`):""}</div>
+  <div class="cm-g cm-g2" style="margin-top:16px">
+    <div class="tp-qc"><h4>Motivos de perda</h4><div class="d">${tpN(per.length)} negócios perdidos no período · ranking dos motivos</div>
+      ${per.length?tpRows(motArr)+((mot["Outro"]||0)+(mot["Sem motivo informado"]||0)>per.length/2?tpInfo(`<b>${tpPct(((mot["Outro"]||0)+(mot["Sem motivo informado"]||0))/per.length*100)}</b> das perdas estão como “Outro” ou sem motivo. Vale orientar o time a escolher o motivo certo para a análise ficar útil.`):""):'<div class="tp-empty">Nenhum negócio perdido no período.</div>'}</div>
+    <div class="tp-qc"><h4>Origem dos negócios</h4><div class="d">Campo “Fonte” dos negócios criados no período · e quantos viraram venda</div>
+      ${srcArr.length?`<div class="cm-src">${srcArr.map(([k,o],i)=>`<div class="r"><span class="nm"><i style="background:${SRC_COR[i%SRC_COR.length]}"></i>${tpEsc(k)}</span><span class="rt"><i style="width:${o.n/srcMax*100}%;background:${SRC_COR[i%SRC_COR.length]}"></i></span><span class="q">${tpN(o.n)}<small>${tpPct(o.n/neg.length*100)}</small></span><span class="w" title="vendas e conversão">${o.w?`${tpN(o.w)} venda${o.w>1?"s":""}<small>${tpPct(o.w/o.n*100,1)}</small>`:'<small>sem venda</small>'}</span></div>`).join("")}</div>`:'<div class="tp-empty">Nenhum negócio no período.</div>'}</div>
+  </div>`;
+  TP_NOCMP=false;
+}
+
+function renderCmVend(){
+  const r=cmRange(CMF.vp,CMF.vini,CMF.vfim), R=[r.ini,r.fim], el=document.getElementById("cm-vend");
+  document.getElementById("cm-vper").textContent=tpPerTxt({p:CMF.vp},r);
+  const D=CM.deals.filter(x=>!CMF.c||x.c===CMF.c);
+  const rows=Object.entries(CM.vend).map(([v,nome],i)=>{
+    const a=D.filter(x=>x.v===v), neg=a.filter(x=>cmIn(x.dc,R)), pro=a.filter(x=>cmIn(x.pd,R)), ven=a.filter(x=>cmIn(x.won,R));
+    const lg=CM.ligacoes.filter(x=>x.v===v&&cmIn(x.d,R)), n=lg.reduce((s,x)=>s+x.n,0), ok=lg.reduce((s,x)=>s+x.ok,0);
+    return {v,nome,cor:TP_DOTS[i%TP_DOTS.length],neg:neg.length,negO:neg.reduce((s,x)=>s+x.o,0),pro:pro.length,proO:pro.reduce((s,x)=>s+x.pv,0),
+      ven:ven.length,venO:ven.reduce((s,x)=>s+x.o,0),conv:tpDiv(neg.filter(x=>x.won).length*100,neg.length),lig:n,ok,
+      fc:cmMed(neg.map(x=>x.fc)),fcN:neg.filter(x=>tpOk(x.fc)).length,dias:cmMed(ven.map(x=>x.dias))};
+  });
+  const mx=k=>Math.max(1,...rows.map(x=>x[k]||0));
+  const cell=(x,k,txt,sub,cor)=>`<td><div class="cm-cell"><b>${txt}</b>${sub?`<small>${sub}</small>`:""}<span class="cm-bar"><i style="width:${(x[k]||0)/mx(k)*100}%;background:${cor||x.cor}"></i></span></div></td>`;
+  const best=(k,low)=>{const ok=rows.filter(x=>tpOk(x[k])&&(k!=="conv"||x.neg>=5));return ok.length?ok.reduce((a,b)=>(low?b[k]<a[k]:b[k]>a[k])?b:a):null;};
+  const bV=best("venO"), bC=best("conv"), bF=best("fc",true);
+  el.innerHTML=`<div class="tp-panel"><div class="tp-tblw"><table class="tp-tbl2 cm-vt"><thead><tr><th>Vendedor</th><th>Negócios</th><th>Propostas</th><th>Vendas</th><th>Conversão</th><th>Ligações</th><th>1º contato</th><th>Fechamento</th></tr></thead><tbody>
+    ${rows.map(x=>{const tg=[x===bV&&x.venO?"Mais vendas (R$)":"",x===bC?"Melhor conversão":"",x===bF?"Contato mais rápido":""].filter(Boolean);
+      return `<tr><td><div class="cn"><i style="background:${x.cor}"></i><div>${x.nome}${tg.length?`<div class="tags">${tg.map(t=>`<span>${t}</span>`).join("")}</div>`:""}</div></div></td>
+      ${cell(x,"neg",tpN(x.neg),tpBRL(x.negO,0))}${cell(x,"pro",tpN(x.pro),tpBRL(x.proO,0))}${cell(x,"venO",tpN(x.ven),tpBRL(x.venO,0),"#16a34a")}
+      ${cell(x,"conv",tpPct(x.conv,1),"negócio → venda","#7c3aed")}${cell(x,"lig",tpN(x.lig),x.lig?tpPct(x.ok/x.lig*100)+" atendidas":"","#0891b2")}
+      <td><div class="cm-cell"><b>${cmHoras(x.fc)}</b><small>${x.fcN?`mediana · ${tpN(x.fcN)} com ligação`:"sem ligação no card"}</small></div></td>
+      <td><div class="cm-cell"><b>${tpOk(x.dias)?tpN(x.dias)+(x.dias===1?" dia":" dias"):"—"}</b><small>${x.ven?"mediana da criação ao ganho":"sem vendas"}</small></div></td></tr>`;}).join("")}
+    </tbody></table></div>
+    ${tpInfo(`<b>Conversão</b>: negócios criados no período que já viraram venda. <b>1º contato</b>: tempo entre a criação do card e a primeira ligação feita para ele (contatos só pelo WhatsApp não ficam registrados no Bitrix). <b>Fechamento</b>: dias entre a criação e o ganho, das vendas do período. <b>Ligações</b>: telefonia do Bitrix, feitas no período.`)}</div>`;
+}
+
+setView("comercial");
 </script>
