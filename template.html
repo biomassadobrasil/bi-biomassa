@@ -643,6 +643,16 @@
   .tp-ai2 li b{color:var(--ink)}
   :is(#view-trafego,#view-comercial) .tp-camp{border-radius:20px}
   /* ===== Comercial ===== */
+  .tp-big.cm-big .lb{font-size:18px;font-weight:800;margin-top:2px}
+  .tp-big.yl{background:radial-gradient(120% 140% at 100% 0%,#fcd34d 0%,transparent 55%),linear-gradient(150deg,#f59e0b,#b45309);border-color:transparent;color:#fff}
+  .tp-big.gr{background:radial-gradient(120% 140% at 100% 0%,#4ade80 0%,transparent 55%),linear-gradient(150deg,#16a34a,#14532d);border-color:transparent;color:#fff}
+  .tp-big.yl .lb,.tp-big.yl .vl,.tp-big.gr .lb,.tp-big.gr .vl{color:#fff}
+  .tp-big.yl .cmp,.tp-big.yl .sub,.tp-big.gr .cmp,.tp-big.gr .sub{color:rgba(255,255,255,.88)}
+  .tp-big.yl .sub b,.tp-big.gr .sub b{color:#fff}
+  .tp-big.yl .ic,.tp-big.gr .ic{background:rgba(255,255,255,.18);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
+  .tp-big.yl .tp-delta.up,.tp-big.gr .tp-delta.up{background:rgba(255,255,255,.95);color:#15803d}
+  .tp-big.yl .tp-delta.dn,.tp-big.gr .tp-delta.dn{background:rgba(255,255,255,.95);color:#b91c1c}
+  .tp-big.yl .tp-delta.eq,.tp-big.gr .tp-delta.eq{background:rgba(255,255,255,.25);color:#fff}
   .cm-ffs{display:flex;flex-direction:column}
   .cm-ff{display:grid;grid-template-columns:minmax(150px,210px) minmax(0,1fr) 108px 108px 120px;gap:18px;align-items:center;padding:12px 4px}
   .cm-ff+.cm-ff{border-top:1px solid var(--line2)}
@@ -1596,7 +1606,7 @@ function renderCmDyn(){
   // conversões (safra: criados no período)
   const conv=(a)=>{const n=a.length,p=a.filter(x=>x.np>0).length,pw=a.filter(x=>x.np>0&&x.won).length,w=a.filter(x=>x.won).length;return {n,p,pw,w,np:tpDiv(p*100,n),pv:tpDiv(pw*100,p),nv:tpDiv(w*100,n)};};
   const C=conv(neg), Cp=conv(negP);
-  const big=(o)=>`<div class="tp-big${o.hl?" hl":""}"><div class="ic ${o.ic2||""}">${tpSvg(o.ic)}</div>
+  const big=(o)=>`<div class="tp-big cm-big${o.hl?" hl":""}${o.cls?" "+o.cls:""}"><div class="ic ${o.ic2||""}">${tpSvg(o.ic)}</div>
     <div class="bd"><div class="lb">${o.l}</div><div class="vl">${o.v}</div><div class="sub">${o.sub}</div><div class="cmp">${TP_NOCMP?"<span>dia em andamento</span>":tpDelta(o.cur,o.prev)+"<span>valor vs. período anterior</span>"}</div></div><div class="spark">${o.spark}</div></div>`;
   const ring=(t,p,a,num,lbl,b,cur,prev,c)=>`<div class="tp-qc"><h4>${t}</h4><div class="d">${a}</div>
     <div class="tp-donut">${tpDonut(p||0,c,"conversão")}<div><div class="bn">${tpN(num)} ${TP_NOCMP?"":tpDelta(cur,prev)}</div><div class="bl">${lbl}</div><div class="bs">${b}</div></div></div></div>`;
@@ -1617,19 +1627,7 @@ function renderCmDyn(){
   const srcArr=Object.entries(src).sort((a,b)=>b[1].n-a[1].n), srcMax=Math.max(1,...srcArr.map(x=>x[1].n));
   const SRC_COR=["#2563eb","#16a34a","#f59e0b","#7c3aed","#e11d48","#0891b2","#0d9488","#ea580c","#64748b"];
   el.innerHTML=`
-  <div class="tp-bigs">
-    ${big({hl:1,ic:"users",l:"Negócios",v:tpBRL(sum(neg,"o"),0),sub:`<b>${tpN(neg.length)}</b> negócio${neg.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(neg.length,negP.length)}`,cur:sum(neg,"o"),prev:sum(negP,"o"),spark:tpSpark(conta(D,"dc"),"rgba(255,255,255,.75)",true)})}
-    ${big({ic:"form",ic2:"ic-blue",l:"Propostas feitas",v:tpBRL(sum(pro,"pv"),0),sub:`<b>${tpN(pro.length)}</b> proposta${pro.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(pro.length,proP.length)} · só a última de cada card`,cur:sum(pro,"pv"),prev:sum(proP,"pv"),spark:tpSpark(conta(D,"pd"),"#2563eb")})}
-    ${big({ic:"check",ic2:"ic-green",l:"Vendas feitas",v:tpBRL(sum(ven,"o"),0),sub:`<b>${tpN(ven.length)}</b> venda${ven.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(ven.length,venP.length)} · ticket médio ${tpBRL(tpDiv(sum(ven,"o"),ven.length),0)}`,cur:sum(ven,"o"),prev:sum(venP,"o"),spark:tpSpark(conta(D,"won"),"#16a34a")})}
-  </div>
-  ${tpHead("trend","Taxas de conversão","Dos negócios criados no período, o que aconteceu com eles até hoje","",TPC.green)}
-  <div class="cm-g cm-g3">
-    ${ring("Negócio → Proposta",C.np,"Negócios do período que receberam proposta",C.p,"com proposta",`de ${tpN(C.n)} negócios · ${tpPct(C.np,1)}`,C.np,Cp.np,"#2563eb")}
-    ${ring("Proposta → Venda",C.pv,"Negócios com proposta que viraram venda",C.pw,"vendas",`de ${tpN(C.p)} com proposta · ${tpPct(C.pv,1)}`,C.pv,Cp.pv,"#7c3aed")}
-    ${ring("Negócio → Venda",C.nv,"Negócios do período que viraram venda",C.w,"vendas",`de ${tpN(C.n)} negócios · ${tpPct(C.nv,1)}`,C.nv,Cp.nv,"#16a34a")}
-  </div>
-  <div class="tp-panel" style="margin-top:16px" id="cm-evol"></div>
-  <div class="tp-panel" style="margin-top:30px">${tpHead("bars","O que está sendo negociado",`Situação atual dos ${tpN(neg.length)} negócios criados no período`,"",TPC.blue)}
+  <div class="tp-panel" style="margin-top:16px">${tpHead("bars","O que está sendo negociado",`Situação atual dos ${tpN(neg.length)} negócios criados no período`,"",TPC.blue)}
     ${(()=>{const totO=sit.reduce((a,x)=>a+x.o,0)||1, gan=sit.find(x=>x.l==="Ganho")||{n:0,o:0}, per=sit.find(x=>x.l==="Perdido")||{n:0,o:0}, abertas=sit.filter(x=>x.l!=="Ganho"&&x.l!=="Perdido"), abO=abertas.reduce((a,x)=>a+x.o,0), abN=abertas.reduce((a,x)=>a+x.n,0);
       return `<div class="cm-wl">
         <div class="a"><div class="t">${tpSvg("clock")}Em aberto</div><div class="v">${tpBRL(abO,0)}</div><div class="s"><b>${tpN(abN)}</b> negócio${abN===1?"":"s"} · ${tpPct(abO/totO*100)} do valor</div></div>
@@ -1640,6 +1638,18 @@ function renderCmDyn(){
       <div class="tp-note" style="margin:-4px 0 10px">Barra: todas as etapas, proporcional ao valor · abaixo, as etapas em aberto</div>
       <div class="cm-sit">${abertas.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> negócio${x.n===1?"":"s"} · ${tpPct(x.o/totO*100)} do valor</div></div>`).join("")}</div>`;})()}
   </div>
+  <div class="tp-bigs">
+    ${big({hl:1,ic:"users",l:"Negócios",v:tpBRL(sum(neg,"o"),0),sub:`<b>${tpN(neg.length)}</b> negócio${neg.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(neg.length,negP.length)}`,cur:sum(neg,"o"),prev:sum(negP,"o"),spark:tpSpark(conta(D,"dc"),"rgba(255,255,255,.75)",true)})}
+    ${big({cls:"yl",ic:"form",l:"Propostas",v:tpBRL(sum(pro,"pv"),0),sub:`<b>${tpN(pro.length)}</b> proposta${pro.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(pro.length,proP.length)} · só a última de cada card`,cur:sum(pro,"pv"),prev:sum(proP,"pv"),spark:tpSpark(conta(D,"pd"),"rgba(255,255,255,.85)")})}
+    ${big({cls:"gr",ic:"check",l:"Vendas",v:tpBRL(sum(ven,"o"),0),sub:`<b>${tpN(ven.length)}</b> venda${ven.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(ven.length,venP.length)} · ticket médio ${tpBRL(tpDiv(sum(ven,"o"),ven.length),0)}`,cur:sum(ven,"o"),prev:sum(venP,"o"),spark:tpSpark(conta(D,"won"),"rgba(255,255,255,.85)")})}
+  </div>
+  ${tpHead("trend","Taxas de conversão","Dos negócios criados no período, o que aconteceu com eles até hoje","",TPC.green)}
+  <div class="cm-g cm-g3">
+    ${ring("Negócio → Proposta",C.np,"Negócios do período que receberam proposta",C.p,"com proposta",`de ${tpN(C.n)} negócios · ${tpPct(C.np,1)}`,C.np,Cp.np,"#2563eb")}
+    ${ring("Proposta → Venda",C.pv,"Negócios com proposta que viraram venda",C.pw,"vendas",`de ${tpN(C.p)} com proposta · ${tpPct(C.pv,1)}`,C.pv,Cp.pv,"#7c3aed")}
+    ${ring("Negócio → Venda",C.nv,"Negócios do período que viraram venda",C.w,"vendas",`de ${tpN(C.n)} negócios · ${tpPct(C.nv,1)}`,C.nv,Cp.nv,"#16a34a")}
+  </div>
+  <div class="tp-panel" style="margin-top:16px" id="cm-evol"></div>
   <div id="cm-origem"></div>
   ${tpHead("tool","Motivos de perda",`${tpN(per.length)} negócios perdidos no período · ranking dos motivos informados no Bitrix`,"",TPC.pink)}
   <div class="tp-qc">${per.length?`<div class="cm-g cm-g2" style="gap:32px;align-items:start"><div><div style="font-size:14px;font-weight:800;margin-bottom:6px">Ranking dos motivos</div>${tpRows(motArr)}</div>
