@@ -1497,7 +1497,7 @@ refresh();
 // ================= Tráfego Pago (Meta Ads + Google Ads) =================
 // Dados vêm de /trafego.json (atualizado de hora em hora pelo servidor), separado do resto do BI.
 let TP=null, TP_EM=0;
-const TPF={geral:{p:"7d"},meta:{p:"7d",ini:"",fim:"",camp:""},google:{p:"7d",ini:"",fim:"",camp:""}};
+const TPF={geral:{p:"7d",ini:"",fim:""},meta:{p:"7d",ini:"",fim:"",camp:""},google:{p:"7d",ini:"",fim:"",camp:""}};
 const tpEsc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const tpOk=n=>n!=null&&isFinite(n);
 const tpBRL=(n,d=2)=>tpOk(n)?"R$ "+n.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
@@ -1550,6 +1550,7 @@ function tpRange(f,hoje){
   if(f.p==="ontem"){const o=tpAdd(hoje,-1);return {ini:o,fim:o,pini:tpAdd(hoje,-2),pfim:tpAdd(hoje,-2),key:"ontem"};}
   if(f.p==="7d") return {ini:tpAdd(hoje,-6),fim:hoje,pini:tpAdd(hoje,-13),pfim:tpAdd(hoje,-7),key:"7d"};
   if(f.p==="30d") return {ini:tpAdd(hoje,-29),fim:hoje,pini:tpAdd(hoje,-59),pfim:tpAdd(hoje,-30),key:"30d"};
+  if(f.p==="mesant"){const fim=tpAdd(hoje.slice(0,8)+"01",-1),ini=fim.slice(0,8)+"01",pfim=tpAdd(ini,-1);return {ini,fim,pini:pfim.slice(0,8)+"01",pfim,key:null};}
   let ini=f.ini||tpAdd(hoje,-29), fim=f.fim||hoje; if(ini>fim)[ini,fim]=[fim,ini];
   const n=tpDays(ini,fim); return {ini,fim,pini:tpAdd(ini,-n),pfim:tpAdd(ini,-1),key:null};
 }
@@ -1695,8 +1696,8 @@ function renderTrafego(){
 }
 
 // ---------- Resumo geral (período próprio: hoje / ontem / 7 / 30 dias) ----------
-const TPG_LBL={hoje:"Hoje",ontem:"Ontem","7d":"Últimos 7 dias","30d":"Últimos 30 dias"};
-const TPG_VS={hoje:"",ontem:"vs. anteontem","7d":"vs. 7 dias anteriores","30d":"vs. 30 dias anteriores"};
+const TPG_LBL={hoje:"Hoje",ontem:"Ontem","7d":"Últimos 7 dias","30d":"Últimos 30 dias",mesant:"Mês anterior",custom:"Personalizado"};
+const TPG_VS={hoje:"",ontem:"vs. anteontem","7d":"vs. 7 dias anteriores","30d":"vs. 30 dias anteriores",mesant:"vs. mês retrasado",custom:"vs. período anterior de mesmo tamanho"};
 function tpSpark(vals,color,bars){
   const W=200,H=90,n=vals.length,mx=Math.max(1e-9,...vals),mn=bars?0:Math.min(...vals);
   if(n<2) return "";
@@ -1733,6 +1734,7 @@ function renderTpGeral(){
   <div class="tp-hero"><div class="tp-logo geral">${TP_LOGO.geral}</div>
     <div><h2>Resumo geral</h2><div class="tp-sub">Meta Ads + Google Ads somados</div></div>
     <div class="tp-right"><select class="tp-pick" id="tp-geral-per">${Object.entries(TPG_LBL).map(([k,v])=>`<option value="${k}" ${k===f.p?"selected":""}>${v}</option>`).join("")}</select>
+      ${f.p==="custom"?`<span class="tp-dates"><label class="tp-date">${tpSvg("cal")}<input type="date" id="tp-geral-ini" value="${f.ini||""}"></label><span class="drsep">→</span><label class="tp-date">${tpSvg("cal")}<input type="date" id="tp-geral-fim" value="${f.fim||""}"></label></span>`:""}
       <span class="tp-live"><i></i>Dados atualizados às ${tpHora(TP.gerado_em).slice(-5)} · de hora em hora</span></div></div>
   ${gOk?"":`<div class="tp-note" style="color:var(--bad);font-weight:650">⚠ Google Ads fora do resumo: a plataforma não está atualizando (veja a seção do Google).</div>`}
   <div class="tp-bigs">
@@ -1751,7 +1753,10 @@ function renderTpGeral(){
         <div class="tp-div-bar"><i style="width:${pct(mc.l,gc.cv)}%;background:var(--meta)"></i><i style="width:${pct(gc.cv,mc.l)}%;background:#34a853"></i></div>
         <div class="tp-div-cols">${col("Meta Ads","var(--meta)",pct(mc.l,gc.cv),tpN(mc.l)+" leads")}${col("Google Ads","#34a853",pct(gc.cv,mc.l),tpN(gc.cv)+" leads")}</div></div>
     </div></div>`:""}`;
-  document.getElementById("tp-geral-per").onchange=e=>{TPF.geral.p=e.target.value;renderTpGeral();};
+  document.getElementById("tp-geral-per").onchange=e=>{TPF.geral.p=e.target.value;
+    if(e.target.value==="custom"&&!TPF.geral.ini){const h=(TP.meta&&TP.meta.hoje)||(TP.google&&TP.google.hoje);TPF.geral.ini=tpAdd(h,-29);TPF.geral.fim=h;}
+    renderTpGeral();};
+  ["ini","fim"].forEach(k=>{const i=document.getElementById("tp-geral-"+k);if(i)i.onchange=e=>{TPF.geral[k]=e.target.value;renderTpGeral();};});
 }
 
 // ---------- Meta ----------

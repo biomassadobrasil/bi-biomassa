@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "trafego.json")
-DIAS = 90                     # histórico diário guardado (filtro personalizado vai até aqui)
+DIAS = 180                    # histórico diário guardado (filtro personalizado vai até aqui)
 SP = ZoneInfo("America/Sao_Paulo")
 _LOCK = threading.Lock()
 
