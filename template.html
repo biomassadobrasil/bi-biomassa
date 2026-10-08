@@ -643,6 +643,9 @@
   .tp-ai2 li b{color:var(--ink)}
   :is(#view-trafego,#view-comercial) .tp-camp{border-radius:20px}
   /* ===== Comercial ===== */
+  .cm-sit.cm-sit6{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:700px){.cm-sit.cm-sit6{grid-template-columns:1fr 1fr}}
+  .cm-sit6>div{padding:16px 18px} .cm-sit6 .n{font-size:24px}
   .tp-big.cm-big{flex-direction:column;gap:0;padding:20px 22px}
   .tp-big.cm-big .ic{position:absolute;top:16px;right:16px;width:42px;height:42px}
   .tp-big.cm-big .ic svg{width:21px;height:21px}
@@ -1631,7 +1634,11 @@ function renderCmDyn(){
   const corE=n=>{const t=n.toLowerCase();return t.includes("ganho")?"#16a34a":t.includes("perdido")?"#dc2626":t.includes("negocia")?"#2563eb":t.includes("sem retorno")?"#f59e0b":t.includes("renutri")?"#7c3aed":
     t.includes("novo")?"#64748b":t.includes("tentativa")?"#0ea5e9":t.includes("apresenta")?"#6366f1":t.includes("proposta")?"#3b82f6":t.includes("obra")?"#14b8a6":"#9aa7bd";};
   // Em aberto = pipeline de hoje (qualquer data de criação) · Ganho/Perdido = o que foi ganho/perdido NO período (mesma regra de Vendas e Motivos)
-  const sit=ordE.filter(e=>e!=="Ganho"&&e!=="Perdido").map(e=>{const a=neg.filter(x=>x.g!=="ganho"&&x.g!=="perdido"&&nomeE(x).toLowerCase()===e.toLowerCase());return {l:e,c:corE(e),n:a.length,o:sum(a,"o")};});
+  // só as etapas que importam p/ a negociação; Ganho/Perdido = fechados no período (iguais aos cards Vendas/Perdidos)
+  const ETAPAS_SIT=["em negociação","sem retorno","obra futura","renutrição","ganho","perdido"];
+  const sit=ETAPAS_SIT.map(k=>{const e=ordE.find(x=>x.toLowerCase()===k)||k;
+    const a=k==="ganho"?D.filter(x=>cmIn(x.won,R)):k==="perdido"?D.filter(x=>cmIn(x.lost,R)):neg.filter(x=>x.g!=="ganho"&&x.g!=="perdido"&&nomeE(x).toLowerCase()===k);
+    return {l:k==="ganho"?"Ganho":k==="perdido"?"Perdido":e,c:corE(e),n:a.length,o:sum(a,"o")};});
   // motivos de perda (perdidos no período)
   const mot={};per.forEach(x=>{const k=x.mot||"Sem motivo informado";mot[k]=(mot[k]||0)+1;});
   const outros=per.filter(x=>x.mot==="Outro"), om={};outros.forEach(x=>{const k=x.mo||"Sem descrição";om[k]=(om[k]||0)+1;});
@@ -1648,11 +1655,11 @@ function renderCmDyn(){
     ${big({cls:"gr",ic:"check",l:"Vendas",v:tpBRL(sum(ven,"o"),0),sub:`<b>${tpN(ven.length)}</b> venda${ven.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(ven.length,venP.length)} · ticket médio ${tpBRL(tpDiv(sum(ven,"o"),ven.length),0)}`,cur:sum(ven,"o"),prev:sum(venP,"o"),spark:tpSpark(conta(D,"won"),"rgba(255,255,255,.85)")})}
     ${big({cls:"rd",ic:"tool",l:"Perdidos",v:tpBRL(sum(per,"o"),0),sub:`<b>${tpN(per.length)}</b> negócio${per.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(per.length,perP.length,true)} · motivos mais abaixo`,cur:sum(per,"o"),prev:sum(perP,"o"),lb:1,spark:tpSpark(conta(D,"lost"),"rgba(255,255,255,.85)")})}
   </div>
-  <div class="tp-panel" style="margin-top:22px">${tpHead("bars","O que está sendo negociado",`Etapa atual dos negócios criados no período que ainda estão em aberto · ${tpN(sit.reduce((a,x)=>a+x.n,0))} de ${tpN(neg.length)}`,"",TPC.blue)}
+  <div class="tp-panel" style="margin-top:22px">${tpHead("bars","O que está sendo negociado","Etapas em aberto: negócios criados no período · Ganho e Perdido: fechados no período","",TPC.blue)}
     ${(()=>{const abertas=sit, abO=abertas.reduce((a,x)=>a+x.o,0), abN=abertas.reduce((a,x)=>a+x.n,0), totO=abO||1;
       return `      <div class="tp-stack" style="height:22px;margin-top:4px" title="Proporcional ao valor">${abertas.filter(x=>x.o).map(x=>`<i title="${x.l}: ${tpBRL(x.o,0)}" style="width:${x.o/totO*100}%;background:${x.c}"></i>`).join("")}</div>
       <div class="tp-note" style="margin:-4px 0 10px">Barra proporcional ao valor em cada etapa</div>
-      <div class="cm-sit">${abertas.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> negócio${x.n===1?"":"s"} · ${tpPct(x.o/totO*100)} do valor em aberto</div></div>`).join("")}</div>`;})()}
+      <div class="cm-sit cm-sit6">${abertas.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> negócio${x.n===1?"":"s"} · ${tpPct(x.o/totO*100)} do valor</div></div>`).join("")}</div>`;})()}
   </div>
   ${tpHead("trend","Taxas de conversão","Dos negócios criados no período, o que aconteceu com eles até hoje","",TPC.green)}
   <div class="cm-g cm-g3">
