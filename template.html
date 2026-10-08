@@ -1616,7 +1616,9 @@ function renderCmDyn(){
   const nomeE=x=>{const st=(CM.etapas[x.c]||[]).find(st=>st.id===x.st);return st?canE(st):x.st;};
   const corE=n=>{const t=n.toLowerCase();return t.includes("ganho")?"#16a34a":t.includes("perdido")?"#dc2626":t.includes("negocia")?"#2563eb":t.includes("sem retorno")?"#f59e0b":t.includes("renutri")?"#7c3aed":
     t.includes("novo")?"#64748b":t.includes("tentativa")?"#0ea5e9":t.includes("apresenta")?"#6366f1":t.includes("proposta")?"#3b82f6":t.includes("obra")?"#14b8a6":"#9aa7bd";};
-  const sit=ordE.map(e=>{const a=neg.filter(x=>nomeE(x).toLowerCase()===e.toLowerCase());return {l:e,c:corE(e),n:a.length,o:sum(a,"o")};});
+  // Em aberto = pipeline de hoje (qualquer data de criação) · Ganho/Perdido = o que foi ganho/perdido NO período (mesma regra de Vendas e Motivos)
+  const sit=ordE.map(e=>{const a=e==="Ganho"?D.filter(x=>cmIn(x.won,R)):e==="Perdido"?D.filter(x=>cmIn(x.lost,R))
+      :D.filter(x=>x.g!=="ganho"&&x.g!=="perdido"&&nomeE(x).toLowerCase()===e.toLowerCase());return {l:e,c:corE(e),n:a.length,o:sum(a,"o")};});
   // motivos de perda (perdidos no período)
   const per=D.filter(x=>cmIn(x.lost,R)), mot={};per.forEach(x=>{const k=x.mot||"Sem motivo informado";mot[k]=(mot[k]||0)+1;});
   const outros=per.filter(x=>x.mot==="Outro"), om={};outros.forEach(x=>{const k=x.mo||"Sem descrição";om[k]=(om[k]||0)+1;});
@@ -1627,16 +1629,16 @@ function renderCmDyn(){
   const srcArr=Object.entries(src).sort((a,b)=>b[1].n-a[1].n), srcMax=Math.max(1,...srcArr.map(x=>x[1].n));
   const SRC_COR=["#2563eb","#16a34a","#f59e0b","#7c3aed","#e11d48","#0891b2","#0d9488","#ea580c","#64748b"];
   el.innerHTML=`
-  <div class="tp-panel" style="margin-top:16px">${tpHead("bars","O que está sendo negociado",`Situação atual dos ${tpN(neg.length)} negócios criados no período`,"",TPC.blue)}
-    ${(()=>{const totO=sit.reduce((a,x)=>a+x.o,0)||1, gan=sit.find(x=>x.l==="Ganho")||{n:0,o:0}, per=sit.find(x=>x.l==="Perdido")||{n:0,o:0}, abertas=sit.filter(x=>x.l!=="Ganho"&&x.l!=="Perdido"), abO=abertas.reduce((a,x)=>a+x.o,0), abN=abertas.reduce((a,x)=>a+x.n,0);
+  <div class="tp-panel" style="margin-top:16px">${tpHead("bars","O que está sendo negociado","<b>Em aberto</b>: tudo que está no funil hoje, de qualquer data · <b>Ganho</b> e <b>Perdido</b>: fechados no período","",TPC.blue)}
+    ${(()=>{const gan=sit.find(x=>x.l==="Ganho")||{n:0,o:0}, per=sit.find(x=>x.l==="Perdido")||{n:0,o:0}, abertas=sit.filter(x=>x.l!=="Ganho"&&x.l!=="Perdido"), abO=abertas.reduce((a,x)=>a+x.o,0), abN=abertas.reduce((a,x)=>a+x.n,0), totO=abO||1, fech=gan.n+per.n, fechO=(gan.o+per.o)||1;
       return `<div class="cm-wl">
-        <div class="a"><div class="t">${tpSvg("clock")}Em aberto</div><div class="v">${tpBRL(abO,0)}</div><div class="s"><b>${tpN(abN)}</b> negócio${abN===1?"":"s"} · ${tpPct(abO/totO*100)} do valor</div></div>
-        <div class="w"><div class="t">${tpSvg("check")}Ganho</div><div class="v">${tpBRL(gan.o,0)}</div><div class="s"><b>${tpN(gan.n)}</b> negócio${gan.n===1?"":"s"} · ${tpPct(gan.o/totO*100)} do valor</div></div>
-        <div class="l"><div class="t">${tpSvg("tool")}Perdido</div><div class="v">${tpBRL(per.o,0)}</div><div class="s"><b>${tpN(per.n)}</b> negócio${per.n===1?"":"s"} · ${tpPct(per.o/totO*100)} do valor</div></div>
+        <div class="a"><div class="t">${tpSvg("clock")}Em aberto hoje</div><div class="v">${tpBRL(abO,0)}</div><div class="s"><b>${tpN(abN)}</b> negócio${abN===1?"":"s"} no funil agora</div></div>
+        <div class="w"><div class="t">${tpSvg("check")}Ganho no período</div><div class="v">${tpBRL(gan.o,0)}</div><div class="s"><b>${tpN(gan.n)}</b> de ${tpN(fech)} fechados (${tpPct(fech?gan.n/fech*100:0)}) · ${tpPct((gan.o)/fechO*100)} do valor fechado</div></div>
+        <div class="l"><div class="t">${tpSvg("tool")}Perdido no período</div><div class="v">${tpBRL(per.o,0)}</div><div class="s"><b>${tpN(per.n)}</b> de ${tpN(fech)} fechados (${tpPct(fech?per.n/fech*100:0)}) · ${tpPct(per.o/fechO*100)} do valor fechado</div></div>
       </div>
-      <div class="tp-stack" style="height:22px;margin-top:18px" title="Proporcional ao valor">${sit.filter(x=>x.o).map(x=>`<i title="${x.l}: ${tpBRL(x.o,0)}" style="width:${x.o/totO*100}%;background:${x.c}"></i>`).join("")}</div>
-      <div class="tp-note" style="margin:-4px 0 10px">Barra: todas as etapas, proporcional ao valor · abaixo, as etapas em aberto</div>
-      <div class="cm-sit">${abertas.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> negócio${x.n===1?"":"s"} · ${tpPct(x.o/totO*100)} do valor</div></div>`).join("")}</div>`;})()}
+      <div class="tp-stack" style="height:22px;margin-top:18px" title="Proporcional ao valor">${abertas.filter(x=>x.o).map(x=>`<i title="${x.l}: ${tpBRL(x.o,0)}" style="width:${x.o/totO*100}%;background:${x.c}"></i>`).join("")}</div>
+      <div class="tp-note" style="margin:-4px 0 10px">Etapas em aberto hoje · barra proporcional ao valor</div>
+      <div class="cm-sit">${abertas.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> negócio${x.n===1?"":"s"} · ${tpPct(x.o/totO*100)} do valor em aberto</div></div>`).join("")}</div>`;})()}
   </div>
   <div class="tp-bigs">
     ${big({hl:1,ic:"users",l:"Negócios",v:tpBRL(sum(neg,"o"),0),sub:`<b>${tpN(neg.length)}</b> negócio${neg.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(neg.length,negP.length)}`,cur:sum(neg,"o"),prev:sum(negP,"o"),spark:tpSpark(conta(D,"dc"),"rgba(255,255,255,.75)",true)})}
