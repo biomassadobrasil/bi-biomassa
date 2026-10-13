@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Serve o B.I e regenera sozinho às 08:00 e 12:30 (America/Sao_Paulo)."""
-import os, json, threading, traceback
+import os, json, threading, traceback, base64, hashlib, hmac, time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from flask import Flask, Response, request, jsonify
@@ -13,6 +13,49 @@ import disparos
 HERE = os.path.dirname(os.path.abspath(__file__))
 INDEX = os.path.join(HERE, "index.html")
 app = Flask(__name__)
+
+# ── Senha do B.I ──
+# Tudo exige senha (menos /health). A senha fica SÓ na variável BI_SENHA do Railway.
+# O navegador abre uma janela de login (usuário pode ser qualquer um). Sem BI_SENHA, fica travado.
+# 10 senhas erradas do mesmo IP → bloqueio de 15 min.
+_falhas = {}  # ip -> [n, desde]
+LOGIN_MAX_FALHAS, LOGIN_JANELA_S = 10, 15 * 60
+
+def _senha_confere(recebida, correta):
+    a = hashlib.sha256(recebida.encode()).digest()
+    b = hashlib.sha256(correta.encode()).digest()
+    return hmac.compare_digest(a, b)
+
+@app.before_request
+def exigir_senha():
+    if request.path == "/health":
+        return None
+    correta = os.environ.get("BI_SENHA")
+    if not correta:
+        return "B.I travado: configure BI_SENHA no Railway.", 503
+    ip = request.headers.get("X-Real-IP") or (request.headers.get("X-Forwarded-For") or "").split(",")[0].strip() or request.remote_addr
+    f = _falhas.get(ip)
+    if f and time.time() - f[1] > LOGIN_JANELA_S:
+        _falhas.pop(ip, None)
+    elif f and f[0] >= LOGIN_MAX_FALHAS:
+        return "Muitas tentativas. Tente de novo em 15 minutos.", 429
+    senha = None
+    auth = request.headers.get("Authorization", "")
+    if auth.startswith("Basic "):
+        try:
+            senha = base64.b64decode(auth[6:]).decode("utf-8").split(":", 1)[1]
+        except Exception:
+            senha = ""
+    if senha is not None and _senha_confere(senha, correta):
+        _falhas.pop(ip, None)
+        return None
+    if senha is not None:
+        if len(_falhas) > 10000:
+            _falhas.clear()
+        f = _falhas.setdefault(ip, [0, time.time()])
+        f[0] += 1
+        print(f"[BI] senha incorreta ({f[0]}/{LOGIN_MAX_FALHAS}) de {ip} em {request.path}")
+    return Response("Senha necessária.", 401, {"WWW-Authenticate": 'Basic realm="B.I Biomassa", charset="UTF-8"'})
 
 def regenerar():
     try:
