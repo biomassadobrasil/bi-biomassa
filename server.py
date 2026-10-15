@@ -15,7 +15,8 @@ INDEX = os.path.join(HERE, "index.html")
 app = Flask(__name__)
 
 # ── Senha do B.I ──
-# Tudo exige senha (menos /health). A senha fica SÓ na variável BI_SENHA do Railway.
+# DESLIGADA por padrão (pedido em 15/10/2026). Para religar: variável BI_SENHA_LIGADA=sim no Railway.
+# Ligada: tudo exige senha (menos /health); a senha fica SÓ na variável BI_SENHA do Railway.
 # O navegador abre uma janela de login (usuário pode ser qualquer um). Sem BI_SENHA, fica travado.
 # 10 senhas erradas do mesmo IP → bloqueio de 15 min.
 _falhas = {}  # ip -> [n, desde]
@@ -28,7 +29,7 @@ def _senha_confere(recebida, correta):
 
 @app.before_request
 def exigir_senha():
-    if request.path == "/health":
+    if request.path == "/health" or os.environ.get("BI_SENHA_LIGADA", "").strip().lower() != "sim":
         return None
     correta = os.environ.get("BI_SENHA")
     if not correta:
