@@ -793,6 +793,7 @@
   .ol-stat .ci svg{width:16px;height:16px}
   .ol-stat .v{font-size:22px;font-weight:800;margin:9px 0 2px;letter-spacing:-.02em}
   .ol-stat .s{font-size:11.5px;color:var(--muted)}
+  .ol-abc{display:inline-block;color:#fff;font-weight:800;font-size:10px;padding:1px 6px;border-radius:5px;margin-left:5px;vertical-align:middle}
   .ol-sord{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);font-weight:600}
   .ol-sord select{appearance:none;font:inherit;font-size:13px;font-weight:700;color:var(--ink);background:var(--panel);
     border:1px solid var(--line);border-radius:10px;padding:7px 12px;cursor:pointer}
@@ -1129,6 +1130,22 @@ function renderTnDyn(){
   // ---- vendas por mês (vendido) ----
   const mes={};byG(cur,"vendido").forEach(x=>{if(x.d)mes[x.d.slice(0,7)]=(mes[x.d.slice(0,7)]||0)+(x.o||0);});
   const mesArr=Object.keys(mes).sort(), maxV=Math.max(1,...mesArr.map(y=>mes[y]));
+  // ---- Fase 2: região (UF) + produtos (curva ABC) — dos VENDIDOS no recorte ----
+  const passIdx=new Set();
+  TN.vendas.forEach((x,j)=>{if(x.g==="vendido"&&(!TNF.eq||x.e===TNF.eq)&&(!TNF.v||x.v===TNF.v)&&inR(x.d))passIdx.add(j);});
+  const ufAgg={}; let semUF=0;
+  TN.vendas.forEach((x,j)=>{if(passIdx.has(j)){if(x.uf){const o=ufAgg[x.uf]=ufAgg[x.uf]||{o:0,n:0};o.o+=x.o;o.n++;}else semUF++;}});
+  const ufArr=Object.entries(ufAgg).map(([uf,o])=>({uf,...o})).sort((a,b)=>b.o-a.o);
+  const prod={};(TN.itens||[]).forEach(it=>{if(passIdx.has(it.i)){const o=prod[it.nm]=prod[it.nm]||{q:0,o:0};o.q+=it.q;o.o+=it.o;}});
+  let prodArr=Object.entries(prod).map(([nm,o])=>({nm,...o})).sort((a,b)=>b.o-a.o);
+  const prodTot=prodArr.reduce((a,x)=>a+x.o,0)||1; let _cum=0;
+  prodArr.forEach(x=>{_cum+=x.o;x.cum=_cum/prodTot*100;x.abc=x.cum<=80?"A":x.cum<=95?"B":"C";});
+  const abcN={A:0,B:0,C:0},abcV={A:0,B:0,C:0};prodArr.forEach(x=>{abcN[x.abc]++;abcV[x.abc]+=x.o;});
+  const cov=TN.total_ped?Math.round((TN.enriquecidos||0)/TN.total_ped*100):0, covNote=cov<98?` · <b>detalhes ${cov}% carregados</b> (completa em algumas horas)`:"";
+  const ABCCOR={A:"#16a34a",B:"#f59e0b",C:"#94a3b8"};
+  const prodBars=arr=>'<div class="hbchart">'+arr.slice(0,14).map(x=>{const mx=Math.max(1,...arr.map(y=>y.o));return `<div class="hbrow"><div class="hblabel" title="${tpEsc(x.nm)}">${tpEsc(x.nm)}</div><div class="hbtrack"><div class="hbfill" style="width:${x.o/mx*100}%;background:${ABCCOR[x.abc]}"></div><span class="hbval tnum">${tpBRL(x.o,0)} · <span style="color:var(--muted)">${tpN(x.q)} un</span> <span class="ol-abc" style="background:${ABCCOR[x.abc]}">${x.abc}</span></span></div></div>`;}).join("")+'</div>';
+  const ufBars=arr=>{const mx=Math.max(1,...arr.map(y=>y.o));return '<div class="hbchart">'+arr.slice(0,14).map(x=>`<div class="hbrow"><div class="hblabel">${x.uf||"—"}</div><div class="hbtrack"><div class="hbfill" style="width:${x.o/mx*100}%;background:var(--brand)"></div><span class="hbval tnum">${tpBRL(x.o,0)} · <span style="color:var(--muted)">${tpN(x.n)} ped</span></span></div></div>`).join("")+'</div>';};
+  const semDet=(!TN.itens||!TN.itens.length);
   el.innerHTML=`
   <div class="tp-bigs">
     ${big({cls:"gr",ic:"check",l:"Total Vendido",v:tpBRL(sv(vend),0),sub:`<b>${tpN(vend.length)}</b> pedido${vend.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(vend.length,vendP.length)} · aprovado/faturado → entregue`,cur:sv(vend),prev:sv(vendP),spark:tpSpark(spk("vendido"),"rgba(255,255,255,.85)")})}
@@ -1146,7 +1163,20 @@ function renderTnDyn(){
   <div class="tn-eqs">${perEq.map(g=>`<div class="tp-panel tn-eqcard"><div class="tn-eqh"><span class="tn-eqdot" style="background:${TN_EQCOR[g.eq]}"></span><b>${g.eq}</b><span class="tn-eqtot">${tpBRL(g.tot,0)} · ${tpN(g.n)} pedido${g.n===1?"":"s"}</span></div>${barRows(g.arr,g.eq)}</div>`).join("")||'<div class="tp-empty">Sem vendas no período.</div>'}</div>
   <div class="tp-panel" style="margin-top:16px">${tpHead("trend","Vendas por mês","Total vendido por mês no período selecionado","",TPC.green)}
     <div class="months" style="margin-top:6px">${mesArr.length?mesArr.map(ym=>`<div class="mcol"><div class="bars"><div class="gn" style="width:58%;height:${mes[ym]/maxV*100}%" title="${tpBRL(mes[ym],0)}"></div></div><div class="ml">${ymLabel(ym)}</div></div>`).join(""):'<div class="tp-empty" style="width:100%;align-self:center">Sem vendas no período.</div>'}</div>
-  </div>`;
+  </div>
+  ${tpHead("tag","Produtos mais vendidos","Curva ABC · por faturamento dos pedidos vendidos no recorte"+covNote,"",TPC.orange)}
+  ${semDet?'<div class="tp-panel"><div class="tp-empty">Carregando os detalhes dos pedidos (produtos e região)… isso leva alguns minutos na primeira vez. Volte em breve.</div></div>':`
+  <div class="grid2">
+    <div class="tp-panel"><div class="tp-note" style="margin:0 0 8px">Top 14 por faturamento · cor = classe ABC (A verde · B amarelo · C cinza)</div>${prodArr.length?prodBars(prodArr):'<div class="tp-empty">Sem produtos no recorte.</div>'}</div>
+    <div class="tp-panel"><div class="tp-note" style="margin:0 0 8px">Classe ABC (concentração do faturamento)</div>
+      <div class="ol-stats" style="grid-template-columns:repeat(3,1fr)">
+        ${["A","B","C"].map(k=>`<div class="ol-stat"><div class="h"><span class="ci" style="background:color-mix(in srgb,${ABCCOR[k]} 16%,transparent);color:${ABCCOR[k]}"><b>${k}</b></span>Classe ${k}</div><div class="v">${tpN(abcN[k])}</div><div class="s">produto${abcN[k]===1?"":"s"} · ${tpPct(abcV[k]/prodTot*100)} do faturamento</div></div>`).join("")}
+      </div>
+      <div class="tp-info" style="margin-top:12px">${tpSvg("info")}<div><b>A</b> = itens que somam ~80% do faturamento (foco). <b>B</b> ~15%. <b>C</b> = cauda longa (~5%).</div></div>
+    </div>
+  </div>
+  ${tpHead("radar","Vendas por região","Por estado (UF) dos pedidos vendidos no recorte"+(semUF?` · ${tpN(semUF)} pedido(s) sem UF`:""),"",TPC.teal)}
+  <div class="tp-panel">${ufArr.length?ufBars(ufArr):'<div class="tp-empty">Sem região no recorte ainda.</div>'}</div>`}`;
   const mt=document.getElementById("tn-mode");if(mt)mt.onclick=e=>{const b=e.target.closest("button");if(!b)return;TNF.mode=b.dataset.m;renderTnDyn();};
   const so=document.getElementById("tn-sort");if(so)so.onchange=e=>{TNF.sort=e.target.value;renderTnDyn();};
   TP_NOCMP=false;

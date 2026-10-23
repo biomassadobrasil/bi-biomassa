@@ -125,19 +125,81 @@ def _todos_pedidos(desde_br, ate_br):
         time.sleep(0.15)                            # educado com a API
     return out
 
+ENRICH_BUDGET_S = 240   # tempo máx. (s) buscando detalhes NOVOS por execução; o resto vem do cache nas próximas
+
+def _detalhe(ids):
+    """Detalhe de cada pedido (UF/cidade + itens) via pedido.obter, com cache Redis `tiny:ped:<id>`.
+    Só busca os que faltam, até estourar o orçamento de tempo — assim a 1ª carga é progressiva e sem travar."""
+    import generate as G
+    rds = getattr(G, "_RDS", None)
+    out = {}; faltam = []
+    for pid in ids:
+        v = None
+        if rds:
+            try: v = rds.get(f"tiny:ped:{pid}")
+            except Exception: pass
+        if v:
+            try: out[pid] = json.loads(v if isinstance(v, str) else v.decode())
+            except Exception: faltam.append(pid)
+        else:
+            faltam.append(pid)
+    deadline = time.time() + ENRICH_BUDGET_S
+    buscados = 0
+    for pid in faltam:
+        if time.time() > deadline: break
+        try:
+            det = pedido_obter(pid).get("retorno", {}).get("pedido", {})
+            cli = det.get("cliente", {}) or {}
+            itens = []
+            for it in det.get("itens", []):
+                i = it.get("item", {}) or {}
+                try: q = float(i.get("quantidade") or 0)
+                except Exception: q = 0.0
+                try: vu = float(i.get("valor_unitario") or 0)
+                except Exception: vu = 0.0
+                nm = (i.get("descricao") or "").strip()
+                if nm: itens.append({"nm": nm, "q": round(q, 2), "o": round(q * vu, 2)})
+            rec = {"uf": (cli.get("uf") or "").strip().upper(), "cid": (cli.get("cidade") or "").strip(), "itens": itens}
+            out[pid] = rec
+            if rds:
+                try: rds.set(f"tiny:ped:{pid}", json.dumps(rec, ensure_ascii=False))
+                except Exception: pass
+            buscados += 1
+            time.sleep(0.2)
+        except Exception:
+            continue
+    print(f"[TINY] detalhe: {len(out)}/{len(ids)} com detalhe · {buscados} buscados nesta rodada")
+    return out
+
 def build():
     hoje = datetime.datetime.now(SP).date()
     desde_br = "01/01/2026"
     ate_br = hoje.strftime("%d/%m/%Y")
     peds = _todos_pedidos(desde_br, ate_br)
-    vendas = []
+    vendas = []; ids = []
     for p in peds:
         lbl, eq = _classifica_vendedor(p.get("nome_vendedor"))
         try: val = round(float(p.get("valor") or 0), 2)
         except Exception: val = 0.0
+        pid = str(p.get("id") or "")
         vendas.append({"d": _iso(p.get("data_pedido")), "v": lbl, "e": eq,
                        "s": p.get("situacao") or "—", "g": _grupo_situacao(p.get("situacao")),
-                       "o": val, "n": p.get("numero")})
+                       "o": val, "n": p.get("numero"), "_id": pid})
+        ids.append(pid)
+    # enriquece com UF + produtos (cache Redis; progressivo)
+    try: det = _detalhe(ids)
+    except Exception: import traceback; print("[TINY] detalhe falhou:\n" + traceback.format_exc()); det = {}
+    itens = []; enriq = 0
+    for idx, p in enumerate(vendas):
+        d = det.get(p["_id"])
+        if d:
+            enriq += 1
+            p["uf"] = d.get("uf", "")
+            for it in d.get("itens", []):
+                itens.append({"i": idx, "nm": it["nm"], "q": it["q"], "o": it["o"]})
+        else:
+            p["uf"] = ""
+        del p["_id"]
     # ordem das situações p/ a seção "Vendas por situação" (fluxo lógico do Tiny)
     ordem_sit = ["Em aberto", "Aprovado", "Faturado", "Preparando envio", "Pronto para envio",
                  "Enviado", "Entregue", "Não entregue", "Cancelado"]
@@ -145,7 +207,8 @@ def build():
             "hoje": hoje.isoformat(), "desde": DESDE,
             "equipes": {"Vendas Internas": ["Vanessa", "Thauany", "Ingrid"],
                         "LightWall": ["Patrícia", "Luiz"], "Outros": []},
-            "ordem_situacoes": ordem_sit, "vendas": vendas}
+            "ordem_situacoes": ordem_sit, "vendas": vendas,
+            "itens": itens, "enriquecidos": enriq, "total_ped": len(vendas)}
 
 def atualizar():
     if not _LOCK.acquire(blocking=False):
