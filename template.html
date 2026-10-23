@@ -750,9 +750,13 @@
     margin:6px 0 16px;box-shadow:0 16px 36px rgba(29,79,196,.3);position:relative;overflow:hidden}
   .ol-hero::after{content:"";position:absolute;right:-60px;top:-80px;width:280px;height:280px;border-radius:50%;
     background:radial-gradient(circle,rgba(255,255,255,.1),transparent 70%);pointer-events:none}
+  .ol-hero-l{display:flex;align-items:center;gap:16px;min-width:0;z-index:1}
+  .ol-hero-tx{min-width:0}
+  .ol-logochip{background:#fff;border-radius:14px;padding:11px 16px;display:grid;place-items:center;flex:0 0 auto;box-shadow:0 8px 20px rgba(0,0,0,.22)}
+  .ol-logochip svg{height:26px;width:auto;display:block}
+  .ol-logochip.wm{font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
   .ol-hero-eye{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:#bfe9d6;letter-spacing:.2px}
-  .ol-hero-eye b{background:linear-gradient(150deg,#1ec98a,#12b47c);color:#fff;padding:2px 9px;border-radius:7px;font-weight:800;letter-spacing:-.03em}
-  .ol-hero-h{margin:6px 0 0;font-size:32px;font-weight:800;letter-spacing:-.03em;color:#fff;line-height:1.1}
+  .ol-hero-h{margin:0;font-size:32px;font-weight:800;letter-spacing:-.03em;color:#fff;line-height:1.1}
   .ol-hero-h span{color:#bcd3ff;font-weight:700}
   .ol-hero-sub{color:#b9ccf0;font-size:13.5px;margin-top:5px;font-weight:500}
   .ol-hero-r{display:flex;gap:11px;flex-wrap:wrap;z-index:1}
@@ -940,12 +944,12 @@
   <aside class="sidebar">
     <div class="sb-logo" id="bi-switch" title="Trocar B.I">
       <svg viewBox="885 -25 2005 575"><path fill="#2853a1" d="M897.83,377.97s108.87-30.81,285.53-92.44c161.82-56.45,276.21,7.84,336.89,28.76,59.57,20.54,142.07,99.52,199.26-61.63,45.19-127.36,110.93-88.33,110.93-88.33,0,0,35.23,12.66,133.52,119.14,98.6,106.82,138.88,74.54,138.88,74.54,0,0,40.45,5.62,278.23-208.67L2546.76,0h327.19l-505.33,449.87s-63.68,69.84-174.61,71.9c-51.51.95-102.71-20.54-152.01-61.63-53.61-44.67-129.41-110.93-184.88-164.33-23.11-22.26-39.42-25.61-51.35-24.65-40.99,3.28-36.98,57.52-61.63,96.55-17.99,28.49-31.12,82.17-106.82,82.17s-97.81-36.29-154.06-67.79c-51.35-28.76-94.54-85.42-221.85-80.11-98.6,4.11-105.4,14.79-199.26,36.98-113.6,26.85-164.33,39.03-164.33,39.03Z"/></svg>
-      <span class="bi-cur" id="bi-cur">Comercial ▾</span>
+      <span class="bi-cur" id="bi-cur">Bitrix ▾</span>
       <div class="bi-menu" id="bi-menu">
-        <div class="bi-opt active" data-view="comercial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span>Comercial</span></div>
-        <div class="bi-opt" data-view="disparos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span>Disparos</span></div>
-        <div class="bi-opt" data-view="trafego"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/></svg><span>Tráfego Pago</span></div>
+        <div class="bi-opt active" data-view="comercial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span>Bitrix</span></div>
         <div class="bi-opt" data-view="tiny"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span>Olist</span></div>
+        <div class="bi-opt" data-view="trafego"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/></svg><span>Tráfego Pago</span></div>
+        <div class="bi-opt" data-view="disparos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span>Disparos</span></div>
       </div>
     </div>
     <div class="sb-div"></div>
@@ -1040,8 +1044,8 @@ const ymLabel=ym=>MESNUM[ym.slice(5,7)]+"/"+ym.slice(2,4);
 function setView(v){
   ["comercial","disparos","trafego","tiny"].forEach(k=>{document.getElementById("view-"+k).style.display=(v===k)?"":"none";});
   document.querySelectorAll(".bi-opt").forEach(o=>o.classList.toggle("active",o.dataset.view===v));
-  document.getElementById("bi-cur").textContent={tiny:"Olist",trafego:"Tráfego",comercial:"Comercial",disparos:"Disparos"}[v]+" ▾";
-  const subs={tiny:"Olist · vendas (pedidos) · atualiza de hora em hora",comercial:"Comercial · Bitrix · atualiza de hora em hora",disparos:"Disparos · WhatsApp + Bitrix · atualiza de hora em hora",trafego:"Tráfego Pago · Meta Ads e Google Ads · atualiza de hora em hora"};
+  document.getElementById("bi-cur").textContent={tiny:"Olist",trafego:"Tráfego",comercial:"Bitrix",disparos:"Disparos"}[v]+" ▾";
+  const subs={tiny:"Olist · vendas (pedidos) · atualiza de hora em hora",comercial:"Bitrix · negócios, propostas e vendas · atualiza de hora em hora",disparos:"Disparos · WhatsApp + Bitrix · atualiza de hora em hora",trafego:"Tráfego Pago · Meta Ads e Google Ads · atualiza de hora em hora"};
   document.querySelector(".ph-right .sub").innerHTML='<span class="dot"></span>'+subs[v];
   if(v==="tiny") abrirTiny();
   if(v==="trafego") abrirTrafego();
@@ -1078,18 +1082,10 @@ function renderTiny(){
   const chev=`<svg class="ol-pill-cv" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>`;
   const pOpts=[["hoje","Hoje"],["ontem","Ontem"],["7d","7 dias"],["mes","Este mês"],["mesant","Mês anterior"],["custom","Personalizado"]];
   box.innerHTML=`
-  <div class="ol-hero">
-    <div class="ol-hero-l">
-      <div class="ol-hero-eye"><b>olist</b> VENDAS</div>
-      <h1 class="ol-hero-h">Vendas <span>por situação</span></h1>
-      <div class="ol-hero-sub">Acompanhe o progresso das suas vendas no período · atualizado ${tpHora(TN.gerado_em)}</div>
-    </div>
-    <div class="ol-hero-r">
-      <label class="ol-pill"><span class="ol-pill-ic">${tpSvg("cal")}</span><span class="ol-pill-tx"><small>Período</small><select id="tn-psel">${pOpts.map(([k,l])=>`<option value="${k}" ${TNF.p===k?"selected":""}>${l}</option>`).join("")}</select></span>${chev}</label>
-      <label class="ol-pill"><span class="ol-pill-ic">${tpSvg("build")}</span><span class="ol-pill-tx"><small>Equipe</small><select id="tn-eq"><option value="">Todas</option>${["Vendas Internas","LightWall","Outros"].map(e=>`<option ${TNF.eq===e?"selected":""}>${e}</option>`).join("")}</select></span>${chev}</label>
-      <label class="ol-pill"><span class="ol-pill-ic">${tpSvg("users")}</span><span class="ol-pill-tx"><small>Vendedor</small><select id="tn-v"><option value="">Todos</option>${vendOpts.map(v=>`<option ${TNF.v===v?"selected":""}>${tpEsc(v)}</option>`).join("")}</select></span>${chev}</label>
-    </div>
-  </div>
+  ${heroHead(OLIST_LOGO,"Vendas","por situação",`Acompanhe o progresso das suas vendas · atualizado ${tpHora(TN.gerado_em)}`,
+    heroPill("cal","Período",`<select id="tn-psel">${pOpts.map(([k,l])=>`<option value="${k}" ${TNF.p===k?"selected":""}>${l}</option>`).join("")}</select>`)+
+    heroPill("build","Equipe",`<select id="tn-eq"><option value="">Todas</option>${["Vendas Internas","LightWall","Outros"].map(e=>`<option ${TNF.eq===e?"selected":""}>${e}</option>`).join("")}</select>`)+
+    heroPill("users","Vendedor",`<select id="tn-v"><option value="">Todos</option>${vendOpts.map(v=>`<option ${TNF.v===v?"selected":""}>${tpEsc(v)}</option>`).join("")}</select>`))}
   <div style="margin:0 2px 10px">${cmDates("tn",TNF.p==="custom",TNF.ini,TNF.fim)}</div>
   <div class="tp-note" id="tn-per" style="margin:0 4px 12px"></div>
   <div id="tn-dyn"></div>`;
@@ -1258,6 +1254,13 @@ const tpKpi=k=>`<div class="tp-kpi${k.hl?" hl":""}"><div class="l"><span class="
 const tpHead=(ic,t,sub,right,c)=>`<div class="tp-head"><span class="hi" style="--c:${c||"var(--brand)"}">${tpSvg(ic)}</span><div><h3>${t}</h3>${sub?`<div class="hs">${sub}</div>`:""}</div>${right?`<div class="hr">${right}</div>`:""}</div>`;
 const tpInfo=html=>`<div class="tp-info">${tpSvg("info")}<div>${html}</div></div>`;
 const tpPerTxt=(f,r)=>f.p==="hoje"?`${tpBrY(r.ini)} · dia em andamento (sem comparação)`:`${tpBrY(r.ini)}${r.fim!==r.ini?" → "+tpBrY(r.fim):""} · comparado com ${tpBr(r.pini)}${r.pfim!==r.pini?" → "+tpBr(r.pfim):""}`;
+// ===== logos das fontes + cabeçalho hero reutilizável =====
+const OLIST_LOGO=`<svg viewBox="0 0 548 259" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M543.62 141.96H508.82L508.69 190.64C508.69 214.05 528.66 218.81 543.81 219.44C545.8 219.52 547.35 221.18 547.35 223.17V254.7C547.35 256.82 545.61 258.49 543.49 258.44C517.26 257.81 495.42 250.72 482.4 237.34C464.17 218.61 464.59 197.21 464.73 195.33L465.12 60.77C465.12 58.71 466.8 57.05 468.85 57.05H505.38C507.45 57.05 509.13 58.74 509.11 60.81L508.8 105.05H543.6C545.66 105.05 547.33 106.72 547.33 108.79V138.23C547.33 140.29 545.66 141.96 543.6 141.96" fill="#0A4EE4"/><path d="M223.66 248.88L223.76 37.2C223.76 35.14 222.09 33.46 220.03 33.46H183.43C181.37 33.46 179.7 35.13 179.7 37.19V248.87C179.7 250.93 181.37 252.6 183.43 252.6H219.93C221.99 252.6 223.66 250.93 223.66 248.87" fill="#0A4EE4"/><path d="M419.09 166.17C407.89 161.96 393.03 158.78 379.89 156.63C373.39 155.48 368.19 153.81 364.45 151.65C358.04 148.38 357.95 138.25 364.27 134.57C371.45 129.7 388.97 130.15 396.38 135.62C399.22 137.3 401.49 140.38 403.12 144.06C403.67 145.3 405.04 145.94 406.33 145.55L439.3 135.51C441.5 134.84 442.55 132.37 441.56 130.29C437.41 121.5 430.95 114.03 422.13 108.13C400.6 92.6 356.19 92.82 335.58 108.93C317.12 120.84 312.52 153.44 326.79 170.25C338.86 184.65 358.33 189.81 377.2 193.79C377.26 193.8 377.32 193.81 377.39 193.83C385.6 195.11 399.63 197.87 404.06 201.15C411.07 205.33 410.34 215.03 403.61 219.54C399.84 222.33 393.74 223.74 385.49 223.74C369.54 223.72 358.88 217.92 354.07 204.51C353.62 203.25 352.19 202.49 350.9 202.82L317.68 211.42C315.63 211.95 314.41 214.09 315.03 216.12C318.76 228.22 325.98 238.25 336.55 245.31C372.07 269.16 451.28 263.04 450.12 207.15C450.12 196.25 447.26 187.42 441.61 180.92C436.08 174.56 428.5 169.6 419.08 166.18" fill="#0A4EE4"/><path d="M250.06 102.86V248.88C250.06 250.94 251.73 252.61 253.79 252.61H290.93C292.99 252.61 294.66 250.94 294.66 248.88V102.86C294.66 100.8 292.99 99.13 290.93 99.13H253.79C251.73 99.13 250.06 100.8 250.06 102.86Z" fill="#0A4EE4"/><path d="M272.36 48.59C258.94 48.59 248.07 37.71 248.07 24.3V49.95C248.07 63.37 258.95 74.24 272.36 74.24C285.77 74.24 296.65 63.36 296.65 49.95V24.3C296.65 37.72 285.77 48.59 272.36 48.59Z" fill="#E64E36"/><path d="M272.36 48.59C285.78 48.59 296.65 37.71 296.65 24.3C296.65 10.89 285.78 0 272.36 0C258.94 0 248.07 10.88 248.07 24.29C248.07 37.71 258.95 48.58 272.36 48.58" fill="#0A4EE4"/><path d="M81.07 217.29C57.97 217.29 41.2 200.41 41.2 177.14C41.2 154.38 57.97 137.86 81.07 137.86C104.17 137.86 120.63 154.38 120.63 177.14C120.63 199.9 103.99 217.29 81.07 217.29ZM80.91 96.66C36.23 96.66 0 132.89 0 177.57C0 222.25 36.23 258.48 80.91 258.48C125.59 258.48 161.82 222.25 161.82 177.57C161.82 132.89 125.59 96.65 80.91 96.65" fill="#0A4EE4"/></svg>`;
+const BITRIX_LOGO=`<svg viewBox="0 0 190 34" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="0" y="27" font-family="Arial,Helvetica,sans-serif" font-size="33" font-weight="800" letter-spacing="-1.5"><tspan fill="#2BABE2">Bitrix</tspan><tspan fill="#0C5C8C">24</tspan></text><circle cx="176" cy="13" r="9" fill="none" stroke="#0C5C8C" stroke-width="2.6"/><path d="M176 7.5V13l3.5 2.4" fill="none" stroke="#0C5C8C" stroke-width="2.6" stroke-linecap="round"/></svg>`;
+const OL_CHEV=`<svg class="ol-pill-cv" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>`;
+function heroPill(ic,label,sel){return `<label class="ol-pill"><span class="ol-pill-ic">${tpSvg(ic)}</span><span class="ol-pill-tx"><small>${label}</small>${sel}</span>${OL_CHEV}</label>`;}
+function heroHead(logo,title,span,sub,pills){return `<div class="ol-hero"><div class="ol-hero-l"><span class="ol-logochip">${logo}</span><div class="ol-hero-tx"><h1 class="ol-hero-h">${title}${span?` <span>${span}</span>`:""}</h1><div class="ol-hero-sub">${sub}</div></div></div><div class="ol-hero-r">${pills}</div></div>`;}
+
 function tpBold(s){return tpEsc(s).replace(/(R\$\s?\d[\d.,]*|(?<![&#\w])\d[\d.,]*\s?%?)/g,"<b>$1</b>");}
 function tpTags(arr,max=8){
   if(!arr||!arr.length) return '<span class="tp-empty">—</span>';
@@ -1650,7 +1653,7 @@ function renderTpGoogleDyn(){
 // negócio = criação · proposta = última proposta do card · venda = entrada em Ganho.
 // Conversões usam a "safra": negócios criados no período e o que aconteceu com eles até hoje.
 let CM=null, CM_EM=0;
-const CMF={p:"mes",ini:"",fim:"",v:"",c:"",vp:"mes",vini:"",vfim:""};
+const CMF={p:"mes",ini:"",fim:"",v:"",c:"",vp:"mes",vini:"",vfim:"",mode:"valor"};
 const CM_G_OLD=[["negociacao","Em negociação","#2563eb"],["semretorno","Sem retorno","#f59e0b"],["renutricao","Renutrição","#7c3aed"],["ganho","Ganhos","#16a34a"],["perdido","Perdidos","#dc2626"],["outras","Outras etapas abertas","#9aa7bd"]];
 const CM_PER=[["hoje","Hoje"],["ontem","Ontem"],["7d","7 dias"],["mes","Este mês"],["mesant","Mês anterior"],["custom","Personalizado"]];
 function abrirComercial(){
@@ -1672,32 +1675,22 @@ function cmRange(p,ini,fim){return tpRange({p,ini,fim},CM.hoje);}
 function renderComercial(){
   const box=document.getElementById("view-comercial");
   box.innerHTML=`
-  <div class="cm-top">
-    <div class="cm-tl"><span class="cm-logo">${tpSvg("bars")}</span><div><h1 class="cm-h1">Comercial</h1><div class="cm-sub">Bitrix · Vendas Internas e LightWall</div></div></div>
-    <div class="cm-tr"><span class="cm-upd"><i></i>Atualizado ${tpHora(CM.gerado_em)}</span>
-      <button class="cm-datepill" id="cm-dp" title="Escolher período personalizado">${tpSvg("cal")}<span id="cm-dp-t"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
-  </div>
-  <div class="cm-fbar">
-    <span class="fl">Período</span>${cmSeg("cm-seg",CMF.p,CM_PER)}${cmDates("cm",CMF.p==="custom",CMF.ini,CMF.fim)}
-    <span class="sep"></span><span class="fl">Vendedor</span><select class="tp-sel" id="cm-v"><option value="">Todos</option>${Object.entries(CM.vend).map(([k,n])=>`<option value="${k}" ${CMF.v===k?"selected":""}>${n}</option>`).join("")}</select>
-    <span class="fl">Pipeline</span><select class="tp-sel" id="cm-c"><option value="">Todos</option>${Object.entries(CM.pipes).map(([k,n])=>`<option value="${k}" ${CMF.c===k?"selected":""}>${n}</option>`).join("")}</select>
-    <button class="tp-ref" id="cm-ref" title="Recarregar os dados">${tpSvg("refresh")}</button>
-  </div>
-  <div class="tp-note" id="cm-per" style="margin:8px 4px 0"></div>
+  ${heroHead(BITRIX_LOGO,"Comercial","",`Vendas Internas e LightWall · atualizado ${tpHora(CM.gerado_em)}`,
+    heroPill("cal","Período",`<select id="cm-psel">${CM_PER.map(([k,l])=>`<option value="${k}" ${CMF.p===k?"selected":""}>${l}</option>`).join("")}</select>`)+
+    heroPill("users","Vendedor",`<select id="cm-v"><option value="">Todos</option>${Object.entries(CM.vend).map(([k,n])=>`<option value="${k}" ${CMF.v===k?"selected":""}>${n}</option>`).join("")}</select>`)+
+    heroPill("build","Pipeline",`<select id="cm-c"><option value="">Todos</option>${Object.entries(CM.pipes).map(([k,n])=>`<option value="${k}" ${CMF.c===k?"selected":""}>${n}</option>`).join("")}</select>`))}
+  <div style="margin:0 2px 10px">${cmDates("cm",CMF.p==="custom",CMF.ini,CMF.fim)}</div>
+  <div class="tp-note" id="cm-per" style="margin:0 4px 8px"></div>
   <div id="cm-dyn"></div>
   ${tpHead("users","Desempenho por vendedor",'Não muda com o filtro de vendedor · <span id="cm-vper"></span>',`<div class="tp-filters"><span class="fl">Período</span>${cmSeg("cm-vseg",CMF.vp,CM_PER)}${cmDates("cm-v",CMF.vp==="custom",CMF.vini,CMF.vfim)}</div>`,TPC.purple)}
   <div id="cm-vend"></div>`;
-  const seg=(id,key,ik,fk,fn)=>{
-    document.getElementById(id).onclick=e=>{const b=e.target.closest("button");if(!b)return;CMF[key]=b.dataset.cmp;
-      if(CMF[key]==="custom"&&!CMF[ik]){CMF[ik]=CM.hoje.slice(0,8)+"01";CMF[fk]=CM.hoje;}renderComercial();};
-  };
-  seg("cm-seg","p","ini","fim"); seg("cm-vseg","vp","vini","vfim");
+  const seg=(id,key,ik,fk)=>{const el=document.getElementById(id);if(el)el.onclick=e=>{const b=e.target.closest("button");if(!b)return;CMF[key]=b.dataset.cmp;
+      if(CMF[key]==="custom"&&!CMF[ik]){CMF[ik]=CM.hoje.slice(0,8)+"01";CMF[fk]=CM.hoje;}renderComercial();};};
+  seg("cm-vseg","vp","vini","vfim");
+  document.getElementById("cm-psel").onchange=e=>{CMF.p=e.target.value;if(CMF.p==="custom"&&!CMF.ini){CMF.ini=CM.hoje.slice(0,8)+"01";CMF.fim=CM.hoje;}renderComercial();};
   [["cm-ini","ini"],["cm-fim","fim"],["cm-v-ini","vini"],["cm-v-fim","vfim"]].forEach(([id,k])=>{const i=document.getElementById(id);if(i)i.onchange=e=>{CMF[k]=e.target.value;renderComercial();};});
   document.getElementById("cm-v").onchange=e=>{CMF.v=e.target.value;renderCmDyn();};
   document.getElementById("cm-c").onchange=e=>{CMF.c=e.target.value;renderCmDyn();renderCmVend();};
-  document.getElementById("cm-ref").onclick=()=>{CM_EM=0;abrirComercial();};
-  document.getElementById("cm-dp").onclick=()=>{if(CMF.p!=="custom"){const r=cmRange(CMF.p,CMF.ini,CMF.fim);CMF.ini=r.ini;CMF.fim=r.fim;CMF.p="custom";renderComercial();}
-    const i=document.getElementById("cm-ini");if(i){i.focus();try{i.showPicker();}catch(e){}}};
   renderCmDyn(); renderCmVend();
 }
 
@@ -1721,7 +1714,7 @@ function renderCmDyn(){
   const r=cmRange(CMF.p,CMF.ini,CMF.fim), R=[r.ini,r.fim], P=[r.pini,r.pfim], el=document.getElementById("cm-dyn");
   TP_NOCMP=CMF.p==="hoje";
   document.getElementById("cm-per").textContent=tpPerTxt({p:CMF.p},r);
-  document.getElementById("cm-dp-t").innerHTML=`${tpBrY(r.ini)} <span style="color:var(--muted)">→</span> ${tpBrY(r.fim)}`;
+  const _dpt=document.getElementById("cm-dp-t");if(_dpt)_dpt.innerHTML=`${tpBrY(r.ini)} <span style="color:var(--muted)">→</span> ${tpBrY(r.fim)}`;
   const D=CM.deals.filter(x=>(!CMF.v||x.v===CMF.v)&&(!CMF.c||x.c===CMF.c));
   const neg=D.filter(x=>cmIn(x.dc,R)), negP=D.filter(x=>cmIn(x.dc,P));
   const pro=D.filter(x=>cmIn(x.pd,R)), proP=D.filter(x=>cmIn(x.pd,P));
@@ -1765,11 +1758,12 @@ function renderCmDyn(){
     ${big({cls:"gr",ic:"check",l:"Vendas",v:tpBRL(sum(ven,"o"),0),sub:`<b>${tpN(ven.length)}</b> venda${ven.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(ven.length,venP.length)} · ticket médio ${tpBRL(tpDiv(sum(ven,"o"),ven.length),0)}`,cur:sum(ven,"o"),prev:sum(venP,"o"),spark:tpSpark(conta(D,"won"),"rgba(255,255,255,.85)")})}
     ${big({cls:"rd",ic:"tool",l:"Perdidos",v:tpBRL(sum(per,"o"),0),sub:`<b>${tpN(per.length)}</b> negócio${per.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(per.length,perP.length,true)} · motivos mais abaixo`,cur:sum(per,"o"),prev:sum(perP,"o"),lb:1,spark:tpSpark(conta(D,"lost"),"rgba(255,255,255,.85)")})}
   </div>
-  <div class="tp-panel" style="margin-top:22px">${tpHead("bars","O que está sendo negociado","Etapas em aberto: negócios criados no período · Ganho e Perdido: fechados no período","",TPC.blue)}
-    ${(()=>{const abertas=sit, abO=abertas.reduce((a,x)=>a+x.o,0), abN=abertas.reduce((a,x)=>a+x.n,0), totO=abO||1;
-      return `      <div class="tp-stack" style="height:22px;margin-top:4px" title="Proporcional ao valor">${abertas.filter(x=>x.o).map(x=>`<i title="${x.l}: ${tpBRL(x.o,0)}" style="width:${x.o/totO*100}%;background:${x.c}"></i>`).join("")}</div>
-      <div class="tp-note" style="margin:-4px 0 10px">Barra proporcional ao valor em cada etapa</div>
-      <div class="cm-sit cm-sit6">${abertas.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> negócio${x.n===1?"":"s"} · ${tpPct(x.o/totO*100)} do valor</div></div>`).join("")}</div>`;})()}
+  <div class="tp-panel" style="margin-top:22px">${tpHead("bars","O que está sendo negociado",`Etapas em aberto: negócios criados no período · Ganho e Perdido: fechados no período · barra proporcional ${CMF.mode==="pedidos"?"ao nº de negócios":"ao valor"}`,`<span class="ol-seg" id="cm-mode"><button data-m="valor" class="${CMF.mode==="valor"?"on":""}">Valor (R$)</button><button data-m="pedidos" class="${CMF.mode==="pedidos"?"on":""}">Negócios</button></span>`,TPC.blue)}
+    ${(()=>{const cmMet=x=>CMF.mode==="pedidos"?x.n:x.o, totM=sit.reduce((a,x)=>a+cmMet(x),0)||1;
+      const ic=l=>{const t=l.toLowerCase();return t.includes("negocia")?"trend":t.includes("retorno")?"pause":t.includes("obra")?"build":t.includes("renutri")?"refresh":t.includes("ganho")?"check":t.includes("perdido")?"tool":"tag";};
+      return `<div class="ol-pbar">${sit.filter(x=>cmMet(x)).map(x=>`<i title="${x.l}: ${CMF.mode==="pedidos"?tpN(x.n)+" neg":tpBRL(x.o,0)}" style="width:${cmMet(x)/totM*100}%;background:${x.c}"></i>`).join("")}</div>
+      <div class="ol-plabs">${sit.filter(x=>cmMet(x)).map(x=>{const w=cmMet(x)/totM*100;return `<span style="width:${w}%;color:${x.c}">${w>=4?tpPct(w):""}</span>`;}).join("")}</div>
+      <div class="ol-stats">${sit.map(x=>`<div class="ol-stat"><div class="h"><span class="ci" style="background:color-mix(in srgb,${x.c} 15%,transparent);color:${x.c}">${tpSvg(ic(x.l))}</span>${x.l}</div><div class="v">${CMF.mode==="pedidos"?tpN(x.n):tpBRL(x.o,0)}</div><div class="s">${CMF.mode==="pedidos"?`${tpBRL(x.o,0)} · ${tpPct(cmMet(x)/totM*100)} dos negócios`:`<b>${tpN(x.n)}</b> negócio${x.n===1?"":"s"} · ${tpPct(x.o/totM*100)} do valor`}</div></div>`).join("")}</div>`;})()}
   </div>
   <div class="tp-panel" style="margin-top:16px">${tpHead("trend","Funil do período","Quantidade de negócios criados, propostas feitas e vendas fechadas no período · entre as etapas, a passagem de uma para a outra","",TPC.blue)}
     ${cmFunil([{l:"Negócios",n:neg.length,c1:"#3b7cf0",c2:"#1d4ed8"},{l:"Propostas",n:pro.length,c1:"#f59e0b",c2:"#d97706"},{l:"Vendas",n:ven.length,c1:"#22c55e",c2:"#15803d"}])}
@@ -1786,6 +1780,7 @@ function renderCmDyn(){
   ${tpHead("tool","Motivos de perda",`${tpN(per.length)} negócios perdidos no período · ranking dos motivos informados no Bitrix`,"",TPC.pink)}
   <div class="tp-qc">${per.length?`<div class="cm-g cm-g2" style="gap:32px;align-items:start"><div><div style="font-size:14px;font-weight:800;margin-bottom:6px">Ranking dos motivos</div>${tpRows(motArr)}</div>
       <div>${outroArr.length?`<div style="font-size:14px;font-weight:800">Dentro de “Outro”</div><div class="tp-note" style="margin:0 0 6px">Resumo do campo “Observações Desqualificação”, agrupado por tema</div>${tpRows(outroArr)}${tpInfo(`O principal motivo escondido em “Outro” é <b>${tpEsc(outroArr[0].label.toLowerCase())}</b>: ${tpPct(outroArr[0].n/outros.length*100)} desses casos.`)}`:'<div class="tp-empty">Nenhuma perda marcada como “Outro” no período.</div>'}</div></div>`:'<div class="tp-empty">Nenhum negócio perdido no período.</div>'}</div>`;
+  const cmm=document.getElementById("cm-mode");if(cmm)cmm.onclick=e=>{const b=e.target.closest("button");if(!b)return;CMF.mode=b.dataset.m;renderCmDyn();};
   TP_NOCMP=false;
   renderCmEvol(D,r); renderCmOrigem(D,r);
 }
@@ -1984,16 +1979,10 @@ function renderDisparos(){
   // ---- negócios por fonte ----
   const fontes={};neg.forEach(x=>{const k=x.bz&&!/disparo|biozap/i.test(x.src)?"Contato do disparo automático (BioZap)":x.src;const o=fontes[k]=fontes[k]||{n:0,p:0,w:0,wo:0};o.n++;if(x.np)o.p++;if(x.won){o.w++;o.wo+=x.o;}});
   box.innerHTML=`
-  <div class="cm-top">
-    <div class="cm-tl"><span class="cm-logo" style="background:linear-gradient(150deg,#22c55e,#15803d);box-shadow:0 10px 24px rgba(22,163,74,.28)">${tpSvg("wpp")}</span><div><h1 class="cm-h1">Disparos</h1><div class="cm-sub">WhatsApp · Biomassa do Brasil (+55 11 94722-6372)</div></div></div>
-    <div class="cm-tr"><span class="cm-upd"><i></i>Atualizado ${tpHora(DS.gerado_em)}</span>
-      <span class="cm-datepill">${tpSvg("cal")}<span>${tpBrY(r.ini)} <span style="color:var(--muted)">→</span> ${tpBrY(r.fim)}</span></span></div>
-  </div>
-  <div class="cm-fbar">
-    <span class="fl">Período</span>${cmSeg("ds-seg",DSF.p,CM_PER)}${cmDates("ds",DSF.p==="custom",DSF.ini,DSF.fim)}
-    <button class="tp-ref" id="ds-ref" title="Recarregar os dados">${tpSvg("refresh")}</button>
-  </div>
-  <div class="tp-note" style="margin:8px 4px 0">${tpPerTxt({p:DSF.p},r)}</div>
+  ${heroHead(tpSvg("wpp",'style="color:#25D366"'),"Disparos","",`WhatsApp · +55 11 94722-6372 · atualizado ${tpHora(DS.gerado_em)}`,
+    heroPill("cal","Período",`<select id="ds-psel">${CM_PER.map(([k,l])=>`<option value="${k}" ${DSF.p===k?"selected":""}>${l}</option>`).join("")}</select>`))}
+  <div style="margin:0 2px 10px">${cmDates("ds",DSF.p==="custom",DSF.ini,DSF.fim)}</div>
+  <div class="tp-note" style="margin:0 4px 8px">${tpPerTxt({p:DSF.p},r)}</div>
   ${M.ok===false?`<div class="tp-warn" style="margin-top:12px"><div><b>Os dados da Meta não estão atualizando.</b> ${tpEsc(M.erro||"")}</div></div>`:""}
   <div class="tp-bigs ds-bigs">
     ${big({hl:1,ic:"wpp",l:"Disparos",v:tpN(env),sub:`<b>${tpN(soma(dia,"mk"))}</b> marketing · <b>${tpN(soma(dia,"ut"))}</b> utilidade`,cur:env,prev:envP})}
@@ -2023,9 +2012,8 @@ function renderDisparos(){
     </tbody></table></div>`:'<div class="tp-empty">Nenhum negócio de disparo criado no período.</div>'}
     ${tpInfo("Vendas aqui são só as fechadas no Bitrix. Vendas da Pessoa Física feitas direto na loja (Tray) ainda não entram; isso vem quando a Tray for integrada.")}</div>`;
   TP_NOCMP=false;
-  document.getElementById("ds-seg").onclick=e=>{const b=e.target.closest("button");if(!b)return;DSF.p=b.dataset.cmp;if(DSF.p==="custom"&&!DSF.ini){DSF.ini=DS.hoje.slice(0,8)+"01";DSF.fim=DS.hoje;}renderDisparos();};
+  document.getElementById("ds-psel").onchange=e=>{DSF.p=e.target.value;if(DSF.p==="custom"&&!DSF.ini){DSF.ini=DS.hoje.slice(0,8)+"01";DSF.fim=DS.hoje;}renderDisparos();};
   [["ds-ini","ini"],["ds-fim","fim"]].forEach(([id,k])=>{const i=document.getElementById(id);if(i)i.onchange=e=>{DSF[k]=e.target.value;renderDisparos();};});
-  document.getElementById("ds-ref").onclick=()=>{DS_EM=0;abrirDisparos();};
 }
 
 setView("comercial");
