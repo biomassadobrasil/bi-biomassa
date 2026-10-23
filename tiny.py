@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Conector Tiny API v2 (token simples). Token lido de env TINY_TOKEN."""
-import os, json, urllib.parse, urllib.request
+"""Conector Tiny API v2 (token simples) + módulo do B.I Tiny (vendas) -> tiny.json.
+Token lido de env TINY_TOKEN. Roda de hora em hora (server.py)."""
+import os, json, urllib.parse, urllib.request, datetime, threading, traceback, unicodedata, time
+from zoneinfo import ZoneInfo
 
 BASE = "https://api.tiny.com.br/api2"
 
@@ -57,3 +59,123 @@ def amostra():
         "campos_de_um_pedido": campos,
         "exemplos": [p["pedido"] for p in pedidos[:3]],
     }
+
+# ====================== B.I Tiny (vendas) → tiny.json ======================
+HERE = os.path.dirname(os.path.abspath(__file__))
+OUT = os.path.join(HERE, "tiny.json")
+SP = ZoneInfo("America/Sao_Paulo")
+DESDE = "2026-01-01"                        # janela de histórico (cobre todos os presets de data)
+_LOCK = threading.Lock()
+
+# equipes (segmentação pedida pelo Alex): Vendas Internas × LightWall × Outros.
+# "Outros" mantém o nome real do vendedor (o Alex quer enxergar quem são).
+EQUIPES = {"Vendas Internas": "Vendas Internas", "LightWall": "LightWall", "Outros": "Outros"}
+
+def _norm(s):
+    s = unicodedata.normalize("NFKD", str(s or "")).encode("ascii", "ignore").decode().lower()
+    return " ".join(s.split())
+
+def _classifica_vendedor(nome):
+    """nome do Tiny -> (rótulo curto, equipe). Os 5 nomeados; o resto fica com o nome real em 'Outros'."""
+    n = _norm(nome)
+    if "vanessa" in n: return "Vanessa", "Vendas Internas"
+    if "thauany" in n: return "Thauany", "Vendas Internas"
+    if "ingrid" in n: return "Ingrid", "Vendas Internas"
+    if "gualdiano" in n or "patricia" in n: return "Patrícia", "LightWall"
+    if "luiz" in n or "gomes" in n: return "Luiz", "LightWall"
+    return (nome or "—").strip(), "Outros"
+
+def _grupo_situacao(sit):
+    """Agrupa a situação do Tiny. 'vendido' = regra do Alex (aprovado→entregue, sem faturado/não entregue)."""
+    n = _norm(sit)
+    if "cancel" in n: return "cancelado"
+    if "aberto" in n: return "aberto"
+    if "nao entregue" in n: return "naoentregue"     # antes de 'entregue' (é substring)
+    if "entregue" in n: return "vendido"
+    if "enviado" in n: return "vendido"
+    if "pronto" in n: return "vendido"
+    if "preparando" in n: return "vendido"
+    if "aprovado" in n: return "vendido"
+    if "faturado" in n: return "faturado"
+    return "outro"
+
+def _iso(data_br):
+    """'DD/MM/AAAA' -> 'AAAA-MM-DD' (vazio se não der)."""
+    try:
+        d, m, a = str(data_br).split("/"); return f"{a}-{m.zfill(2)}-{d.zfill(2)}"
+    except Exception:
+        return ""
+
+def _todos_pedidos(desde_br, ate_br):
+    """Varre todas as páginas de pedidos.pesquisa no período (DD/MM/AAAA)."""
+    out = []
+    pag = 1
+    while True:
+        res = pesquisa_pedidos(pagina=pag, data_inicial=desde_br, data_final=ate_br)
+        ret = res.get("retorno", {})
+        if str(ret.get("status")) != "OK":
+            break
+        for p in ret.get("pedidos", []):
+            out.append(p.get("pedido", {}))
+        total = int(ret.get("numero_paginas") or 1)
+        if pag >= total:
+            break
+        pag += 1
+        time.sleep(0.15)                            # educado com a API
+    return out
+
+def build():
+    hoje = datetime.datetime.now(SP).date()
+    desde_br = "01/01/2026"
+    ate_br = hoje.strftime("%d/%m/%Y")
+    peds = _todos_pedidos(desde_br, ate_br)
+    vendas = []
+    for p in peds:
+        lbl, eq = _classifica_vendedor(p.get("nome_vendedor"))
+        try: val = round(float(p.get("valor") or 0), 2)
+        except Exception: val = 0.0
+        vendas.append({"d": _iso(p.get("data_pedido")), "v": lbl, "e": eq,
+                       "s": p.get("situacao") or "—", "g": _grupo_situacao(p.get("situacao")),
+                       "o": val, "n": p.get("numero")})
+    # ordem das situações p/ a seção "Vendas por situação" (fluxo lógico do Tiny)
+    ordem_sit = ["Em aberto", "Aprovado", "Faturado", "Preparando envio", "Pronto para envio",
+                 "Enviado", "Entregue", "Não entregue", "Cancelado"]
+    return {"gerado_em": datetime.datetime.now(SP).isoformat(timespec="minutes"),
+            "hoje": hoje.isoformat(), "desde": DESDE,
+            "equipes": {"Vendas Internas": ["Vanessa", "Thauany", "Ingrid"],
+                        "LightWall": ["Patrícia", "Luiz"], "Outros": []},
+            "ordem_situacoes": ordem_sit, "vendas": vendas}
+
+def atualizar():
+    if not _LOCK.acquire(blocking=False):
+        print("[TINY] já está atualizando, pulando"); return
+    try:
+        import generate as G
+        if not os.path.exists(OUT) and getattr(G, "_RDS", None):
+            try:
+                c = G._RDS.get("tiny:ultimo")
+                if c:
+                    with open(OUT, "w", encoding="utf-8") as fp: fp.write(c.decode() if isinstance(c, bytes) else c)
+            except Exception: pass
+        dados = build()
+        tmp = OUT + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as fp: json.dump(dados, fp, ensure_ascii=False)
+        os.replace(tmp, OUT)
+        if getattr(G, "_RDS", None):
+            try: G._RDS.set("tiny:ultimo", json.dumps(dados, ensure_ascii=False))
+            except Exception: pass
+        print(f"[TINY] gerado {dados['gerado_em']} — {len(dados['vendas'])} pedidos")
+    except Exception:
+        print("[TINY] falhou:\n" + traceback.format_exc())
+        try:
+            import generate as G
+            if not os.path.exists(OUT) and getattr(G, "_RDS", None):
+                c = G._RDS.get("tiny:ultimo")
+                if c:
+                    with open(OUT, "w", encoding="utf-8") as fp: fp.write(c.decode() if isinstance(c, bytes) else c)
+        except Exception: pass
+    finally:
+        _LOCK.release()
+
+if __name__ == "__main__":
+    atualizar()

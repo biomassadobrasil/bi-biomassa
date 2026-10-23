@@ -238,6 +238,13 @@
   /* tooltip também nos modos */
   .sb-mode::after{content:attr(data-tip);position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%) translateX(-4px);background:#0d1524;color:#fff;padding:6px 10px;border-radius:8px;font-size:12.5px;font-weight:600;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s,transform .12s;z-index:60;box-shadow:0 6px 18px rgba(0,0,0,.28)}
   .sb-mode:hover::after{opacity:1;transform:translateY(-50%) translateX(0)}
+  /* ===== ranking por equipe (aba Tiny) ===== */
+  .tn-eqs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+  .tn-eqcard{margin-top:0}
+  .tn-eqh{display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:10px}
+  .tn-eqdot{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+  .tn-eqtot{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--muted)}
+  @media(max-width:860px){.tn-eqs{grid-template-columns:1fr}}
   /* ===== filtros da aba Tiny ===== */
   .tiny-select{font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--panel);
     border:1px solid var(--line);border-radius:9px;padding:7px 12px;cursor:pointer}
@@ -886,6 +893,7 @@
         <div class="bi-opt active" data-view="comercial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span>Comercial</span></div>
         <div class="bi-opt" data-view="disparos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span>Disparos</span></div>
         <div class="bi-opt" data-view="trafego"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/></svg><span>Tráfego Pago</span></div>
+        <div class="bi-opt" data-view="tiny"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22" x2="12" y2="12"/></svg><span>Tiny</span></div>
       </div>
     </div>
     <div class="sb-div"></div>
@@ -901,41 +909,7 @@
     </div>
   </header>
 
-  <div id="view-tiny" style="display:none">
-    <div class="tiny-alert">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2.2"><path d="M12 9v4m0 4h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
-      <div><b>Aba em construção.</b> Os dados do Tiny ainda estão sendo validados e podem estar <b>desatualizados ou incorretos</b>. Em breve: filtro de produtos, curva ABC e regiões (faturamento/entrega).</div>
-    </div>
-    <div class="filterbar">
-      <span class="fllbl">Filtros</span>
-      <select id="tiny-vd" class="tiny-select"></select>
-      <input id="tiny-search" class="cli-search" type="text" placeholder="Buscar cliente (ex.: Leroy)…">
-      <span class="drlbl">Período</span>
-      <input type="date" id="tiny-from" class="tiny-select" style="color-scheme:light dark">
-      <span class="drsep">até</span>
-      <input type="date" id="tiny-to" class="tiny-select" style="color-scheme:light dark">
-      <button class="reset" id="tiny-reset">limpar</button>
-    </div>
-    <div class="fcount" id="tiny-fcount"></div>
-    <div id="tiny-wrap">
-      <div class="kpis" id="tiny-kpis" style="grid-template-columns:repeat(4,1fr);margin:6px 0 14px"></div>
-      <div class="grid2">
-        <div class="card"><div class="cardh">Situação dos pedidos</div><div id="tiny-sit"></div></div>
-        <div class="card"><div class="cardh">Top clientes (Tiny)</div><div id="tiny-cli"></div></div>
-      </div>
-      <div class="grid2" style="margin-top:22px">
-        <div class="card"><div class="cardh">Vendas por mês (R$)</div><div class="months" id="tiny-mes"></div></div>
-        <div class="card"><div class="cardh">Vendas por ano (R$)</div><div class="months" id="tiny-ano"></div></div>
-      </div>
-      <div class="grid2" style="margin-top:14px">
-        <div class="card"><div class="cardh">Por vendedor</div><div id="tiny-ven"></div></div>
-        <div class="card" style="overflow-x:auto"><div class="cardh">Pedidos por cliente</div>
-          <table id="tiny-tbl"><thead><tr><th>Cliente</th><th class="r">Pedidos</th><th class="r">Valor</th></tr></thead><tbody></tbody></table>
-        </div>
-      </div>
-
-    </div>
-  </div><!-- /view-tiny -->
+  <div id="view-tiny" style="display:none"><div class="tp-loading">Carregando Tiny…</div></div>
 
   <div id="view-comercial"><div class="tp-loading">Carregando Comercial…</div></div>
 
@@ -943,7 +917,7 @@
 
   <div id="view-trafego" style="display:none"><div class="tp-loading">Carregando Tráfego Pago…</div></div>
 
-  <footer>Fontes: Bitrix24 (negócios, etapas, propostas e ligações) + Meta Ads e Google Ads. Valores em BRL. Atualização automática de hora em hora.</footer>
+  <footer>Fontes: Bitrix24 (negócios, etapas, propostas e ligações) + Meta Ads e Google Ads + Tiny (vendas). Valores em BRL. Atualização automática de hora em hora.</footer>
 </div>
 </div>
 
@@ -1017,7 +991,7 @@ function setView(v){
   document.getElementById("bi-cur").textContent={tiny:"Tiny",trafego:"Tráfego",comercial:"Comercial",disparos:"Disparos"}[v]+" ▾";
   const subs={tiny:"Dados do Tiny · pedidos/vendas · gerado em __GENDATE__",comercial:"Comercial · Bitrix · atualiza de hora em hora",disparos:"Disparos · WhatsApp + Bitrix · atualiza de hora em hora",trafego:"Tráfego Pago · Meta Ads e Google Ads · atualiza de hora em hora"};
   document.querySelector(".ph-right .sub").innerHTML='<span class="dot"></span>'+subs[v];
-  if(v==="tiny") renderTiny();
+  if(v==="tiny") abrirTiny();
   if(v==="trafego") abrirTrafego();
   if(v==="comercial") abrirComercial();
   if(v==="disparos") abrirDisparos();
@@ -1027,71 +1001,102 @@ const biSwitch=document.getElementById("bi-switch");
 biSwitch.onclick=e=>{e.stopPropagation();biSwitch.classList.toggle("open");};
 document.querySelectorAll(".bi-opt").forEach(o=>o.onclick=e=>{e.stopPropagation();setView(o.dataset.view);biSwitch.classList.remove("open");});
 document.addEventListener("click",()=>biSwitch.classList.remove("open"));
-// ---- aba Tiny (filtros próprios: vendedor + busca de cliente) ----
-const TINYF={vd:"",q:"",from:"",to:""};
-function renderTiny(){
-  const T=D.tiny;
-  if(!T){ document.getElementById("tiny-wrap").innerHTML='<div class="card"><div class="empty">Sem dados do Tiny ainda. Configure a variável <b>TINY_TOKEN</b> no servidor.</div></div>'; document.getElementById("tiny-fcount").textContent=""; return; }
-  const sel=document.getElementById("tiny-vd");
-  if(!sel.dataset.filled){
-    sel.innerHTML='<option value="">Todos os vendedores</option>'+T.vendedores.map(v=>`<option>${v}</option>`).join("");
-    const df=document.getElementById("tiny-from"), dto=document.getElementById("tiny-to");
-    df.min=dto.min=T.dmin; df.max=dto.max=T.dmax;
-    sel.dataset.filled="1";
-  }
-  const q=nrm(TINYF.q);
-  const rows=T.peds.filter(p=>(!TINYF.vd||p.vd===TINYF.vd)&&(!q||nrm(p.cli).includes(q))
-    &&(!TINYF.from||(p.dt&&p.dt>=TINYF.from))&&(!TINYF.to||(p.dt&&p.dt<=TINYF.to)));
-  let canc=0,valor=0,nval=0; const sit={},cli={},ven={},mes={},ano={};
-  for(const p of rows){
-    sit[p.st]=(sit[p.st]||0)+1;
-    if(p.canc){canc++;continue;}
-    valor+=p.v; if(p.v>0)nval++;
-    if(p.ym)mes[p.ym]=(mes[p.ym]||0)+p.v;
-    if(p.dt)ano[p.dt.slice(0,4)]=(ano[p.dt.slice(0,4)]||0)+p.v;
-    cli[p.cli]=cli[p.cli]||[0,0]; cli[p.cli][0]++; cli[p.cli][1]+=p.v;
-    ven[p.vd]=ven[p.vd]||[0,0]; ven[p.vd][0]++; ven[p.vd][1]+=p.v;
-  }
-  const ticket=nval?valor/nval:0, nf=(TINYF.vd?1:0)+(TINYF.q?1:0)+((TINYF.from||TINYF.to)?1:0);
-  const br=d=>d?d.split("-").reverse().join("/"):"";
-  const per=(TINYF.from||TINYF.to)?`${br(TINYF.from)||"início"} → ${br(TINYF.to)||"hoje"}`:`${br(T.dmin)} → ${br(T.dmax)} (tudo)`;
-  document.getElementById("tiny-fcount").innerHTML=`<b>${int(rows.length)}</b> pedidos no recorte`+(nf?` · ${nf} filtro(s)`:``)+` · período ${per}`;
-  const kc=k=>`<div class="kpi"><div class="kico ${k.tint}">${svgico(KIC[k.ic])}</div><div class="kbody"><div class="lbl">${k.l}</div><div class="big tnum">${k.v}</div><div class="foot">${k.f}</div></div></div>`;
-  document.getElementById("tiny-kpis").innerHTML=[
-    {l:"Pedidos",v:int(rows.length),f:`${int(canc)} cancelados`,ic:"brief",tint:"ico-blue"},
-    {l:"Valor total",v:brlK(valor),f:"pedidos válidos",ic:"dollar",tint:"ico-solid"},
-    {l:"Ticket médio",v:nval?brlK(ticket):"—",f:"por pedido",ic:"tag",tint:"ico-green"},
-    {l:"Clientes",v:int(Object.keys(cli).length),f:"distintos no recorte",ic:"trophy",tint:"ico-amber"},
-  ].map(kc).join("");
-  const PAL=["var(--brand)","#f5c518","var(--good)","#d2691e","var(--bad)","#8b5cf6"];
-  const sitArr=Object.entries(sit).sort((a,b)=>b[1]-a[1]);
-  document.getElementById("tiny-sit").innerHTML=makeDonut(
-    sitArr.slice(0,6).map((s,i)=>({label:s[0],value:s[1],color:PAL[i%PAL.length]})), int(rows.length), "pedidos");
-  renderBars(document.getElementById("tiny-cli"),
-    Object.entries(cli).map(([k,v])=>({label:k,n:Math.round(v[1]),disp:brlK(v[1])})).sort((a,b)=>b.n-a.n).slice(0,12), "var(--brand)");
-  let yms=Object.keys(mes).sort(); if(yms.length>24) yms=yms.slice(-24);
-  const maxV=Math.max(...yms.map(y=>mes[y]),1);
-  document.getElementById("tiny-mes").innerHTML= yms.length? yms.map(y=>
-    `<div class="mcol"><div class="bars"><div class="gn" style="width:60%;height:${mes[y]/maxV*100}%" title="${brl0(mes[y])}"></div></div><div class="ml">${ymLabel(y)}</div></div>`).join("")
-    :'<div class="empty" style="width:100%;align-self:center">Sem vendas no recorte.</div>';
-  const anos=Object.keys(ano).sort(); const maxA=Math.max(...anos.map(y=>ano[y]),1);
-  document.getElementById("tiny-ano").innerHTML= anos.length? anos.map(y=>
-    `<div class="mcol"><div class="bars"><div class="cr" style="width:66%;height:${ano[y]/maxA*100}%;background:var(--brand)" title="${brl0(ano[y])}"></div></div><div class="ml">${y}</div></div>`).join("")
-    :'<div class="empty" style="width:100%;align-self:center">Sem vendas no recorte.</div>';
-  renderBars(document.getElementById("tiny-ven"),
-    Object.entries(ven).map(([k,v])=>({label:k,n:Math.round(v[1]),disp:brlK(v[1])})).sort((a,b)=>b.n-a.n).slice(0,10), "var(--open)");
-  const rank=Object.entries(cli).map(([k,v])=>({nm:k,n:v[0],val:v[1]})).sort((a,b)=>b.val-a.val).slice(0,30);
-  document.querySelector("#tiny-tbl tbody").innerHTML= rank.length? rank.map(c=>
-    `<tr><td><b>${c.nm}</b></td><td class="r tnum">${int(c.n)}</td><td class="r tnum">${brl0(c.val)}</td></tr>`).join("")
-    :`<tr><td colspan="3" class="empty">Nenhum pedido no recorte.</td></tr>`;
+// ================= Tiny (vendas) — lê /tiny.json (de hora em hora) =================
+let TN=null, TN_EM=0;
+const TNF={p:"mes",ini:"",fim:"",eq:"",v:""};
+const TN_NOMEADOS=["Vanessa","Thauany","Ingrid","Patrícia","Luiz"];
+const TN_SITCOR={"Em aberto":"#f59e0b","Aprovado":"#3b82f6","Faturado":"#2563eb","Preparando envio":"#6366f1","Pronto para envio":"#0891b2","Enviado":"#14b8a6","Entregue":"#16a34a","Não entregue":"#ea580c","Cancelado":"#dc2626"};
+const TN_EQCOR={"Vendas Internas":"#2563eb","LightWall":"#7c3aed","Outros":"#64748b"};
+function abrirTiny(){
+  const box=document.getElementById("view-tiny");
+  if(TN && Date.now()-TN_EM<10*60e3){ renderTiny(); return; }
+  fetch("tiny.json",{cache:"no-store"}).then(r=>{if(r.status===503)throw new Error("gerando");if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
+  .then(d=>{TN=d;TN_EM=Date.now();renderTiny();}).catch(e=>{
+    box.innerHTML=`<div class="tp-loading">${e.message==="gerando"?"Gerando os dados do Tiny pela primeira vez… a página tenta de novo em 30 segundos.":"Não consegui carregar o Tiny ("+tpEsc(e.message)+")."}</div>`;
+    if(e.message==="gerando") setTimeout(abrirTiny,30000);
+  });
 }
-document.getElementById("tiny-vd").onchange=e=>{TINYF.vd=e.target.value;renderTiny();};
-document.getElementById("tiny-search").oninput=e=>{TINYF.q=e.target.value.trim();renderTiny();};
-document.getElementById("tiny-from").onchange=e=>{TINYF.from=e.target.value;renderTiny();};
-document.getElementById("tiny-to").onchange=e=>{TINYF.to=e.target.value;renderTiny();};
-document.getElementById("tiny-reset").onclick=()=>{TINYF.vd="";TINYF.q="";TINYF.from="";TINYF.to="";
-  document.getElementById("tiny-vd").value="";document.getElementById("tiny-search").value="";
-  document.getElementById("tiny-from").value="";document.getElementById("tiny-to").value="";renderTiny();};
+const tnRange=()=>tpRange({p:TNF.p,ini:TNF.ini,fim:TNF.fim},TN.hoje);
+function renderTiny(){
+  const box=document.getElementById("view-tiny");
+  if(!TN||!TN.vendas){box.innerHTML='<div class="tp-loading">Sem dados do Tiny ainda (configure TINY_TOKEN no servidor).</div>';return;}
+  const sellers=[...new Set(TN.vendas.map(x=>x.v))];
+  const vendOpts=[...TN_NOMEADOS.filter(n=>sellers.includes(n)), ...sellers.filter(s=>!TN_NOMEADOS.includes(s)).sort((a,b)=>a.localeCompare(b,"pt"))];
+  box.innerHTML=`
+  <div class="cm-top">
+    <div class="cm-tl"><span class="cm-logo">${tpSvg("box")}</span><div><h1 class="cm-h1">Tiny</h1><div class="cm-sub">Vendas · pedidos do Tiny</div></div></div>
+    <div class="cm-tr"><span class="cm-upd"><i></i>Atualizado ${tpHora(TN.gerado_em)}</span>
+      <button class="cm-datepill" id="tn-dp" title="Escolher período personalizado">${tpSvg("cal")}<span id="tn-dp-t"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+  </div>
+  <div class="cm-fbar">
+    <span class="fl">Período</span>${cmSeg("tn-seg",TNF.p,CM_PER)}${cmDates("tn",TNF.p==="custom",TNF.ini,TNF.fim)}
+    <span class="sep"></span><span class="fl">Equipe</span><select class="tp-sel" id="tn-eq"><option value="">Todas</option>${["Vendas Internas","LightWall","Outros"].map(e=>`<option ${TNF.eq===e?"selected":""}>${e}</option>`).join("")}</select>
+    <span class="fl">Vendedor</span><select class="tp-sel" id="tn-v"><option value="">Todos</option>${vendOpts.map(v=>`<option ${TNF.v===v?"selected":""}>${tpEsc(v)}</option>`).join("")}</select>
+    <button class="tp-ref" id="tn-ref" title="Recarregar os dados">${tpSvg("refresh")}</button>
+  </div>
+  <div class="tp-note" id="tn-per" style="margin:8px 4px 0"></div>
+  <div id="tn-dyn"></div>`;
+  document.getElementById("tn-seg").onclick=e=>{const b=e.target.closest("button");if(!b)return;TNF.p=b.dataset.cmp;if(TNF.p==="custom"&&!TNF.ini){TNF.ini=TN.hoje.slice(0,8)+"01";TNF.fim=TN.hoje;}renderTiny();};
+  ["tn-ini","tn-fim"].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.onchange=e=>{TNF[i?"fim":"ini"]=e.target.value;renderTiny();};});
+  document.getElementById("tn-eq").onchange=e=>{TNF.eq=e.target.value;renderTnDyn();};
+  document.getElementById("tn-v").onchange=e=>{TNF.v=e.target.value;renderTnDyn();};
+  document.getElementById("tn-ref").onclick=()=>{TN_EM=0;abrirTiny();};
+  document.getElementById("tn-dp").onclick=()=>{if(TNF.p!=="custom"){const r=tnRange();TNF.ini=r.ini;TNF.fim=r.fim;TNF.p="custom";renderTiny();}
+    const i=document.getElementById("tn-ini");if(i){i.focus();try{i.showPicker();}catch(e){}}};
+  renderTnDyn();
+}
+function renderTnDyn(){
+  const r=tnRange(), R=[r.ini,r.fim], P=[r.pini,r.pfim], el=document.getElementById("tn-dyn");
+  TP_NOCMP=TNF.p==="hoje";
+  document.getElementById("tn-per").textContent=tpPerTxt({p:TNF.p},r);
+  document.getElementById("tn-dp-t").innerHTML=`${tpBrY(r.ini)} <span style="color:var(--muted)">→</span> ${tpBrY(r.fim)}`;
+  const inR=d=>d&&d>=R[0]&&d<=R[1], inP=d=>d&&d>=P[0]&&d<=P[1];
+  const base=TN.vendas.filter(x=>(!TNF.eq||x.e===TNF.eq)&&(!TNF.v||x.v===TNF.v));
+  const cur=base.filter(x=>inR(x.d)), prev=base.filter(x=>inP(x.d));
+  const sv=a=>a.reduce((s,x)=>s+(x.o||0),0);
+  const byG=(a,g)=>a.filter(x=>x.g===g);
+  const vend=byG(cur,"vendido"),vendP=byG(prev,"vendido");
+  const abr=byG(cur,"aberto"),abrP=byG(prev,"aberto");
+  const can=byG(cur,"cancelado"),canP=byG(prev,"cancelado");
+  const ticket=vend.length?sv(vend)/vend.length:0, ticketP=vendP.length?sv(vendP)/vendP.length:0;
+  const cd=tpChartDays(r);
+  const spk=(g)=>{const o={};base.forEach(x=>{if(x.g===g&&x.d)o[x.d]=(o[x.d]||0)+(x.o||0);});return cd.days.map(d=>o[d]||0);};
+  const big=(o)=>`<div class="tp-big cm-big${o.hl?" hl":""}${o.cls?" "+o.cls:""}"><div class="ic ${o.ic2||""}">${tpSvg(o.ic)}</div>
+    <div class="bd"><div class="lb">${o.l}</div><div class="vl">${o.v}</div><div class="sub">${o.sub}</div><div class="cmp">${TP_NOCMP?"<span>dia em andamento</span>":tpDelta(o.cur,o.prev,o.lb)+`<span>${o.cmpl||"valor vs. período anterior"}</span>`}</div></div><div class="spark">${o.spark}</div></div>`;
+  // ---- situação (todos os status do período) ----
+  const sitArr=TN.ordem_situacoes.map(s=>{const a=cur.filter(x=>x.s===s);return {l:s,c:TN_SITCOR[s]||"#9aa7bd",n:a.length,o:sv(a)};}).filter(x=>x.n>0);
+  const totSitO=sitArr.reduce((a,x)=>a+x.o,0)||1;
+  const cancRate=cur.length?can.length/cur.length*100:0;
+  // ---- ranking por equipe/vendedor (só vendido) ----
+  const EQ=["Vendas Internas","LightWall","Outros"];
+  const perEq=EQ.map(eq=>{
+    const rows={};byG(cur,"vendido").filter(x=>x.e===eq).forEach(x=>{const o=rows[x.v]=rows[x.v]||{n:0,o:0};o.n++;o.o+=(x.o||0);});
+    const arr=Object.entries(rows).map(([nm,o])=>({nm,...o})).sort((a,b)=>b.o-a.o);
+    return {eq,arr,tot:arr.reduce((a,x)=>a+x.o,0),n:arr.reduce((a,x)=>a+x.n,0)};
+  }).filter(x=>x.arr.length&&(!TNF.eq||x.eq===TNF.eq));
+  const barRows=(arr)=>{const mx=Math.max(1,...arr.map(x=>x.o));return '<div class="hbchart">'+arr.map(x=>`<div class="hbrow"><div class="hblabel" title="${tpEsc(x.nm)}">${tpEsc(x.nm)}</div><div class="hbtrack"><div class="hbfill" style="width:${x.o/mx*100}%;background:${TN_EQCOR[x._eq]||"var(--brand)"}"></div><span class="hbval tnum">${tpBRL(x.o,0)} · <span style="color:var(--muted)">${tpN(x.n)} ped · ${tpBRL(x.n?x.o/x.n:0,0)}</span></span></div></div>`).join("")+'</div>';};
+  // ---- vendas por mês (vendido) ----
+  const mes={};byG(cur,"vendido").forEach(x=>{if(x.d)mes[x.d.slice(0,7)]=(mes[x.d.slice(0,7)]||0)+(x.o||0);});
+  const mesArr=Object.keys(mes).sort(), maxV=Math.max(1,...mesArr.map(y=>mes[y]));
+  el.innerHTML=`
+  <div class="tp-bigs">
+    ${big({cls:"gr",ic:"check",l:"Total Vendido",v:tpBRL(sv(vend),0),sub:`<b>${tpN(vend.length)}</b> pedido${vend.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(vend.length,vendP.length)} · aprovado → entregue`,cur:sv(vend),prev:sv(vendP),spark:tpSpark(spk("vendido"),"rgba(255,255,255,.85)")})}
+    ${big({cls:"yl",ic:"clock",l:"Em aberto",v:tpBRL(sv(abr),0),sub:`<b>${tpN(abr.length)}</b> pedido${abr.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(abr.length,abrP.length)} · aguardando`,cur:sv(abr),prev:sv(abrP),spark:tpSpark(spk("aberto"),"rgba(255,255,255,.85)")})}
+    ${big({cls:"rd",ic:"tool",l:"Cancelado",v:tpBRL(sv(can),0),sub:`<b>${tpN(can.length)}</b> pedido${can.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(can.length,canP.length,true)} · ${tpPct(cancRate,1)} dos pedidos`,cur:sv(can),prev:sv(canP),lb:1,spark:tpSpark(spk("cancelado"),"rgba(255,255,255,.85)")})}
+    ${big({hl:1,ic:"tag",l:"Ticket médio",v:tpBRL(ticket,0),sub:`por pedido vendido · ${tpN(vend.length)} venda${vend.length===1?"":"s"}`,cur:ticket,prev:ticketP,cmpl:"vs. período anterior",spark:tpSpark(spk("vendido"),"rgba(255,255,255,.75)")})}
+  </div>
+  <div class="tp-panel" style="margin-top:22px">${tpHead("bars","Vendas por situação","Todos os status do Tiny no período · barra proporcional ao valor","",TPC.blue)}
+    <div class="tp-stack" style="height:22px;margin-top:4px" title="Proporcional ao valor">${sitArr.filter(x=>x.o).map(x=>`<i title="${x.l}: ${tpBRL(x.o,0)}" style="width:${x.o/totSitO*100}%;background:${x.c}"></i>`).join("")}</div>
+    <div class="tp-note" style="margin:-4px 0 10px">Faturado e Não entregue aparecem aqui mas não entram no Total Vendido</div>
+    <div class="cm-sit" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${sitArr.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> pedido${x.n===1?"":"s"} · ${tpPct(x.o/totSitO*100)} do valor</div></div>`).join("")||'<div class="tp-empty">Sem pedidos no período.</div>'}</div>
+  </div>
+  ${tpHead("users","Desempenho por equipe e vendedor",`Valor vendido no período · Vendas Internas (Vanessa, Thauany, Ingrid) · LightWall (Patrícia, Luiz) · Outros`,"",TPC.purple)}
+  <div class="tn-eqs">${perEq.map(g=>`<div class="tp-panel tn-eqcard"><div class="tn-eqh"><span class="tn-eqdot" style="background:${TN_EQCOR[g.eq]}"></span><b>${g.eq}</b><span class="tn-eqtot">${tpBRL(g.tot,0)} · ${tpN(g.n)} pedido${g.n===1?"":"s"}</span></div>${barRows(g.arr.map(x=>({...x,_eq:g.eq})))}</div>`).join("")||'<div class="tp-empty">Sem vendas no período.</div>'}</div>
+  <div class="tp-panel" style="margin-top:16px">${tpHead("trend","Vendas por mês","Total vendido por mês no período selecionado","",TPC.green)}
+    <div class="months" style="margin-top:6px">${mesArr.length?mesArr.map(ym=>`<div class="mcol"><div class="bars"><div class="gn" style="width:58%;height:${mes[ym]/maxV*100}%" title="${tpBRL(mes[ym],0)}"></div></div><div class="ml">${ymLabel(ym)}</div></div>`).join(""):'<div class="tp-empty" style="width:100%;align-self:center">Sem vendas no período.</div>'}</div>
+  </div>`;
+  TP_NOCMP=false;
+}
 function ymd(d){return d.toISOString().slice(0,10);}
 // ================= Tráfego Pago (Meta Ads + Google Ads) =================
 // Dados vêm de /trafego.json (atualizado de hora em hora pelo servidor), separado do resto do BI.
