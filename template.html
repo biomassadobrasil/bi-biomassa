@@ -744,6 +744,54 @@
   .ol-logo{height:60px;padding:0 20px;border-radius:17px;background:linear-gradient(150deg,#1ec98a,#0f9e6a);
     color:#fff;display:grid;place-items:center;box-shadow:0 10px 24px rgba(16,158,106,.3);flex:0 0 auto;
     font-size:30px;font-weight:800;letter-spacing:-.04em;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  /* ===== Olist: cabeçalho hero + filtros em pills ===== */
+  .ol-hero{background:linear-gradient(120deg,#0f2b5c 0%,#1d4fc4 58%,#2563eb 100%);border-radius:22px;
+    padding:24px 28px;display:flex;justify-content:space-between;align-items:center;gap:22px;flex-wrap:wrap;
+    margin:6px 0 16px;box-shadow:0 16px 36px rgba(29,79,196,.3);position:relative;overflow:hidden}
+  .ol-hero::after{content:"";position:absolute;right:-60px;top:-80px;width:280px;height:280px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.1),transparent 70%);pointer-events:none}
+  .ol-hero-eye{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:#bfe9d6;letter-spacing:.2px}
+  .ol-hero-eye b{background:linear-gradient(150deg,#1ec98a,#12b47c);color:#fff;padding:2px 9px;border-radius:7px;font-weight:800;letter-spacing:-.03em}
+  .ol-hero-h{margin:6px 0 0;font-size:32px;font-weight:800;letter-spacing:-.03em;color:#fff;line-height:1.1}
+  .ol-hero-h span{color:#bcd3ff;font-weight:700}
+  .ol-hero-sub{color:#b9ccf0;font-size:13.5px;margin-top:5px;font-weight:500}
+  .ol-hero-r{display:flex;gap:11px;flex-wrap:wrap;z-index:1}
+  .ol-pill{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+    border-radius:14px;padding:8px 12px;min-width:146px;transition:background .15s}
+  .ol-pill:hover{background:rgba(255,255,255,.17)}
+  .ol-pill-ic{color:#bcd3ff;flex:0 0 auto;display:grid;place-items:center}
+  .ol-pill-ic svg{width:19px;height:19px}
+  .ol-pill-tx{display:flex;flex-direction:column;line-height:1.1;flex:1;min-width:0}
+  .ol-pill-tx small{color:#9fbdf0;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+  .ol-pill-tx select{appearance:none;-webkit-appearance:none;background:transparent;border:none;color:#fff;font:inherit;
+    font-size:14px;font-weight:700;cursor:pointer;padding:1px 0 0;max-width:150px;text-overflow:ellipsis}
+  .ol-pill-tx select:focus{outline:none}
+  .ol-pill-tx select option{color:#111}
+  .ol-pill-cv{color:#9fbdf0;flex:0 0 auto}
+  .ol-daterow{display:flex;align-items:center;gap:8px;margin:0 2px 12px;flex-wrap:wrap}
+  /* toggle valor/pedidos + ordenar */
+  .ol-seg{display:inline-flex;background:var(--line2);border-radius:11px;padding:3px}
+  .ol-seg button{border:none;background:transparent;font:inherit;font-size:13px;font-weight:700;color:var(--muted);
+    padding:6px 15px;border-radius:9px;cursor:pointer}
+  .ol-seg button.on{background:var(--brand);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.3)}
+  .ol-link{color:var(--brand);font-weight:700;font-size:13px;text-decoration:none;cursor:pointer;white-space:nowrap}
+  .ol-link:hover{text-decoration:underline}
+  /* % embaixo da barra empilhada */
+  .ol-pbar{display:flex;gap:3px;height:26px;border-radius:8px;overflow:hidden;margin-top:4px}
+  .ol-pbar i{display:block;height:100%}
+  .ol-plabs{display:flex;gap:3px;margin:6px 0 12px}
+  .ol-plabs span{text-align:center;font-size:12px;font-weight:800;overflow:hidden;white-space:nowrap}
+  /* cards de status com ícone */
+  .ol-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:12px;margin-top:8px}
+  .ol-stat{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--panel)}
+  .ol-stat .h{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;color:var(--ink)}
+  .ol-stat .ci{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto}
+  .ol-stat .ci svg{width:16px;height:16px}
+  .ol-stat .v{font-size:22px;font-weight:800;margin:9px 0 2px;letter-spacing:-.02em}
+  .ol-stat .s{font-size:11.5px;color:var(--muted)}
+  .ol-sord{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);font-weight:600}
+  .ol-sord select{appearance:none;font:inherit;font-size:13px;font-weight:700;color:var(--ink);background:var(--panel);
+    border:1px solid var(--line);border-radius:10px;padding:7px 12px;cursor:pointer}
   .cm-h1{margin:0;font-size:36px;font-weight:800;letter-spacing:-.03em;line-height:1.05}
   .cm-sub{font-size:15px;color:var(--muted);margin-top:4px}
   .cm-tr{margin-left:auto;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
@@ -1005,11 +1053,12 @@ const biSwitch=document.getElementById("bi-switch");
 biSwitch.onclick=e=>{e.stopPropagation();biSwitch.classList.toggle("open");};
 document.querySelectorAll(".bi-opt").forEach(o=>o.onclick=e=>{e.stopPropagation();setView(o.dataset.view);biSwitch.classList.remove("open");});
 document.addEventListener("click",()=>biSwitch.classList.remove("open"));
-// ================= Tiny (vendas) — lê /tiny.json (de hora em hora) =================
+// ================= Olist (vendas) — lê /tiny.json (de hora em hora) =================
 let TN=null, TN_EM=0;
-const TNF={p:"mes",ini:"",fim:"",eq:"",v:""};
+const TNF={p:"mes",ini:"",fim:"",eq:"",v:"",mode:"valor",sort:"valor"};
 const TN_NOMEADOS=["Vanessa","Thauany","Ingrid","Patrícia","Luiz"];
 const TN_SITCOR={"Em aberto":"#f59e0b","Aprovado":"#3b82f6","Faturado":"#2563eb","Preparando envio":"#6366f1","Pronto para envio":"#0891b2","Enviado":"#14b8a6","Entregue":"#16a34a","Não entregue":"#ea580c","Cancelado":"#dc2626"};
+const TN_SITIC={"Em aberto":"clock","Aprovado":"check","Faturado":"form","Preparando envio":"build","Pronto para envio":"tag","Enviado":"play","Entregue":"check","Não entregue":"pause","Cancelado":"tool"};
 const TN_EQCOR={"Vendas Internas":"#2563eb","LightWall":"#7c3aed","Outros":"#64748b"};
 function abrirTiny(){
   const box=document.getElementById("view-tiny");
@@ -1026,34 +1075,34 @@ function renderTiny(){
   if(!TN||!TN.vendas){box.innerHTML='<div class="tp-loading">Sem dados do Olist ainda (configure TINY_TOKEN no servidor).</div>';return;}
   const sellers=[...new Set(TN.vendas.map(x=>x.v))];
   const vendOpts=[...TN_NOMEADOS.filter(n=>sellers.includes(n)), ...sellers.filter(s=>!TN_NOMEADOS.includes(s)).sort((a,b)=>a.localeCompare(b,"pt"))];
+  const chev=`<svg class="ol-pill-cv" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>`;
+  const pOpts=[["hoje","Hoje"],["ontem","Ontem"],["7d","7 dias"],["mes","Este mês"],["mesant","Mês anterior"],["custom","Personalizado"]];
   box.innerHTML=`
-  <div class="cm-top">
-    <div class="cm-tl"><span class="ol-logo">olist</span><div><h1 class="cm-h1">Olist</h1><div class="cm-sub">Vendas · pedidos do Olist (ex-Tiny)</div></div></div>
-    <div class="cm-tr"><span class="cm-upd"><i></i>Atualizado ${tpHora(TN.gerado_em)}</span>
-      <button class="cm-datepill" id="tn-dp" title="Escolher período personalizado">${tpSvg("cal")}<span id="tn-dp-t"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+  <div class="ol-hero">
+    <div class="ol-hero-l">
+      <div class="ol-hero-eye"><b>olist</b> VENDAS</div>
+      <h1 class="ol-hero-h">Vendas <span>por situação</span></h1>
+      <div class="ol-hero-sub">Acompanhe o progresso das suas vendas no período · atualizado ${tpHora(TN.gerado_em)}</div>
+    </div>
+    <div class="ol-hero-r">
+      <label class="ol-pill"><span class="ol-pill-ic">${tpSvg("cal")}</span><span class="ol-pill-tx"><small>Período</small><select id="tn-psel">${pOpts.map(([k,l])=>`<option value="${k}" ${TNF.p===k?"selected":""}>${l}</option>`).join("")}</select></span>${chev}</label>
+      <label class="ol-pill"><span class="ol-pill-ic">${tpSvg("build")}</span><span class="ol-pill-tx"><small>Equipe</small><select id="tn-eq"><option value="">Todas</option>${["Vendas Internas","LightWall","Outros"].map(e=>`<option ${TNF.eq===e?"selected":""}>${e}</option>`).join("")}</select></span>${chev}</label>
+      <label class="ol-pill"><span class="ol-pill-ic">${tpSvg("users")}</span><span class="ol-pill-tx"><small>Vendedor</small><select id="tn-v"><option value="">Todos</option>${vendOpts.map(v=>`<option ${TNF.v===v?"selected":""}>${tpEsc(v)}</option>`).join("")}</select></span>${chev}</label>
+    </div>
   </div>
-  <div class="cm-fbar">
-    <span class="fl">Período</span>${cmSeg("tn-seg",TNF.p,CM_PER)}${cmDates("tn",TNF.p==="custom",TNF.ini,TNF.fim)}
-    <span class="sep"></span><span class="fl">Equipe</span><select class="tp-sel" id="tn-eq"><option value="">Todas</option>${["Vendas Internas","LightWall","Outros"].map(e=>`<option ${TNF.eq===e?"selected":""}>${e}</option>`).join("")}</select>
-    <span class="fl">Vendedor</span><select class="tp-sel" id="tn-v"><option value="">Todos</option>${vendOpts.map(v=>`<option ${TNF.v===v?"selected":""}>${tpEsc(v)}</option>`).join("")}</select>
-    <button class="tp-ref" id="tn-ref" title="Recarregar os dados">${tpSvg("refresh")}</button>
-  </div>
-  <div class="tp-note" id="tn-per" style="margin:8px 4px 0"></div>
+  <div style="margin:0 2px 10px">${cmDates("tn",TNF.p==="custom",TNF.ini,TNF.fim)}</div>
+  <div class="tp-note" id="tn-per" style="margin:0 4px 12px"></div>
   <div id="tn-dyn"></div>`;
-  document.getElementById("tn-seg").onclick=e=>{const b=e.target.closest("button");if(!b)return;TNF.p=b.dataset.cmp;if(TNF.p==="custom"&&!TNF.ini){TNF.ini=TN.hoje.slice(0,8)+"01";TNF.fim=TN.hoje;}renderTiny();};
-  ["tn-ini","tn-fim"].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.onchange=e=>{TNF[i?"fim":"ini"]=e.target.value;renderTiny();};});
+  document.getElementById("tn-psel").onchange=e=>{TNF.p=e.target.value;if(TNF.p==="custom"&&!TNF.ini){TNF.ini=TN.hoje.slice(0,8)+"01";TNF.fim=TN.hoje;}renderTiny();};
+  ["tn-ini","tn-fim"].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.onchange=e=>{TNF[i?"fim":"ini"]=e.target.value;renderTnDyn();};});
   document.getElementById("tn-eq").onchange=e=>{TNF.eq=e.target.value;renderTnDyn();};
   document.getElementById("tn-v").onchange=e=>{TNF.v=e.target.value;renderTnDyn();};
-  document.getElementById("tn-ref").onclick=()=>{TN_EM=0;abrirTiny();};
-  document.getElementById("tn-dp").onclick=()=>{if(TNF.p!=="custom"){const r=tnRange();TNF.ini=r.ini;TNF.fim=r.fim;TNF.p="custom";renderTiny();}
-    const i=document.getElementById("tn-ini");if(i){i.focus();try{i.showPicker();}catch(e){}}};
   renderTnDyn();
 }
 function renderTnDyn(){
   const r=tnRange(), R=[r.ini,r.fim], P=[r.pini,r.pfim], el=document.getElementById("tn-dyn");
   TP_NOCMP=TNF.p==="hoje";
   document.getElementById("tn-per").textContent=tpPerTxt({p:TNF.p},r);
-  document.getElementById("tn-dp-t").innerHTML=`${tpBrY(r.ini)} <span style="color:var(--muted)">→</span> ${tpBrY(r.fim)}`;
   const inR=d=>d&&d>=R[0]&&d<=R[1], inP=d=>d&&d>=P[0]&&d<=P[1];
   const base=TN.vendas.filter(x=>(!TNF.eq||x.e===TNF.eq)&&(!TNF.v||x.v===TNF.v));
   const cur=base.filter(x=>inR(x.d)), prev=base.filter(x=>inP(x.d));
@@ -1067,18 +1116,20 @@ function renderTnDyn(){
   const spk=(g)=>{const o={};base.forEach(x=>{if(x.g===g&&x.d)o[x.d]=(o[x.d]||0)+(x.o||0);});return cd.days.map(d=>o[d]||0);};
   const big=(o)=>`<div class="tp-big cm-big${o.hl?" hl":""}${o.cls?" "+o.cls:""}"><div class="ic ${o.ic2||""}">${tpSvg(o.ic)}</div>
     <div class="bd"><div class="lb">${o.l}</div><div class="vl">${o.v}</div><div class="sub">${o.sub}</div><div class="cmp">${TP_NOCMP?"<span>dia em andamento</span>":tpDelta(o.cur,o.prev,o.lb)+`<span>${o.cmpl||"valor vs. período anterior"}</span>`}</div></div><div class="spark">${o.spark}</div></div>`;
-  // ---- situação (todos os status do período) ----
-  const sitArr=TN.ordem_situacoes.map(s=>{const a=cur.filter(x=>x.s===s);return {l:s,c:TN_SITCOR[s]||"#9aa7bd",n:a.length,o:sv(a)};}).filter(x=>x.n>0);
-  const totSitO=sitArr.reduce((a,x)=>a+x.o,0)||1;
+  // ---- situação ----
+  const sitArr=TN.ordem_situacoes.map(s=>{const a=cur.filter(x=>x.s===s);return {l:s,c:TN_SITCOR[s]||"#9aa7bd",ic:TN_SITIC[s]||"tag",n:a.length,o:sv(a)};}).filter(x=>x.n>0);
+  const met=x=>TNF.mode==="pedidos"?x.n:x.o, totM=sitArr.reduce((a,x)=>a+met(x),0)||1;
   const cancRate=cur.length?can.length/cur.length*100:0;
-  // ---- ranking por equipe/vendedor (só vendido) ----
+  const toggle=`<span class="ol-seg" id="tn-mode"><button data-m="valor" class="${TNF.mode==="valor"?"on":""}">Valor (R$)</button><button data-m="pedidos" class="${TNF.mode==="pedidos"?"on":""}">Pedidos</button></span>`;
+  // ---- ranking por equipe/vendedor (vendido) ----
   const EQ=["Vendas Internas","LightWall","Outros"];
   const perEq=EQ.map(eq=>{
     const rows={};byG(cur,"vendido").filter(x=>x.e===eq).forEach(x=>{const o=rows[x.v]=rows[x.v]||{n:0,o:0};o.n++;o.o+=(x.o||0);});
-    const arr=Object.entries(rows).map(([nm,o])=>({nm,...o})).sort((a,b)=>b.o-a.o);
+    const arr=Object.entries(rows).map(([nm,o])=>({nm,...o})).sort((a,b)=>TNF.sort==="pedidos"?b.n-a.n:b.o-a.o);
     return {eq,arr,tot:arr.reduce((a,x)=>a+x.o,0),n:arr.reduce((a,x)=>a+x.n,0)};
   }).filter(x=>x.arr.length&&(!TNF.eq||x.eq===TNF.eq));
-  const barRows=(arr)=>{const mx=Math.max(1,...arr.map(x=>x.o));return '<div class="hbchart">'+arr.map(x=>`<div class="hbrow"><div class="hblabel" title="${tpEsc(x.nm)}">${tpEsc(x.nm)}</div><div class="hbtrack"><div class="hbfill" style="width:${x.o/mx*100}%;background:${TN_EQCOR[x._eq]||"var(--brand)"}"></div><span class="hbval tnum">${tpBRL(x.o,0)} · <span style="color:var(--muted)">${tpN(x.n)} ped · ${tpBRL(x.n?x.o/x.n:0,0)}</span></span></div></div>`).join("")+'</div>';};
+  const barRows=(arr,eq)=>{const key=TNF.sort==="pedidos"?"n":"o",mx=Math.max(1,...arr.map(x=>x[key]));return '<div class="hbchart">'+arr.map(x=>`<div class="hbrow"><div class="hblabel" title="${tpEsc(x.nm)}">${tpEsc(x.nm)}</div><div class="hbtrack"><div class="hbfill" style="width:${x[key]/mx*100}%;background:${TN_EQCOR[eq]||"var(--brand)"}"></div><span class="hbval tnum">${tpBRL(x.o,0)} · <span style="color:var(--muted)">${tpN(x.n)} ped · ${tpBRL(x.n?x.o/x.n:0,0)}</span></span></div></div>`).join("")+'</div>';};
+  const ordSel=`<div class="ol-sord">Ordenar por <select id="tn-sort"><option value="valor" ${TNF.sort==="valor"?"selected":""}>Maior valor</option><option value="pedidos" ${TNF.sort==="pedidos"?"selected":""}>Mais pedidos</option></select></div>`;
   // ---- vendas por mês (vendido) ----
   const mes={};byG(cur,"vendido").forEach(x=>{if(x.d)mes[x.d.slice(0,7)]=(mes[x.d.slice(0,7)]||0)+(x.o||0);});
   const mesArr=Object.keys(mes).sort(), maxV=Math.max(1,...mesArr.map(y=>mes[y]));
@@ -1089,16 +1140,19 @@ function renderTnDyn(){
     ${big({cls:"rd",ic:"tool",l:"Cancelado",v:tpBRL(sv(can),0),sub:`<b>${tpN(can.length)}</b> pedido${can.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(can.length,canP.length,true)} · ${tpPct(cancRate,1)} dos pedidos`,cur:sv(can),prev:sv(canP),lb:1,spark:tpSpark(spk("cancelado"),"rgba(255,255,255,.85)")})}
     ${big({hl:1,ic:"tag",l:"Ticket médio",v:tpBRL(ticket,0),sub:`por pedido vendido · ${tpN(vend.length)} venda${vend.length===1?"":"s"}`,cur:ticket,prev:ticketP,cmpl:"vs. período anterior",spark:tpSpark(spk("vendido"),"rgba(255,255,255,.75)")})}
   </div>
-  <div class="tp-panel" style="margin-top:22px">${tpHead("bars","Vendas por situação","Todos os status do Tiny no período · barra proporcional ao valor","",TPC.blue)}
-    <div class="tp-stack" style="height:22px;margin-top:4px" title="Proporcional ao valor">${sitArr.filter(x=>x.o).map(x=>`<i title="${x.l}: ${tpBRL(x.o,0)}" style="width:${x.o/totSitO*100}%;background:${x.c}"></i>`).join("")}</div>
-    <div class="tp-note" style="margin:-4px 0 10px">Em aberto, Não entregue e Cancelado aparecem aqui mas não entram no Total Vendido</div>
-    <div class="cm-sit" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${sitArr.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> pedido${x.n===1?"":"s"} · ${tpPct(x.o/totSitO*100)} do valor</div></div>`).join("")||'<div class="tp-empty">Sem pedidos no período.</div>'}</div>
+  <div class="tp-panel" style="margin-top:22px">${tpHead("bars","Vendas por situação",`Todos os status do Olist no período · barra proporcional ${TNF.mode==="pedidos"?"ao nº de pedidos":"ao valor"}`,toggle,TPC.blue)}
+    <div class="ol-pbar">${sitArr.filter(x=>met(x)).map(x=>`<i title="${x.l}: ${TNF.mode==="pedidos"?tpN(x.n)+" ped":tpBRL(x.o,0)}" style="width:${met(x)/totM*100}%;background:${x.c}"></i>`).join("")}</div>
+    <div class="ol-plabs">${sitArr.filter(x=>met(x)).map(x=>{const w=met(x)/totM*100;return `<span style="width:${w}%;color:${x.c}">${w>=4?tpPct(w):""}</span>`;}).join("")}</div>
+    <div class="ol-stats">${sitArr.map(x=>`<div class="ol-stat"><div class="h"><span class="ci" style="background:color-mix(in srgb,${x.c} 15%,transparent);color:${x.c}">${tpSvg(x.ic)}</span>${x.l}</div><div class="v">${TNF.mode==="pedidos"?tpN(x.n):tpBRL(x.o,0)}</div><div class="s">${TNF.mode==="pedidos"?`${tpBRL(x.o,0)} · ${tpPct(met(x)/totM*100)} dos pedidos`:`<b>${tpN(x.n)}</b> pedido${x.n===1?"":"s"} · ${tpPct(x.o/totM*100)} do valor`}</div></div>`).join("")||'<div class="tp-empty">Sem pedidos no período.</div>'}</div>
+    <div class="tp-note" style="margin:12px 0 0">Em aberto, Não entregue e Cancelado aparecem aqui mas não entram no Total Vendido</div>
   </div>
-  ${tpHead("users","Desempenho por equipe e vendedor",`Valor vendido no período · Vendas Internas (Vanessa, Thauany, Ingrid) · LightWall (Patrícia, Luiz) · Outros`,"",TPC.purple)}
-  <div class="tn-eqs">${perEq.map(g=>`<div class="tp-panel tn-eqcard"><div class="tn-eqh"><span class="tn-eqdot" style="background:${TN_EQCOR[g.eq]}"></span><b>${g.eq}</b><span class="tn-eqtot">${tpBRL(g.tot,0)} · ${tpN(g.n)} pedido${g.n===1?"":"s"}</span></div>${barRows(g.arr.map(x=>({...x,_eq:g.eq})))}</div>`).join("")||'<div class="tp-empty">Sem vendas no período.</div>'}</div>
+  ${tpHead("users","Desempenho por equipe e vendedor",`Valor vendido no período · Vendas Internas (Vanessa, Thauany, Ingrid) · LightWall (Patrícia, Luiz) · Outros`,ordSel,TPC.purple)}
+  <div class="tn-eqs">${perEq.map(g=>`<div class="tp-panel tn-eqcard"><div class="tn-eqh"><span class="tn-eqdot" style="background:${TN_EQCOR[g.eq]}"></span><b>${g.eq}</b><span class="tn-eqtot">${tpBRL(g.tot,0)} · ${tpN(g.n)} pedido${g.n===1?"":"s"}</span></div>${barRows(g.arr,g.eq)}</div>`).join("")||'<div class="tp-empty">Sem vendas no período.</div>'}</div>
   <div class="tp-panel" style="margin-top:16px">${tpHead("trend","Vendas por mês","Total vendido por mês no período selecionado","",TPC.green)}
     <div class="months" style="margin-top:6px">${mesArr.length?mesArr.map(ym=>`<div class="mcol"><div class="bars"><div class="gn" style="width:58%;height:${mes[ym]/maxV*100}%" title="${tpBRL(mes[ym],0)}"></div></div><div class="ml">${ymLabel(ym)}</div></div>`).join(""):'<div class="tp-empty" style="width:100%;align-self:center">Sem vendas no período.</div>'}</div>
   </div>`;
+  const mt=document.getElementById("tn-mode");if(mt)mt.onclick=e=>{const b=e.target.closest("button");if(!b)return;TNF.mode=b.dataset.m;renderTnDyn();};
+  const so=document.getElementById("tn-sort");if(so)so.onchange=e=>{TNF.sort=e.target.value;renderTnDyn();};
   TP_NOCMP=false;
 }
 function ymd(d){return d.toISOString().slice(0,10);}
