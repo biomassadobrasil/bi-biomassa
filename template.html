@@ -1080,14 +1080,14 @@ function renderTnDyn(){
   const mesArr=Object.keys(mes).sort(), maxV=Math.max(1,...mesArr.map(y=>mes[y]));
   el.innerHTML=`
   <div class="tp-bigs">
-    ${big({cls:"gr",ic:"check",l:"Total Vendido",v:tpBRL(sv(vend),0),sub:`<b>${tpN(vend.length)}</b> pedido${vend.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(vend.length,vendP.length)} · aprovado → entregue`,cur:sv(vend),prev:sv(vendP),spark:tpSpark(spk("vendido"),"rgba(255,255,255,.85)")})}
+    ${big({cls:"gr",ic:"check",l:"Total Vendido",v:tpBRL(sv(vend),0),sub:`<b>${tpN(vend.length)}</b> pedido${vend.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(vend.length,vendP.length)} · aprovado/faturado → entregue`,cur:sv(vend),prev:sv(vendP),spark:tpSpark(spk("vendido"),"rgba(255,255,255,.85)")})}
     ${big({cls:"yl",ic:"clock",l:"Em aberto",v:tpBRL(sv(abr),0),sub:`<b>${tpN(abr.length)}</b> pedido${abr.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(abr.length,abrP.length)} · aguardando`,cur:sv(abr),prev:sv(abrP),spark:tpSpark(spk("aberto"),"rgba(255,255,255,.85)")})}
     ${big({cls:"rd",ic:"tool",l:"Cancelado",v:tpBRL(sv(can),0),sub:`<b>${tpN(can.length)}</b> pedido${can.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(can.length,canP.length,true)} · ${tpPct(cancRate,1)} dos pedidos`,cur:sv(can),prev:sv(canP),lb:1,spark:tpSpark(spk("cancelado"),"rgba(255,255,255,.85)")})}
     ${big({hl:1,ic:"tag",l:"Ticket médio",v:tpBRL(ticket,0),sub:`por pedido vendido · ${tpN(vend.length)} venda${vend.length===1?"":"s"}`,cur:ticket,prev:ticketP,cmpl:"vs. período anterior",spark:tpSpark(spk("vendido"),"rgba(255,255,255,.75)")})}
   </div>
   <div class="tp-panel" style="margin-top:22px">${tpHead("bars","Vendas por situação","Todos os status do Tiny no período · barra proporcional ao valor","",TPC.blue)}
     <div class="tp-stack" style="height:22px;margin-top:4px" title="Proporcional ao valor">${sitArr.filter(x=>x.o).map(x=>`<i title="${x.l}: ${tpBRL(x.o,0)}" style="width:${x.o/totSitO*100}%;background:${x.c}"></i>`).join("")}</div>
-    <div class="tp-note" style="margin:-4px 0 10px">Faturado e Não entregue aparecem aqui mas não entram no Total Vendido</div>
+    <div class="tp-note" style="margin:-4px 0 10px">Em aberto, Não entregue e Cancelado aparecem aqui mas não entram no Total Vendido</div>
     <div class="cm-sit" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${sitArr.map(x=>`<div style="--c:${x.c}"><div class="t"><i></i>${x.l}</div><div class="n">${tpBRL(x.o,0)}</div><div class="s"><b>${tpN(x.n)}</b> pedido${x.n===1?"":"s"} · ${tpPct(x.o/totSitO*100)} do valor</div></div>`).join("")||'<div class="tp-empty">Sem pedidos no período.</div>'}</div>
   </div>
   ${tpHead("users","Desempenho por equipe e vendedor",`Valor vendido no período · Vendas Internas (Vanessa, Thauany, Ingrid) · LightWall (Patrícia, Luiz) · Outros`,"",TPC.purple)}

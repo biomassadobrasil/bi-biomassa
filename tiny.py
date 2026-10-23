@@ -86,7 +86,8 @@ def _classifica_vendedor(nome):
     return (nome or "—").strip(), "Outros"
 
 def _grupo_situacao(sit):
-    """Agrupa a situação do Tiny. 'vendido' = regra do Alex (aprovado→entregue, sem faturado/não entregue)."""
+    """Agrupa a situação do Tiny. 'vendido' = regra do Alex: Aprovado, Faturado, Preparando envio,
+    Pronto para envio, Enviado e Entregue (NÃO inclui Em aberto, Não entregue e Cancelado)."""
     n = _norm(sit)
     if "cancel" in n: return "cancelado"
     if "aberto" in n: return "aberto"
@@ -95,8 +96,8 @@ def _grupo_situacao(sit):
     if "enviado" in n: return "vendido"
     if "pronto" in n: return "vendido"
     if "preparando" in n: return "vendido"
+    if "faturado" in n: return "vendido"
     if "aprovado" in n: return "vendido"
-    if "faturado" in n: return "faturado"
     return "outro"
 
 def _iso(data_br):
