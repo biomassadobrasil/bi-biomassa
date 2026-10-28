@@ -143,7 +143,7 @@ def _todos_pedidos(desde_br, ate_br):
         time.sleep(0.15)                            # educado com a API
     return out
 
-ENRICH_BUDGET_S = 240   # tempo máx. (s) buscando detalhes NOVOS por execução; o resto vem do cache nas próximas
+ENRICH_BUDGET_S = 1200  # tempo máx. (s) buscando detalhes NOVOS por execução (cobre o re-carimbo inicial da natureza numa rodada; depois do cache quente, fica rápido)
 
 def _detalhe(ids):
     """Detalhe de cada pedido (UF/cidade + itens) via pedido.obter, com cache Redis `tiny:ped:<id>`.
