@@ -100,6 +100,24 @@ def _grupo_situacao(sit):
     if "aprovado" in n: return "vendido"
     return "outro"
 
+def _categoria_natureza(nome):
+    """Nome da natureza de operação -> categoria p/ a quebra do painel."""
+    t = _norm(nome)
+    if not t: return "Outros"
+    if "devolu" in t: return "Devolução"
+    if "bonifica" in t: return "Bonificação"
+    if "transfer" in t: return "Transferência"
+    if "venda" in t: return "Vendas"
+    return "Outros"   # industrialização, remessa, simples faturamento, etc.
+
+def _nota_natureza(nf_id):
+    """Nome da natureza de operação a partir da nota fiscal (ou '' se não der)."""
+    try:
+        n = raw("nota.fiscal.obter.php", {"id": nf_id}).get("retorno", {}).get("nota_fiscal", {})
+        return n.get("natureza_operacao") or ""
+    except Exception:
+        return ""
+
 def _iso(data_br):
     """'DD/MM/AAAA' -> 'AAAA-MM-DD' (vazio se não der)."""
     try:
@@ -139,7 +157,10 @@ def _detalhe(ids):
             try: v = rds.get(f"tiny:ped:{pid}")
             except Exception: pass
         if v:
-            try: out[pid] = json.loads(v if isinstance(v, str) else v.decode())
+            try:
+                rec = json.loads(v if isinstance(v, str) else v.decode())
+                if "nat_id" in rec: out[pid] = rec          # cache já tem natureza
+                else: faltam.append(pid)                     # cache antigo (Fase 2) -> refaz p/ pegar natureza
             except Exception: faltam.append(pid)
         else:
             faltam.append(pid)
@@ -159,7 +180,9 @@ def _detalhe(ids):
                 except Exception: vu = 0.0
                 nm = (i.get("descricao") or "").strip()
                 if nm: itens.append({"nm": nm, "q": round(q, 2), "o": round(q * vu, 2)})
-            rec = {"uf": (cli.get("uf") or "").strip().upper(), "cid": (cli.get("cidade") or "").strip(), "itens": itens}
+            rec = {"uf": (cli.get("uf") or "").strip().upper(), "cid": (cli.get("cidade") or "").strip(),
+                   "itens": itens, "nat_id": str(det.get("id_natureza_operacao") or ""),
+                   "nf": str(det.get("id_nota_fiscal") or "")}
             out[pid] = rec
             if rds:
                 try: rds.set(f"tiny:ped:{pid}", json.dumps(rec, ensure_ascii=False))
@@ -186,19 +209,39 @@ def build():
                        "s": p.get("situacao") or "—", "g": _grupo_situacao(p.get("situacao")),
                        "o": val, "n": p.get("numero"), "_id": pid})
         ids.append(pid)
-    # enriquece com UF + produtos (cache Redis; progressivo)
+    # enriquece com UF + produtos + natureza de operação (cache Redis; progressivo)
     try: det = _detalhe(ids)
     except Exception: import traceback; print("[TINY] detalhe falhou:\n" + traceback.format_exc()); det = {}
+    # resolve nomes das naturezas (id -> nome) e guarda no Redis tiny:natmap
+    import generate as G
+    rds = getattr(G, "_RDS", None)
+    natmap = {}
+    if rds:
+        try: natmap = json.loads((rds.get("tiny:natmap") or b"{}"))
+        except Exception: natmap = {}
+    precisa = {}
+    for d in det.values():
+        nid = d.get("nat_id")
+        if nid and nid not in natmap and d.get("nf") and d["nf"] != "0":
+            precisa.setdefault(nid, d["nf"])
+    for nid, nf in precisa.items():
+        nome = _nota_natureza(nf)
+        if nome: natmap[nid] = nome
+        time.sleep(0.1)
+    if rds and precisa:
+        try: rds.set("tiny:natmap", json.dumps(natmap, ensure_ascii=False))
+        except Exception: pass
     itens = []; enriq = 0
     for idx, p in enumerate(vendas):
         d = det.get(p["_id"])
         if d:
             enriq += 1
             p["uf"] = d.get("uf", "")
+            p["nat"] = _categoria_natureza(natmap.get(d.get("nat_id"), ""))
             for it in d.get("itens", []):
                 itens.append({"i": idx, "nm": it["nm"], "q": it["q"], "o": it["o"]})
         else:
-            p["uf"] = ""
+            p["uf"] = ""; p["nat"] = ""
         del p["_id"]
     # ordem das situações p/ a seção "Vendas por situação" (fluxo lógico do Tiny)
     ordem_sit = ["Em aberto", "Aprovado", "Faturado", "Preparando envio", "Pronto para envio",
