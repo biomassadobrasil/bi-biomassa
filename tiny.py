@@ -75,6 +75,12 @@ def _norm(s):
     s = unicodedata.normalize("NFKD", str(s or "")).encode("ascii", "ignore").decode().lower()
     return " ".join(s.split())
 
+# Correções manuais de vendedor por ID de pedido (venda lançada no nome errado no Olist).
+# chave = id do pedido (mesmo id da URL erp.olist.com/vendas#edit/<id>) -> nome correto.
+OVERRIDE_VENDEDOR = {
+    "1042518761": "Vanessa",   # pedido 9508 (RVX 2024, 16/10) — estava na Ingrid, é da Vanessa (29/10/2026)
+}
+
 def _classifica_vendedor(nome):
     """nome do Tiny -> (rótulo curto, equipe). Os 5 nomeados; o resto fica com o nome real em 'Outros'."""
     n = _norm(nome)
@@ -201,10 +207,11 @@ def build():
     peds = _todos_pedidos(desde_br, ate_br)
     vendas = []; ids = []
     for p in peds:
-        lbl, eq = _classifica_vendedor(p.get("nome_vendedor"))
+        pid = str(p.get("id") or "")
+        nome_v = OVERRIDE_VENDEDOR.get(pid, p.get("nome_vendedor"))
+        lbl, eq = _classifica_vendedor(nome_v)
         try: val = round(float(p.get("valor") or 0), 2)
         except Exception: val = 0.0
-        pid = str(p.get("id") or "")
         vendas.append({"d": _iso(p.get("data_pedido")), "v": lbl, "e": eq,
                        "s": p.get("situacao") or "—", "g": _grupo_situacao(p.get("situacao")),
                        "o": val, "n": p.get("numero"), "_id": pid})
