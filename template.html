@@ -396,16 +396,39 @@
   .tp-nav a{font-size:13px;font-weight:700;color:var(--muted);text-decoration:none;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);display:inline-flex;align-items:center;gap:8px}
   .tp-nav a .lg{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;flex:0 0 auto}
   .tp-nav a .lg svg{width:14px;height:14px}
-  .tp-nav a .lg.meta{background:linear-gradient(135deg,#0866ff,#7b3fe4 55%,#d62976)}
+  .tp-nav a .lg.meta{background:#0866ff}
   .tp-nav a .lg.google{background:#fff;border:1px solid var(--line)}
   .tp-nav a .lg.geral{background:var(--brand)}
   .tp-nav a:hover{color:var(--brand);border-color:var(--brand)}
   .tp-nav .tp-upd{margin-left:auto;font-size:12px;color:var(--muted)}
-  .tp-sec{scroll-margin-top:64px}
-  .tp-hero{display:flex;align-items:center;gap:14px;margin:30px 0 4px}
-  .tp-logo{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;color:#fff;flex:0 0 auto;box-shadow:var(--shadow)}
-  .tp-logo svg{width:24px;height:24px}
-  .tp-logo.meta{background:linear-gradient(135deg,#0866ff,#7b3fe4 55%,#d62976)}
+  /* layout com trilho de atalhos à esquerda */
+  .tp-wrap{display:grid;grid-template-columns:216px minmax(0,1fr);gap:26px;align-items:start}
+  @media(max-width:900px){.tp-wrap{grid-template-columns:1fr;gap:12px}}
+  .tp-rail{position:sticky;top:12px;display:flex;flex-direction:column;gap:7px}
+  @media(max-width:900px){.tp-rail{position:sticky;top:0;z-index:35;flex-direction:row;overflow-x:auto;padding:8px;margin:0 -4px;
+    background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);scrollbar-width:none}.tp-rail::-webkit-scrollbar{display:none}}
+  .tp-rail a{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:13px;text-decoration:none;cursor:pointer;
+    font-size:14px;font-weight:750;color:var(--muted);border:1px solid transparent;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
+  .tp-rail a:hover{background:var(--line2);color:var(--ink)}
+  .tp-rail a.on{background:var(--panel);border-color:var(--line);color:var(--ink);box-shadow:var(--shadow)}
+  .tp-rail a.on::before{content:"";position:absolute;left:0;width:3px;height:22px;border-radius:0 3px 3px 0;background:var(--_a,var(--brand))}
+  .tp-rail a{position:relative}
+  .tp-rail a .lg{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto}
+  .tp-rail a .lg svg{width:17px;height:17px}
+  .tp-rail a .lg.meta{background:#0866ff}
+  .tp-rail a .lg.google{background:#fff;border:1px solid var(--line)}
+  .tp-rail a .lg.geral{background:linear-gradient(135deg,var(--brand),#1a3c7d)}
+  .tp-rail a small{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:1px}
+  @media(max-width:900px){.tp-rail a small{display:none}}
+  .tp-sec{scroll-margin-top:72px}
+  .tp-sec+.tp-sec{margin-top:30px;padding-top:28px;border-top:2px dashed var(--line)}
+  .tp-hero{display:flex;align-items:center;gap:14px;margin:4px 0;padding:15px 18px;border-radius:16px;
+    background:linear-gradient(100deg,color-mix(in srgb,var(--_a,var(--brand)) 11%,var(--panel)),var(--panel) 72%);
+    border:1px solid var(--line);box-shadow:var(--shadow)}
+  #tp-geral{--_a:var(--brand)} #tp-meta{--_a:#0866ff} #tp-google{--_a:#34a853}
+  .tp-logo{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;color:#fff;flex:0 0 auto;box-shadow:var(--shadow)}
+  .tp-logo svg{width:25px;height:25px}
+  .tp-logo.meta{background:#0866ff}
   .tp-logo.google{background:#fff;border:1px solid var(--line)}
   .tp-logo.geral{background:linear-gradient(135deg,var(--brand),#1a3c7d)}
   .tp-hero h2{margin:0;font-size:22px;font-weight:780;letter-spacing:-.02em}
@@ -840,6 +863,35 @@
   .cm-rk .rt{height:10px;border-radius:999px;background:var(--line2);overflow:hidden}.cm-rk .rt i{display:block;height:100%;border-radius:999px}
   .cm-rk .vv{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
   .cm-rk.zero{opacity:.45}
+  /* foco por fonte (toggle Negócios/Propostas/Vendas) */
+  .cm-fg{display:grid;grid-template-columns:290px minmax(0,1fr);gap:26px;align-items:start;margin-top:16px}
+  @media(max-width:880px){.cm-fg{grid-template-columns:1fr;gap:18px}}
+  .cm-fgd{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .cm-fgd .lg{width:100%}
+  .cm-frs{display:flex;flex-direction:column}
+  .cm-fr{display:grid;grid-template-columns:26px minmax(90px,1.3fr) minmax(60px,2fr) 118px;gap:14px;align-items:center;padding:10px 2px}
+  .cm-fr+.cm-fr{border-top:1px solid var(--line2)}
+  .cm-fr.zero{opacity:.4}
+  .cm-fr .p{font-size:12px;font-weight:800;color:var(--muted)}
+  .cm-fr .nm{display:flex;align-items:center;gap:8px;min-width:0}
+  .cm-fr .nm i{width:11px;height:11px;border-radius:50%;flex:0 0 auto}
+  .cm-fr .nm b{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cm-fr .tr{height:12px;border-radius:999px;background:var(--line2);overflow:hidden}
+  .cm-fr .tr i{display:block;height:100%;border-radius:999px;transition:width .35s ease}
+  .cm-fr .vv{text-align:right}
+  .cm-fr .vv b{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+  .cm-fr .vv small{display:block;font-size:11px;color:var(--muted);font-weight:600}
+  @media(max-width:560px){.cm-fr{grid-template-columns:22px 1fr auto;gap:10px}.cm-fr .tr{display:none}}
+  /* barra de atalhos (âncoras) da aba Bitrix */
+  .cm-nav{position:sticky;top:8px;z-index:30;display:flex;gap:7px;flex-wrap:wrap;margin:0 0 16px;padding:7px;
+    background:color-mix(in srgb,var(--panel) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+  .cm-nav a{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;
+    padding:8px 13px;border-radius:10px;white-space:nowrap;user-select:none;transition:background .15s,color .15s}
+  .cm-nav a:hover{background:var(--line2);color:var(--ink)}
+  .cm-nav a svg{width:15px;height:15px;flex:0 0 auto}
+  @media(max-width:760px){.cm-nav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.cm-nav::-webkit-scrollbar{display:none}}
+  #sec-resumo,#sec-funil,#cm-origem,#sec-motivos,#sec-vend{scroll-margin-top:72px}
   .cm-vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
   @media(max-width:1100px){.cm-vgrid{grid-template-columns:repeat(2,1fr)}} @media(max-width:700px){.cm-vgrid{grid-template-columns:1fr}}
   .cm-vc{background:var(--panel);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:18px 20px;border-top:4px solid var(--c);display:flex;flex-direction:column;gap:16px}
@@ -1369,12 +1421,28 @@ function tpWarn(B,nome){
 function renderTrafego(){
   const box=document.getElementById("view-trafego"), M=TP.meta||{}, G=TP.google||{};
   box.innerHTML=`
-  <nav class="tp-nav"><a href="#tp-geral"><span class="lg geral">${TP_LOGO.geral}</span>Resumo geral</a><a href="#tp-meta"><span class="lg meta">${TP_LOGO.meta}</span>Meta Ads</a><a href="#tp-google"><span class="lg google">${TP_LOGO.google}</span>Google Ads</a></nav>
-  <section id="tp-geral" class="tp-sec"></section>
-  <section id="tp-meta" class="tp-sec"></section>
-  <section id="tp-google" class="tp-sec"></section>`;
-  box.querySelectorAll(".tp-nav a").forEach(a=>a.onclick=e=>{e.preventDefault();document.querySelector(a.getAttribute("href")).scrollIntoView({behavior:"smooth"});});
+  <div class="tp-wrap">
+    <nav class="tp-rail" id="tp-rail">
+      <a data-t="tp-geral"><span class="lg geral">${TP_LOGO.geral}</span><span>Resumo geral<small>Meta + Google somados</small></span></a>
+      <a data-t="tp-meta"><span class="lg meta">${TP_LOGO.meta}</span><span>Meta Ads<small>Facebook e Instagram</small></span></a>
+      <a data-t="tp-google"><span class="lg google">${TP_LOGO.google}</span><span>Google Ads<small>Rede de Pesquisa</small></span></a>
+    </nav>
+    <div class="tp-main">
+      <section id="tp-geral" class="tp-sec"></section>
+      <section id="tp-meta" class="tp-sec"></section>
+      <section id="tp-google" class="tp-sec"></section>
+    </div>
+  </div>`;
+  const rail=document.getElementById("tp-rail");
+  rail.onclick=e=>{const a=e.target.closest("a[data-t]");if(!a)return;const t=document.getElementById(a.dataset.t);if(t)t.scrollIntoView({behavior:"smooth",block:"start"});};
   renderTpGeral(); renderTpMeta(); renderTpGoogle();
+  // scrollspy: destaca a seção visível no trilho
+  const links=[...rail.querySelectorAll("a[data-t]")];
+  const setOn=id=>links.forEach(a=>a.classList.toggle("on",a.dataset.t===id));
+  setOn("tp-geral");
+  if(window._tpSpy)window._tpSpy.disconnect();
+  window._tpSpy=new IntersectionObserver(es=>{const vis=es.filter(x=>x.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(vis)setOn(vis.target.id);},{rootMargin:"-45% 0px -45% 0px",threshold:[0,.25,.5,1]});
+  ["tp-geral","tp-meta","tp-google"].forEach(id=>{const s=document.getElementById(id);if(s)window._tpSpy.observe(s);});
   box.onclick=e=>{
     const mt=e.target.closest("[data-metr]"); if(mt){TPF.meta.metr=mt.dataset.metr;renderTpMetaDyn();return;}
     if(e.target.closest("[data-refresh]")){TP_EM=0;abrirTrafego();return;}
@@ -1689,7 +1757,7 @@ function renderTpGoogleDyn(){
 // negócio = criação · proposta = última proposta do card · venda = entrada em Ganho.
 // Conversões usam a "safra": negócios criados no período e o que aconteceu com eles até hoje.
 let CM=null, CM_EM=0;
-const CMF={p:"mes",ini:"",fim:"",v:"",c:"",vp:"mes",vini:"",vfim:"",mode:"valor"};
+const CMF={p:"mes",ini:"",fim:"",v:"",c:"",vp:"mes",vini:"",vfim:"",mode:"valor",fonte:"vendas"};
 const CM_G_OLD=[["negociacao","Em negociação","#2563eb"],["semretorno","Sem retorno","#f59e0b"],["renutricao","Renutrição","#7c3aed"],["ganho","Ganhos","#16a34a"],["perdido","Perdidos","#dc2626"],["outras","Outras etapas abertas","#9aa7bd"]];
 const CM_PER=[["hoje","Hoje"],["ontem","Ontem"],["7d","7 dias"],["mes","Este mês"],["mesant","Mês anterior"],["custom","Personalizado"]];
 function abrirComercial(){
@@ -1717,7 +1785,15 @@ function renderComercial(){
     heroPill("build","Pipeline",`<select id="cm-c"><option value="">Todos</option>${Object.entries(CM.pipes).map(([k,n])=>`<option value="${k}" ${CMF.c===k?"selected":""}>${n}</option>`).join("")}</select>`))}
   <div style="margin:0 2px 10px">${cmDates("cm",CMF.p==="custom",CMF.ini,CMF.fim)}</div>
   <div class="tp-note" id="cm-per" style="margin:0 4px 8px"></div>
+  <div class="cm-nav" id="cm-nav">
+    <a data-t="sec-resumo">${tpSvg("bars")}Resumo</a>
+    <a data-t="sec-funil">${tpSvg("trend")}Funil de vendas</a>
+    <a data-t="cm-origem">${tpSvg("radar")}Origem das vendas</a>
+    <a data-t="sec-motivos">${tpSvg("tool")}Motivos de perda</a>
+    <a data-t="sec-vend">${tpSvg("users")}Desempenho por vendedor</a>
+  </div>
   <div id="cm-dyn"></div>
+  <div id="sec-vend"></div>
   ${tpHead("users","Desempenho por vendedor",'Não muda com o filtro de vendedor · <span id="cm-vper"></span>',`<div class="tp-filters"><span class="fl">Período</span>${cmSeg("cm-vseg",CMF.vp,CM_PER)}${cmDates("cm-v",CMF.vp==="custom",CMF.vini,CMF.vfim)}</div>`,TPC.purple)}
   <div id="cm-vend"></div>`;
   const seg=(id,key,ik,fk)=>{const el=document.getElementById(id);if(el)el.onclick=e=>{const b=e.target.closest("button");if(!b)return;CMF[key]=b.dataset.cmp;
@@ -1727,6 +1803,7 @@ function renderComercial(){
   [["cm-ini","ini"],["cm-fim","fim"],["cm-v-ini","vini"],["cm-v-fim","vfim"]].forEach(([id,k])=>{const i=document.getElementById(id);if(i)i.onchange=e=>{CMF[k]=e.target.value;renderComercial();};});
   document.getElementById("cm-v").onchange=e=>{CMF.v=e.target.value;renderCmDyn();};
   document.getElementById("cm-c").onchange=e=>{CMF.c=e.target.value;renderCmDyn();renderCmVend();};
+  const cmnav=document.getElementById("cm-nav");if(cmnav)cmnav.onclick=e=>{const a=e.target.closest("a[data-t]");if(!a)return;const t=document.getElementById(a.dataset.t);if(t)t.scrollIntoView({behavior:"smooth",block:"start"});};
   renderCmDyn(); renderCmVend();
 }
 
@@ -1788,7 +1865,7 @@ function renderCmDyn(){
   const srcArr=Object.entries(src).sort((a,b)=>b[1].n-a[1].n), srcMax=Math.max(1,...srcArr.map(x=>x[1].n));
   const SRC_COR=["#2563eb","#16a34a","#f59e0b","#7c3aed","#e11d48","#0891b2","#0d9488","#ea580c","#64748b"];
   el.innerHTML=`
-  <div class="tp-bigs">
+  <div class="tp-bigs" id="sec-resumo">
     ${big({hl:1,ic:"users",l:"Negócios",v:tpN(neg.length),sub:`negócio${neg.length===1?"":"s"} criado${neg.length===1?"":"s"} no período`,cur:neg.length,prev:negP.length,cmpl:"vs. período anterior",spark:tpSpark(conta(D,"dc"),"rgba(255,255,255,.75)",true)})}
     ${big({cls:"yl",ic:"form",l:"Propostas",v:tpBRL(sum(pro,"pv"),0),sub:`<b>${tpN(pro.length)}</b> proposta${pro.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(pro.length,proP.length)} · só a última de cada card`,cur:sum(pro,"pv"),prev:sum(proP,"pv"),spark:tpSpark(conta(D,"pd"),"rgba(255,255,255,.85)")})}
     ${big({cls:"gr",ic:"check",l:"Vendas",v:tpBRL(sum(ven,"o"),0),sub:`<b>${tpN(ven.length)}</b> venda${ven.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(ven.length,venP.length)} · ticket médio ${tpBRL(tpDiv(sum(ven,"o"),ven.length),0)}`,cur:sum(ven,"o"),prev:sum(venP,"o"),spark:tpSpark(conta(D,"won"),"rgba(255,255,255,.85)")})}
@@ -1801,7 +1878,7 @@ function renderCmDyn(){
       <div class="ol-plabs">${sit.filter(x=>cmMet(x)).map(x=>{const w=cmMet(x)/totM*100;return `<span style="width:${w}%;color:${x.c}">${w>=4?tpPct(w):""}</span>`;}).join("")}</div>
       <div class="ol-stats">${sit.map(x=>`<div class="ol-stat"><div class="h"><span class="ci" style="background:color-mix(in srgb,${x.c} 15%,transparent);color:${x.c}">${tpSvg(ic(x.l))}</span>${x.l}</div><div class="v">${CMF.mode==="pedidos"?tpN(x.n):tpBRL(x.o,0)}</div><div class="s">${CMF.mode==="pedidos"?`${tpBRL(x.o,0)} · ${tpPct(cmMet(x)/totM*100)} dos negócios`:`<b>${tpN(x.n)}</b> negócio${x.n===1?"":"s"} · ${tpPct(x.o/totM*100)} do valor`}</div></div>`).join("")}</div>`;})()}
   </div>
-  <div class="tp-panel" style="margin-top:16px">${tpHead("trend","Funil do período","Quantidade de negócios criados, propostas feitas e vendas fechadas no período · entre as etapas, a passagem de uma para a outra","",TPC.blue)}
+  <div class="tp-panel" style="margin-top:16px" id="sec-funil">${tpHead("trend","Funil do período","Quantidade de negócios criados, propostas feitas e vendas fechadas no período · entre as etapas, a passagem de uma para a outra","",TPC.blue)}
     ${cmFunil([{l:"Negócios",n:neg.length,c1:"#3b7cf0",c2:"#1d4ed8"},{l:"Propostas",n:pro.length,c1:"#f59e0b",c2:"#d97706"},{l:"Vendas",n:ven.length,c1:"#22c55e",c2:"#15803d"}])}
     ${ven.length>pro.length?tpInfo("Há mais vendas que propostas no período porque parte das vendas (principalmente do LightWall, pela planilha) não passa por proposta gerada no Bitrix, ou teve a proposta em outro mês."):""}
   </div>
@@ -1813,6 +1890,7 @@ function renderCmDyn(){
   </div>
   <div class="tp-panel" style="margin-top:16px" id="cm-evol"></div>
   <div id="cm-origem"></div>
+  <div id="sec-motivos"></div>
   ${tpHead("tool","Motivos de perda",`${tpN(per.length)} negócios perdidos no período · ranking dos motivos informados no Bitrix`,"",TPC.pink)}
   <div class="tp-qc">${per.length?`<div class="cm-g cm-g2" style="gap:32px;align-items:start"><div><div style="font-size:14px;font-weight:800;margin-bottom:6px">Ranking dos motivos</div>${tpRows(motArr)}</div>
       <div>${outroArr.length?`<div style="font-size:14px;font-weight:800">Dentro de “Outro”</div><div class="tp-note" style="margin:0 0 6px">Resumo do campo “Observações Desqualificação”, agrupado por tema</div>${tpRows(outroArr)}${tpInfo(`O principal motivo escondido em “Outro” é <b>${tpEsc(outroArr[0].label.toLowerCase())}</b>: ${tpPct(outroArr[0].n/outros.length*100)} desses casos.`)}`:'<div class="tp-empty">Nenhuma perda marcada como “Outro” no período.</div>'}</div></div>`:'<div class="tp-empty">Nenhum negócio perdido no período.</div>'}</div>`;
@@ -1884,11 +1962,32 @@ function renderCmOrigem(D,r){
   if(!neg.length&&!ven.length){el.innerHTML=head+`<div class="tp-panel"><div class="tp-empty">Nenhum negócio criado e nenhuma venda ${CMF.p==="hoje"?"hoje":"no período"}${filtroTxt?" para "+tpEsc(filtroTxt):""}. Tente um período maior ou tire o filtro de vendedor.</div></div>`;return;}
   const top=arr[0], topV=varr[0], topC=arr.filter(x=>x.n>=5&&x.w>0).sort((a,b)=>b.conv-a.conv)[0];
   const dest=(ic,c,t,v,s)=>`<div class="cm-od" style="--c:${c}"><span class="i">${tpSvg(ic)}</span><div><div class="t">${t}</div><div class="v">${v}</div><div class="s">${s}</div></div></div>`;
-  // donut: top 6 + "outras"
-  const top6=arr.slice(0,6), resto=arr.slice(6).reduce((s,x)=>s+x.n,0);
-  const parts=top6.map(x=>({l:x.k,n:x.n,c:x.c})).concat(resto?[{l:"Outras fontes",n:resto,c:"#cbd5e1"}]:[]);
-  const vmx=Math.max(1,...varr.map(x=>x.o));
-  const rankF=(arr,un)=>{const mx=Math.max(1,...arr.map(x=>x.o));return arr.map((x,i)=>`<div class="cm-rk"><span class="p">${i+1}º</span><span class="nm"><i style="background:${x.c}"></i>${tpEsc(x.k)}</span><span class="rt"><i style="width:${x.o/mx*100}%;background:${x.c}"></i></span><span class="vv">${tpBRL(x.o,0)}<small style="display:block;font-size:10.5px;color:var(--muted);font-weight:600">${tpN(x.n)} ${un}${x.n===1?"":"s"}</small></span></div>`).join("");};
+  // ---- bloco de foco por métrica (toggle Negócios/Propostas/Vendas) ----
+  const F=["negocios","propostas","vendas"].includes(CMF.fonte)?CMF.fonte:"vendas";
+  const SETS={
+    negocios:{lab:"Negócios",cor:TPC.purple,ic:"users",money:false,unit:"negócio",
+      list:arr.map(x=>({k:x.k,c:x.c,n:x.n,o:x.o})).sort((a,b)=>b.n-a.n)},
+    propostas:{lab:"Propostas",cor:TPC.blue,ic:"form",money:true,unit:"proposta",list:parr},
+    vendas:{lab:"Vendas",cor:TPC.green,ic:"check",money:true,unit:"venda",list:varr},
+  };
+  const S=SETS[F], met=x=>S.money?x.o:x.n, sorted=[...S.list].sort((a,b)=>met(b)-met(a));
+  const mx=Math.max(1,...sorted.map(met)), dtot=sorted.reduce((s,x)=>s+met(x),0)||1;
+  const totV=sorted.reduce((s,x)=>s+x.o,0), totN=sorted.reduce((s,x)=>s+x.n,0), fontesAtivas=sorted.filter(x=>x.n).length;
+  const kpis=F==="negocios"
+    ?[["Negócios criados",tpN(neg.length),"no período"],["Fontes ativas",tpN(fontesAtivas),"trazendo negócio"],["Valor em jogo",tpBRL(totV,0),"soma dos negócios"]]
+    :F==="propostas"
+    ?[["Total em propostas",tpBRL(totV,0),`${tpN(totN)} proposta${totN===1?"":"s"}`],["Fontes com proposta",tpN(fontesAtivas),"no período"],["Ticket médio",tpBRL(totN?totV/totN:0,0),"por proposta"]]
+    :[["Total vendido",tpBRL(totV,0),`${tpN(totN)} venda${totN===1?"":"s"}`],["Fontes que venderam",tpN(fontesAtivas),"no período"],["Ticket médio",tpBRL(totN?totV/totN:0,0),"por venda"]];
+  const dvis=sorted.slice(0,6), dresto=sorted.slice(6).reduce((s,x)=>s+met(x),0);
+  const dparts=dvis.filter(x=>met(x)).map(x=>({l:x.k,n:met(x),c:x.c})).concat(dresto?[{l:"Outras fontes",n:dresto,c:"#cbd5e1"}]:[]);
+  const frRow=(x,i)=>`<div class="cm-fr${met(x)?"":" zero"}"><span class="p">${i+1}º</span>
+    <span class="nm"><i style="background:${x.c}"></i><b>${tpEsc(x.k)}</b></span>
+    <span class="tr"><i style="width:${met(x)/mx*100}%;background:${x.c}"></i></span>
+    <span class="vv"><b>${S.money?tpBRL(x.o,0):tpN(x.n)}</b><small>${S.money?`${tpN(x.n)} ${S.unit}${x.n===1?"":"s"}`:`${tpBRL(x.o,0)} · ${tpPct(x.n/(neg.length||1)*100)} do total`}</small></span></div>`;
+  const seg=`<span class="ol-seg" id="cm-fonte"><button data-m="negocios" class="${F==="negocios"?"on":""}">Negócios</button><button data-m="propostas" class="${F==="propostas"?"on":""}">Propostas</button><button data-m="vendas" class="${F==="vendas"?"on":""}">Vendas</button></span>`;
+  const subF=F==="negocios"?"Negócios criados no período, por fonte"
+    :F==="propostas"?"Valor das propostas feitas no período, por fonte (última de cada card; inclui cards criados antes)"
+    :"Valor vendido no período, por fonte (inclui cards criados antes)";
   el.innerHTML=head+`
   <div class="cm-ods">
     ${top?dest("users",top.c,"Fonte que mais traz negócios",tpEsc(top.k),`${tpN(top.n)} negócios · ${tpPct(top.n/neg.length*100)} do total`):""}
@@ -1896,13 +1995,13 @@ function renderCmOrigem(D,r){
     ${topV?dest("check",topV.c,"Fonte que mais vendeu no período",tpEsc(topV.k),`${tpBRL(topV.o,0)} · ${tpN(topV.n)} venda${topV.n===1?"":"s"}`):dest("check","#9aa7bd","Fonte que mais vendeu no período","—","nenhuma venda no período")}
     ${topC?dest("trend",topC.c,"Melhor conversão (mín. 5 negócios)",tpEsc(topC.k),`${tpPct(topC.conv,1)} viraram venda · ${tpN(topC.w)} de ${tpN(topC.n)}`):dest("trend","#9aa7bd","Melhor conversão (mín. 5 negócios)","—","nenhuma fonte com venda e 5+ negócios")}
   </div>
-  <div class="cm-g cm-g3 cm-og" style="margin-top:16px">
-    <div class="tp-qc"><h4>Participação nos negócios</h4><div class="d">Negócios criados no período, por fonte</div>
-      ${neg.length?`<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">${cmDonutMulti(parts,neg.length,"negócios")}<div style="flex:1;min-width:200px">${parts.map(p=>`<div class="cm-lg"><i style="background:${p.c}"></i><span>${tpEsc(p.l)}</span><b>${tpPct(p.n/neg.length*100)}</b><small>${tpN(p.n)}</small></div>`).join("")}</div></div>`:'<div class="tp-empty">Nenhum negócio criado no período.</div>'}</div>
-    <div class="tp-qc"><h4>Propostas feitas no período, por fonte</h4><div class="d">Valor da última proposta de cada card (inclui cards criados antes)</div>
-      ${parr.length?rankF(parr,"proposta"):'<div class="tp-empty">Nenhuma proposta no período.</div>'}</div>
-    <div class="tp-qc"><h4>Vendas fechadas no período, por fonte</h4><div class="d">Valor vendido no período (inclui cards criados antes)</div>
-      ${varr.length?rankF(varr,"venda"):'<div class="tp-empty">Nenhuma venda no período.</div>'}</div>
+  <div class="tp-panel" style="margin-top:16px">${tpHead(S.ic,"Origem por fonte",subF,seg,S.cor)}
+    <div class="ol-stats" style="grid-template-columns:repeat(3,1fr)">${kpis.map(([t,v,s])=>`<div class="ol-stat"><div class="h">${tpEsc(t)}</div><div class="v" style="color:${S.cor}">${v}</div><div class="s">${tpEsc(s)}</div></div>`).join("")}</div>
+    ${sorted.filter(met).length?`<div class="ol-pbar" style="margin-top:14px">${sorted.filter(met).map(x=>`<i title="${tpEsc(x.k)}: ${S.money?tpBRL(x.o,0):tpN(x.n)+' neg'}" style="width:${met(x)/dtot*100}%;background:${x.c}"></i>`).join("")}</div>
+    <div class="cm-fg">
+      <div class="cm-fgd">${cmDonutMulti(dparts,dtot,S.lab.toLowerCase())}<div class="lg">${dparts.map(p=>`<div class="cm-lg"><i style="background:${p.c}"></i><span>${tpEsc(p.l)}</span><b>${tpPct(p.n/dtot*100)}</b></div>`).join("")}</div></div>
+      <div class="cm-frs">${sorted.map(frRow).join("")}</div>
+    </div>`:`<div class="tp-empty" style="margin-top:12px">Nenhum${F==="vendas"?"a venda":F==="propostas"?"a proposta":" negócio"} no período${filtroTxt?" para "+tpEsc(filtroTxt):""}.</div>`}
   </div>
   ${arr.length?(()=>{
     const TOPN=8, todas=!!CMF.srcAll, vis=todas?arr:arr.slice(0,TOPN), rest=todas?[]:arr.slice(TOPN);
@@ -1918,7 +2017,7 @@ function renderCmOrigem(D,r){
       <div class="vd"><b>${tpBRL(x.wo,0)}</b><small>vendido</small></div>
     </div>`;
     const T=arr.reduce((a,x)=>({n:a.n+x.n,p:a.p+x.p,w:a.w+x.w,wo:a.wo+x.wo,pw:a.pw+x.pw}),{n:0,p:0,w:0,wo:0,pw:0});
-    return `<div class="tp-panel" style="margin-top:16px">${tpHead("bars","Funil por fonte","Negócios criados no período e quanto deles virou proposta e venda (até hoje)",
+    return `<div class="tp-panel" style="margin-top:16px">${tpHead("bars","Jornada por fonte — do negócio à venda","Negócios criados no período e quanto deles virou proposta e venda (até hoje)",
         `<div class="tp-legend"><span><i style="background:#64748b;opacity:.28"></i>Negócios</span><span><i style="background:#64748b;opacity:.6"></i>Com proposta</span><span><i style="background:#64748b"></i>Vendas</span></div>`,TPC.orange)}
       <div class="cm-ffs">${linhas.map(row).join("")}</div>
       <div class="cm-fft"><span>Total: <b>${tpN(T.n)}</b> negócios · <b>${tpN(T.p)}</b> com proposta (${pc(T.p,T.n)}) · <b>${tpN(T.w)}</b> vendas · proposta → venda ${pc(T.pw,T.p)} · <b>${tpBRL(T.wo,0)}</b> vendido</span>
@@ -1927,6 +2026,7 @@ function renderCmOrigem(D,r){
     </div>`;})():""}
 `;
   const ba=document.getElementById("cm-src-all"); if(ba) ba.onclick=()=>{CMF.srcAll=!CMF.srcAll;renderCmOrigem(D,r);};
+  const fseg=document.getElementById("cm-fonte"); if(fseg) fseg.onclick=e=>{const b=e.target.closest("button");if(!b)return;CMF.fonte=b.dataset.m;renderCmOrigem(D,r);};
 }
 
 function renderCmVend(){
