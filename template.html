@@ -172,16 +172,33 @@
     .barrow{grid-template-columns:100px 1fr}.barrow .v{grid-column:2;text-align:left}}
   /* ===== layout app + sidebar ===== */
   .app{display:flex;min-height:100vh}
-  .sidebar{flex:0 0 68px;background:linear-gradient(180deg,#2853a1,#1a3c7d);
-    display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 0;
-    position:sticky;top:0;height:100vh;z-index:40}
-  .sb-logo{position:relative;width:52px;border-radius:12px;background:#fff;display:flex;flex-direction:column;
-    align-items:center;gap:2px;padding:8px 4px 6px;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,.18);cursor:pointer}
-  .sb-logo svg{width:30px;height:auto}
-  .bi-cur{font-size:9.5px;font-weight:800;color:var(--brand);letter-spacing:.02em;white-space:nowrap}
-  .bi-menu{position:absolute;left:calc(100% + 12px);top:0;background:var(--panel);border:1px solid var(--line);
-    border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.22);padding:6px;display:none;z-index:70;min-width:170px}
+  .sidebar{flex:0 0 234px;background:linear-gradient(180deg,#2853a1,#15306a);
+    display:flex;flex-direction:column;gap:4px;padding:14px 12px;
+    position:sticky;top:0;height:100vh;z-index:40;overflow-y:auto;scrollbar-width:none}
+  .sidebar::-webkit-scrollbar{display:none}
+  .sb-logo{position:relative;display:flex;align-items:center;gap:11px;width:100%;border-radius:14px;
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);padding:9px 11px;margin-bottom:8px;cursor:pointer}
+  .sb-logo .sb-mark{width:40px;height:40px;border-radius:11px;background:#fff;display:grid;place-items:center;flex:0 0 auto;box-shadow:0 3px 10px rgba(0,0,0,.18)}
+  .sb-logo .sb-mark svg{width:28px;height:auto}
+  .bi-cur{font-size:15.5px;font-weight:800;color:#fff;letter-spacing:-.01em;white-space:nowrap}
+  .bi-menu{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.22);padding:6px;display:none;z-index:70}
   .sb-logo.open .bi-menu{display:block}
+  .sb-nav{display:flex;flex-direction:column;gap:3px;width:100%}
+  .sb-nav .sb-sec{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.46);padding:10px 10px 5px}
+  .sb-nav a{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:11px;cursor:pointer;color:rgba(255,255,255,.82);
+    text-decoration:none;font-size:13px;font-weight:650;line-height:1.2;transition:background .15s,color .15s}
+  .sb-nav a:hover{background:rgba(255,255,255,.1);color:#fff}
+  .sb-nav a.on{background:rgba(255,255,255,.17);color:#fff;font-weight:750}
+  .sb-nav a .ico{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto;background:rgba(255,255,255,.13);color:#fff}
+  .sb-nav a .ico svg{width:16px;height:16px}
+  .sb-nav a.on .ico{background:#fff;color:var(--brand)}
+  .sb-nav a .ico.meta{background:#0866ff!important;color:#fff!important}
+  .sb-nav a .ico.google{background:#fff!important}
+  .sb-nav a .ico.geral{background:linear-gradient(135deg,#5a8bec,#1a3c7d)!important;color:#fff!important}
+  .sb-nav a .tx{min-width:0;overflow:hidden}
+  .sb-nav a .tx small{display:block;font-size:10.5px;font-weight:600;color:rgba(255,255,255,.52);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sb-nav a.on .tx small{color:rgba(255,255,255,.7)}
   .bi-opt{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;cursor:pointer;
     font-size:13.5px;font-weight:650;color:var(--ink);white-space:nowrap}
   .bi-opt svg{width:18px;height:18px;color:var(--muted);flex:0 0 auto}
@@ -234,7 +251,7 @@
   .sb-mode span{font-size:9px;font-weight:800;letter-spacing:.02em}
   .sb-mode:hover{background:rgba(255,255,255,.12);color:#fff}
   .sb-mode.active{background:#fff;color:var(--brand)}
-  .sb-div{width:28px;height:1px;background:rgba(255,255,255,.18);margin:8px 0}
+  .sb-div{width:auto;height:1px;background:rgba(255,255,255,.16);margin:8px 6px 4px}
   /* tooltip também nos modos */
   .sb-mode::after{content:attr(data-tip);position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%) translateX(-4px);background:#0d1524;color:#fff;padding:6px 10px;border-radius:8px;font-size:12.5px;font-weight:600;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s,transform .12s;z-index:60;box-shadow:0 6px 18px rgba(0,0,0,.28)}
   .sb-mode:hover::after{opacity:1;transform:translateY(-50%) translateX(0)}
@@ -996,7 +1013,7 @@
 <div class="app">
   <aside class="sidebar">
     <div class="sb-logo" id="bi-switch" title="Trocar B.I">
-      <svg viewBox="885 -25 2005 575"><path fill="#2853a1" d="M897.83,377.97s108.87-30.81,285.53-92.44c161.82-56.45,276.21,7.84,336.89,28.76,59.57,20.54,142.07,99.52,199.26-61.63,45.19-127.36,110.93-88.33,110.93-88.33,0,0,35.23,12.66,133.52,119.14,98.6,106.82,138.88,74.54,138.88,74.54,0,0,40.45,5.62,278.23-208.67L2546.76,0h327.19l-505.33,449.87s-63.68,69.84-174.61,71.9c-51.51.95-102.71-20.54-152.01-61.63-53.61-44.67-129.41-110.93-184.88-164.33-23.11-22.26-39.42-25.61-51.35-24.65-40.99,3.28-36.98,57.52-61.63,96.55-17.99,28.49-31.12,82.17-106.82,82.17s-97.81-36.29-154.06-67.79c-51.35-28.76-94.54-85.42-221.85-80.11-98.6,4.11-105.4,14.79-199.26,36.98-113.6,26.85-164.33,39.03-164.33,39.03Z"/></svg>
+      <span class="sb-mark"><svg viewBox="885 -25 2005 575"><path fill="#2853a1" d="M897.83,377.97s108.87-30.81,285.53-92.44c161.82-56.45,276.21,7.84,336.89,28.76,59.57,20.54,142.07,99.52,199.26-61.63,45.19-127.36,110.93-88.33,110.93-88.33,0,0,35.23,12.66,133.52,119.14,98.6,106.82,138.88,74.54,138.88,74.54,0,0,40.45,5.62,278.23-208.67L2546.76,0h327.19l-505.33,449.87s-63.68,69.84-174.61,71.9c-51.51.95-102.71-20.54-152.01-61.63-53.61-44.67-129.41-110.93-184.88-164.33-23.11-22.26-39.42-25.61-51.35-24.65-40.99,3.28-36.98,57.52-61.63,96.55-17.99,28.49-31.12,82.17-106.82,82.17s-97.81-36.29-154.06-67.79c-51.35-28.76-94.54-85.42-221.85-80.11-98.6,4.11-105.4,14.79-199.26,36.98-113.6,26.85-164.33,39.03-164.33,39.03Z"/></svg></span>
       <span class="bi-cur" id="bi-cur">Bitrix ▾</span>
       <div class="bi-menu" id="bi-menu">
         <div class="bi-opt active" data-view="comercial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span>Bitrix</span></div>
@@ -1006,6 +1023,7 @@
       </div>
     </div>
     <div class="sb-div"></div>
+    <nav class="sb-nav" id="sb-nav"></nav>
     <div class="sb-sp"></div>
     <div class="sb-ic" data-tip="Sair"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
   </aside>
@@ -1105,7 +1123,41 @@ function setView(v){
   if(v==="comercial") abrirComercial();
   if(v==="disparos") abrirDisparos();
   window.scrollTo({top:0});
+  buildSidebarNav(v); setTimeout(sbSpy,120);
 }
+// ---- menu lateral do app: seções da aba atual ----
+let SB_CUR=[];
+function sbItems(v){
+  const I=id=>tpSvg(id);
+  if(v==="comercial") return [
+    {id:"sec-resumo",label:"Resumo",icon:I("bars")},
+    {id:"sec-funil",label:"Funil de vendas",icon:I("trend")},
+    {id:"cm-origem",label:"Origem das vendas",icon:I("radar")},
+    {id:"sec-motivos",label:"Motivos de perda",icon:I("tool")},
+    {id:"sec-vend",label:"Desempenho por vendedor",icon:I("users")},
+  ];
+  if(v==="trafego") return [
+    {id:"tp-geral",label:"Resumo geral",sub:"Meta + Google",icon:TP_LOGO.geral,cls:"geral"},
+    {id:"tp-meta",label:"Meta Ads",sub:"Facebook e Instagram",icon:TP_LOGO.meta,cls:"meta"},
+    {id:"tp-google",label:"Google Ads",sub:"Rede de Pesquisa",icon:TP_LOGO.google,cls:"google"},
+  ];
+  return [];
+}
+function buildSidebarNav(v){
+  const nav=document.getElementById("sb-nav"); if(!nav) return;
+  const items=sbItems(v); SB_CUR=items.map(x=>x.id);
+  nav.innerHTML=items.length?`<div class="sb-sec">Seções</div>`+items.map(x=>`<a data-t="${x.id}"><span class="ico ${x.cls||""}">${x.icon}</span><span class="tx">${x.label}${x.sub?`<small>${x.sub}</small>`:""}</span></a>`).join(""):"";
+}
+function sbSpy(){
+  const nav=document.getElementById("sb-nav"); if(!nav||!SB_CUR.length) return;
+  let pick=SB_CUR[0];
+  SB_CUR.forEach(id=>{const el=document.getElementById(id); if(el&&el.getBoundingClientRect().top<=150) pick=id;});
+  nav.querySelectorAll("a[data-t]").forEach(a=>a.classList.toggle("on",a.dataset.t===pick));
+}
+{const _sbnav=document.getElementById("sb-nav");
+ if(_sbnav) _sbnav.onclick=e=>{const a=e.target.closest("a[data-t]");if(!a)return;const t=document.getElementById(a.dataset.t);if(t)t.scrollIntoView({behavior:"smooth",block:"start"});};}
+let _sbRaf=0;
+window.addEventListener("scroll",()=>{if(_sbRaf)return;_sbRaf=requestAnimationFrame(()=>{_sbRaf=0;sbSpy();});},{passive:true});
 const biSwitch=document.getElementById("bi-switch");
 biSwitch.onclick=e=>{e.stopPropagation();biSwitch.classList.toggle("open");};
 document.querySelectorAll(".bi-opt").forEach(o=>o.onclick=e=>{e.stopPropagation();setView(o.dataset.view);biSwitch.classList.remove("open");});
@@ -1139,7 +1191,7 @@ function renderTiny(){
   const pOpts=[["hoje","Hoje"],["ontem","Ontem"],["7d","7 dias"],["mes","Este mês"],["mesant","Mês anterior"],["custom","Personalizado"]];
   box.innerHTML=`
   ${heroHead(OLIST_LOGO,"Vendas","por situação",`Acompanhe o progresso das suas vendas · atualizado ${tpHora(TN.gerado_em)}`,
-    heroPill("cal","Período",`<select id="tn-psel">${pOpts.map(([k,l])=>`<option value="${k}" ${TNF.p===k?"selected":""}>${l}</option>`).join("")}</select>`)+
+    heroPill("cal","Período",`<select id="tn-psel">${pOpts.map(([k,l])=>`<option value="${k}" ${TNF.p===k?"selected":""}>${l}</option>`).join("")}<optgroup label="Escolher mês">${mesOpts(TN.hoje,TNF.p)}</optgroup></select>`)+
     heroPill("build","Equipe",`<select id="tn-eq"><option value="">Todas</option>${["Vendas Internas","LightWall","Outros"].map(e=>`<option ${TNF.eq===e?"selected":""}>${e}</option>`).join("")}</select>`)+
     heroPill("users","Vendedor",`<select id="tn-v"><option value="">Todos</option>${vendOpts.map(v=>`<option ${TNF.v===v?"selected":""}>${tpEsc(v)}</option>`).join("")}</select>`))}
   <div style="margin:0 2px 10px">${cmDates("tn",TNF.p==="custom",TNF.ini,TNF.fim)}</div>
@@ -1291,6 +1343,11 @@ function abrirTrafego(){
   });
 }
 
+const MES_NOMES=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+// opções <option> dos últimos 13 meses (value "m:AAAA-MM") p/ "escolher o mês"
+function mesOpts(hoje,sel){let Y=+hoje.slice(0,4),M=+hoje.slice(5,7)-1,out="";
+  for(let i=0;i<13;i++){let m=M-i,y=Y;while(m<0){m+=12;y--;}const ym=`${y}-${String(m+1).padStart(2,"0")}`;
+    out+=`<option value="m:${ym}" ${sel==="m:"+ym?"selected":""}>${MES_NOMES[m]} ${y}</option>`;}return out;}
 function tpRange(f,hoje){
   if(f.p==="hoje") return {ini:hoje,fim:hoje,pini:tpAdd(hoje,-1),pfim:tpAdd(hoje,-1),key:"hoje"};
   if(f.p==="ontem"){const o=tpAdd(hoje,-1);return {ini:o,fim:o,pini:tpAdd(hoje,-2),pfim:tpAdd(hoje,-2),key:"ontem"};}
@@ -1298,6 +1355,9 @@ function tpRange(f,hoje){
   if(f.p==="30d") return {ini:tpAdd(hoje,-29),fim:hoje,pini:tpAdd(hoje,-59),pfim:tpAdd(hoje,-30),key:"30d"};
   if(f.p==="mes"){const ini=hoje.slice(0,8)+"01",pf=tpAdd(ini,-1),pd=pf.slice(0,8)+hoje.slice(8,10);return {ini,fim:hoje,pini:pf.slice(0,8)+"01",pfim:pd<pf?pd:pf,key:null};}
   if(f.p==="mesant"){const fim=tpAdd(hoje.slice(0,8)+"01",-1),ini=fim.slice(0,8)+"01",pfim=tpAdd(ini,-1);return {ini,fim,pini:pfim.slice(0,8)+"01",pfim,key:null};}
+  if(typeof f.p==="string"&&f.p.slice(0,2)==="m:"){const ym=f.p.slice(2),[y,m]=ym.split("-").map(Number);
+    const ini=ym+"-01",last=new Date(y,m,0).getDate();let fim=`${ym}-${String(last).padStart(2,"0")}`;if(fim>hoje)fim=hoje;
+    const pfim=tpAdd(ini,-1);return {ini,fim,pini:pfim.slice(0,8)+"01",pfim,key:null};}
   let ini=f.ini||tpAdd(hoje,-29), fim=f.fim||hoje; if(ini>fim)[ini,fim]=[fim,ini];
   const n=tpDays(ini,fim); return {ini,fim,pini:tpAdd(ini,-n),pfim:tpAdd(ini,-1),key:null};
 }
@@ -1395,7 +1455,8 @@ function tpFilters(plat,camps){
   const f=TPF[plat];
   return `<div class="tp-filters" id="tp-${plat}-filters">
     <span class="fl">Período</span>
-    <span class="tp-seg2">${[["hoje","Hoje"],["ontem","Ontem"],["7d","7 dias"],["custom","Personalizado"]].map(([k,l])=>`<button data-plat="${plat}" data-p="${k}" class="${f.p===k?"on":""}">${l}</button>`).join("")}</span>
+    <span class="tp-seg2">${[["hoje","Hoje"],["ontem","Ontem"],["7d","7 dias"],["mes","Este mês"],["mesant","Mês ant."],["custom","Personalizado"]].map(([k,l])=>`<button data-plat="${plat}" data-p="${k}" class="${f.p===k?"on":""}">${l}</button>`).join("")}</span>
+    <select class="tp-sel tp-mo" data-plat="${plat}" title="Escolher um mês específico"><option value="">Escolher mês…</option>${mesOpts((TP[plat]||{}).hoje||"",f.p)}</select>
     <span class="tp-dates" ${f.p==="custom"?"":"hidden"}><label class="tp-date">${tpSvg("cal")}<input type="date" data-plat="${plat}" data-d="ini" value="${f.ini}"></label><span class="drsep">→</span><label class="tp-date">${tpSvg("cal")}<input type="date" data-plat="${plat}" data-d="fim" value="${f.fim}"></label></span>
     <span class="fl">Campanha</span>
     <select class="tp-sel" data-plat="${plat}" data-camp="1"><option value="">Todas as ativas (${camps.length})</option>${camps.map(c=>`<option value="${c.id}" ${f.camp===c.id?"selected":""}>${tpEsc(c.nome)}</option>`).join("")}</select>
@@ -1421,28 +1482,11 @@ function tpWarn(B,nome){
 function renderTrafego(){
   const box=document.getElementById("view-trafego"), M=TP.meta||{}, G=TP.google||{};
   box.innerHTML=`
-  <div class="tp-wrap">
-    <nav class="tp-rail" id="tp-rail">
-      <a data-t="tp-geral"><span class="lg geral">${TP_LOGO.geral}</span><span>Resumo geral<small>Meta + Google somados</small></span></a>
-      <a data-t="tp-meta"><span class="lg meta">${TP_LOGO.meta}</span><span>Meta Ads<small>Facebook e Instagram</small></span></a>
-      <a data-t="tp-google"><span class="lg google">${TP_LOGO.google}</span><span>Google Ads<small>Rede de Pesquisa</small></span></a>
-    </nav>
-    <div class="tp-main">
-      <section id="tp-geral" class="tp-sec"></section>
-      <section id="tp-meta" class="tp-sec"></section>
-      <section id="tp-google" class="tp-sec"></section>
-    </div>
-  </div>`;
-  const rail=document.getElementById("tp-rail");
-  rail.onclick=e=>{const a=e.target.closest("a[data-t]");if(!a)return;const t=document.getElementById(a.dataset.t);if(t)t.scrollIntoView({behavior:"smooth",block:"start"});};
+  <section id="tp-geral" class="tp-sec"></section>
+  <section id="tp-meta" class="tp-sec"></section>
+  <section id="tp-google" class="tp-sec"></section>`;
   renderTpGeral(); renderTpMeta(); renderTpGoogle();
-  // scrollspy: destaca a seção visível no trilho
-  const links=[...rail.querySelectorAll("a[data-t]")];
-  const setOn=id=>links.forEach(a=>a.classList.toggle("on",a.dataset.t===id));
-  setOn("tp-geral");
-  if(window._tpSpy)window._tpSpy.disconnect();
-  window._tpSpy=new IntersectionObserver(es=>{const vis=es.filter(x=>x.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(vis)setOn(vis.target.id);},{rootMargin:"-45% 0px -45% 0px",threshold:[0,.25,.5,1]});
-  ["tp-geral","tp-meta","tp-google"].forEach(id=>{const s=document.getElementById(id);if(s)window._tpSpy.observe(s);});
+  buildSidebarNav("trafego"); setTimeout(sbSpy,120);
   box.onclick=e=>{
     const mt=e.target.closest("[data-metr]"); if(mt){TPF.meta.metr=mt.dataset.metr;renderTpMetaDyn();return;}
     if(e.target.closest("[data-refresh]")){TP_EM=0;abrirTrafego();return;}
@@ -1460,6 +1504,7 @@ function renderTrafego(){
   };
   box.onchange=e=>{
     const t=e.target, plat=t.dataset.plat; if(!plat) return;
+    if(t.classList.contains("tp-mo")){ if(t.value){TPF[plat].p=t.value;(plat==="meta"?renderTpMeta:renderTpGoogle)();} return; }
     if(t.dataset.d) TPF[plat][t.dataset.d]=t.value;
     if(t.dataset.camp) TPF[plat].camp=t.value;
     (plat==="meta"?renderTpMetaDyn:renderTpGoogleDyn)();
@@ -1780,30 +1825,23 @@ function renderComercial(){
   const box=document.getElementById("view-comercial");
   box.innerHTML=`
   ${heroHead(BITRIX_LOGO,"Comercial","",`Vendas Internas e LightWall · atualizado ${tpHora(CM.gerado_em)}`,
-    heroPill("cal","Período",`<select id="cm-psel">${CM_PER.map(([k,l])=>`<option value="${k}" ${CMF.p===k?"selected":""}>${l}</option>`).join("")}</select>`)+
+    heroPill("cal","Período",`<select id="cm-psel">${CM_PER.map(([k,l])=>`<option value="${k}" ${CMF.p===k?"selected":""}>${l}</option>`).join("")}<optgroup label="Escolher mês">${mesOpts(CM.hoje,CMF.p)}</optgroup></select>`)+
     heroPill("users","Vendedor",`<select id="cm-v"><option value="">Todos</option>${Object.entries(CM.vend).map(([k,n])=>`<option value="${k}" ${CMF.v===k?"selected":""}>${n}</option>`).join("")}</select>`)+
-    heroPill("build","Pipeline",`<select id="cm-c"><option value="">Todos</option>${Object.entries(CM.pipes).map(([k,n])=>`<option value="${k}" ${CMF.c===k?"selected":""}>${n}</option>`).join("")}</select>`))}
+    heroPill("build","Equipe",`<select id="cm-c"><option value="">Todas</option>${Object.entries(CM.pipes).map(([k,n])=>`<option value="${k}" ${CMF.c===k?"selected":""}>${n}</option>`).join("")}</select>`))}
   <div style="margin:0 2px 10px">${cmDates("cm",CMF.p==="custom",CMF.ini,CMF.fim)}</div>
   <div class="tp-note" id="cm-per" style="margin:0 4px 8px"></div>
-  <div class="cm-nav" id="cm-nav">
-    <a data-t="sec-resumo">${tpSvg("bars")}Resumo</a>
-    <a data-t="sec-funil">${tpSvg("trend")}Funil de vendas</a>
-    <a data-t="cm-origem">${tpSvg("radar")}Origem das vendas</a>
-    <a data-t="sec-motivos">${tpSvg("tool")}Motivos de perda</a>
-    <a data-t="sec-vend">${tpSvg("users")}Desempenho por vendedor</a>
-  </div>
   <div id="cm-dyn"></div>
   <div id="sec-vend"></div>
-  ${tpHead("users","Desempenho por vendedor",'Não muda com o filtro de vendedor · <span id="cm-vper"></span>',`<div class="tp-filters"><span class="fl">Período</span>${cmSeg("cm-vseg",CMF.vp,CM_PER)}${cmDates("cm-v",CMF.vp==="custom",CMF.vini,CMF.vfim)}</div>`,TPC.purple)}
+  ${tpHead("users","Desempenho por vendedor",'Não muda com o filtro de vendedor · <span id="cm-vper"></span>',`<div class="tp-filters"><span class="fl">Período</span>${cmSeg("cm-vseg",CMF.vp,CM_PER)}<select class="tp-sel" id="cm-vmo" title="Escolher um mês específico"><option value="">Escolher mês…</option>${mesOpts(CM.hoje,CMF.vp)}</select>${cmDates("cm-v",CMF.vp==="custom",CMF.vini,CMF.vfim)}</div>`,TPC.purple)}
   <div id="cm-vend"></div>`;
   const seg=(id,key,ik,fk)=>{const el=document.getElementById(id);if(el)el.onclick=e=>{const b=e.target.closest("button");if(!b)return;CMF[key]=b.dataset.cmp;
       if(CMF[key]==="custom"&&!CMF[ik]){CMF[ik]=CM.hoje.slice(0,8)+"01";CMF[fk]=CM.hoje;}renderComercial();};};
   seg("cm-vseg","vp","vini","vfim");
+  {const mo=document.getElementById("cm-vmo");if(mo)mo.onchange=e=>{if(e.target.value){CMF.vp=e.target.value;renderComercial();}};}
   document.getElementById("cm-psel").onchange=e=>{CMF.p=e.target.value;if(CMF.p==="custom"&&!CMF.ini){CMF.ini=CM.hoje.slice(0,8)+"01";CMF.fim=CM.hoje;}renderComercial();};
   [["cm-ini","ini"],["cm-fim","fim"],["cm-v-ini","vini"],["cm-v-fim","vfim"]].forEach(([id,k])=>{const i=document.getElementById(id);if(i)i.onchange=e=>{CMF[k]=e.target.value;renderComercial();};});
   document.getElementById("cm-v").onchange=e=>{CMF.v=e.target.value;renderCmDyn();};
   document.getElementById("cm-c").onchange=e=>{CMF.c=e.target.value;renderCmDyn();renderCmVend();};
-  const cmnav=document.getElementById("cm-nav");if(cmnav)cmnav.onclick=e=>{const a=e.target.closest("a[data-t]");if(!a)return;const t=document.getElementById(a.dataset.t);if(t)t.scrollIntoView({behavior:"smooth",block:"start"});};
   renderCmDyn(); renderCmVend();
 }
 
@@ -2116,7 +2154,7 @@ function renderDisparos(){
   const fontes={};neg.forEach(x=>{const k=x.bz&&!/disparo|biozap/i.test(x.src)?"Contato do disparo automático (BioZap)":x.src;const o=fontes[k]=fontes[k]||{n:0,p:0,w:0,wo:0};o.n++;if(x.np)o.p++;if(x.won){o.w++;o.wo+=x.o;}});
   box.innerHTML=`
   ${heroHead(tpSvg("wpp",'style="color:#25D366"'),"Disparos","",`WhatsApp · +55 11 94722-6372 · atualizado ${tpHora(DS.gerado_em)}`,
-    heroPill("cal","Período",`<select id="ds-psel">${CM_PER.map(([k,l])=>`<option value="${k}" ${DSF.p===k?"selected":""}>${l}</option>`).join("")}</select>`))}
+    heroPill("cal","Período",`<select id="ds-psel">${CM_PER.map(([k,l])=>`<option value="${k}" ${DSF.p===k?"selected":""}>${l}</option>`).join("")}<optgroup label="Escolher mês">${mesOpts(DS.hoje,DSF.p)}</optgroup></select>`))}
   <div style="margin:0 2px 10px">${cmDates("ds",DSF.p==="custom",DSF.ini,DSF.fim)}</div>
   <div class="tp-note" style="margin:0 4px 8px">${tpPerTxt({p:DSF.p},r)}</div>
   ${M.ok===false?`<div class="tp-warn" style="margin-top:12px"><div><b>Os dados da Meta não estão atualizando.</b> ${tpEsc(M.erro||"")}</div></div>`:""}
