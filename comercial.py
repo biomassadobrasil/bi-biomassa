@@ -113,7 +113,7 @@ def build():
                         pegar=lambda r: (r or {}).get("items")):
             hist.setdefault(str(h["OWNER_ID"]), []).append((h["CREATED_TIME"], h["STAGE_ID"]))
 
-    # ---- propostas (documentos gerados no card): fica só a ÚLTIMA de cada card ----
+    # ---- propostas (documentos gerados no card): uma por número de proposta (a versão mais recente de cada número) ----
     docs = listar("crm.documentgenerator.document.list", {"select": ["id", "entityId", "createTime", "updateTime", "number"],
                                                           "filter": {"entityTypeId": 2}, "order": {"id": "asc"}},
                   pegar=lambda r: (r or {}).get("documents"))
@@ -123,9 +123,20 @@ def build():
         if did not in deals: continue
         por_card.setdefault(did, []).append(x)
     ultimas = {did: max(lst, key=lambda x: (x.get("createTime") or "", int(x["id"]))) for did, lst in por_card.items()}
+    # uma proposta por NÚMERO (o mesmo card pode ter duas negociações com números diferentes); de cada número, a versão mais recente
+    por_numero = {}
+    for did, lst in por_card.items():
+        nums = {}
+        for x in lst:
+            k = str(x.get("number") or x["id"])
+            if k not in nums or (x.get("createTime") or "", int(x["id"])) > (nums[k].get("createTime") or "", int(nums[k]["id"])):
+                nums[k] = x
+        por_numero[did] = list(nums.values())
     valores = {}
     falta = []
-    for did, x in ultimas.items():
+    a_valorar = {x["id"]: x for lst in por_numero.values() for x in lst}
+    a_valorar.update({x["id"]: x for x in ultimas.values()})
+    for x in a_valorar.values():
         key = f"comercial:doc:{x['id']}:{x.get('updateTime')}"
         v = None
         if G._RDS:
@@ -178,6 +189,8 @@ def build():
                     "mo": tema_outro(d.get(F_OBS)) if (g == "perdido" and motivos.get(str(d.get(F_MOTIVO) or "")) == "Outro") else "",
                     "np": len(por_card.get(did, [])), "pd": _d(up.get("createTime")) if up else "",
                     "pv": round(valores.get(up["id"], 0.0), 2) if up else 0.0,
+                    # todas as propostas do card, uma por número: [data, valor]
+                    "ps": [[_d(x.get("createTime")), round(valores.get(x["id"], 0.0), 2)] for x in sorted(por_numero.get(did, []), key=lambda x: int(x["id"]))],
                     # horas até o 1º contato / dias até fechar
                     "fc": round((fc - criado).total_seconds() / 3600, 1) if (fc and criado and fc >= criado) else None,
                     "dias": (datetime.date.fromisoformat(won) - criado.date()).days if (won and criado) else None})

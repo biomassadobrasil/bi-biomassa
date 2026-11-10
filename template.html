@@ -1861,6 +1861,8 @@ function cmFunil(et){
   });
   return `<svg viewBox="0 0 ${W} ${H}" role="img" style="width:100%;height:auto;display:block">${g}</svg>`;
 }
+// propostas: uma linha por NÚMERO de proposta do card (x.ps = [[data, valor], ...]); dados antigos sem ps usam a última (pd/pv)
+function cmProps(D){return D.flatMap(x=>(x.ps&&x.ps.length?x.ps:(x.pd?[[x.pd,x.pv]]:[])).map(([pd,pv])=>Object.assign({},x,{pd,pv})));}
 function renderCmDyn(){
   const r=cmRange(CMF.p,CMF.ini,CMF.fim), R=[r.ini,r.fim], P=[r.pini,r.pfim], el=document.getElementById("cm-dyn");
   TP_NOCMP=CMF.p==="hoje";
@@ -1868,7 +1870,7 @@ function renderCmDyn(){
   const _dpt=document.getElementById("cm-dp-t");if(_dpt)_dpt.innerHTML=`${tpBrY(r.ini)} <span style="color:var(--muted)">→</span> ${tpBrY(r.fim)}`;
   const D=CM.deals.filter(x=>(!CMF.v||x.v===CMF.v)&&(!CMF.c||x.c===CMF.c));
   const neg=D.filter(x=>cmIn(x.dc,R)), negP=D.filter(x=>cmIn(x.dc,P));
-  const pro=D.filter(x=>cmIn(x.pd,R)), proP=D.filter(x=>cmIn(x.pd,P));
+  const DP=cmProps(D), pro=DP.filter(x=>cmIn(x.pd,R)), proP=DP.filter(x=>cmIn(x.pd,P));
   const ven=D.filter(x=>cmIn(x.won,R)), venP=D.filter(x=>cmIn(x.won,P));
   const per=D.filter(x=>cmIn(x.lost,R)), perP=D.filter(x=>cmIn(x.lost,P));
   const sum=(a,k)=>a.reduce((s,x)=>s+(x[k]||0),0);
@@ -1905,7 +1907,7 @@ function renderCmDyn(){
   el.innerHTML=`
   <div class="tp-bigs" id="sec-resumo">
     ${big({hl:1,ic:"users",l:"Negócios",v:tpN(neg.length),sub:`negócio${neg.length===1?"":"s"} criado${neg.length===1?"":"s"} no período`,cur:neg.length,prev:negP.length,cmpl:"vs. período anterior",spark:tpSpark(conta(D,"dc"),"rgba(255,255,255,.75)",true)})}
-    ${big({cls:"yl",ic:"form",l:"Propostas",v:tpBRL(sum(pro,"pv"),0),sub:`<b>${tpN(pro.length)}</b> proposta${pro.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(pro.length,proP.length)} · só a última de cada card`,cur:sum(pro,"pv"),prev:sum(proP,"pv"),spark:tpSpark(conta(D,"pd"),"rgba(255,255,255,.85)")})}
+    ${big({cls:"yl",ic:"form",l:"Propostas",v:tpBRL(sum(pro,"pv"),0),sub:`<b>${tpN(pro.length)}</b> proposta${pro.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(pro.length,proP.length)} · uma por número de proposta`,cur:sum(pro,"pv"),prev:sum(proP,"pv"),spark:tpSpark(conta(DP,"pd"),"rgba(255,255,255,.85)")})}
     ${big({cls:"gr",ic:"check",l:"Vendas",v:tpBRL(sum(ven,"o"),0),sub:`<b>${tpN(ven.length)}</b> venda${ven.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(ven.length,venP.length)} · ticket médio ${tpBRL(tpDiv(sum(ven,"o"),ven.length),0)}`,cur:sum(ven,"o"),prev:sum(venP,"o"),spark:tpSpark(conta(D,"won"),"rgba(255,255,255,.85)")})}
     ${big({cls:"rd",ic:"tool",l:"Perdidos",v:tpBRL(sum(per,"o"),0),sub:`<b>${tpN(per.length)}</b> negócio${per.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(per.length,perP.length,true)} · motivos mais abaixo`,cur:sum(per,"o"),prev:sum(perP,"o"),lb:1,spark:tpSpark(conta(D,"lost"),"rgba(255,255,255,.85)")})}
   </div>
@@ -1964,8 +1966,9 @@ function cmLines(days,series,focus){
 function renderCmEvol(D,r){
   const el=document.getElementById("cm-evol"); if(!el) return;
   const cd=tpChartDays(r), R=[r.ini,r.fim];
-  const soma=(k,val)=>{const o={};D.forEach(x=>{if(x[k])o[x[k]]=(o[x[k]]||0)+(x[val]||0);});return cd.days.map(d=>o[d]||0);};
-  const tot=(k,val)=>D.filter(x=>cmIn(x[k],R)).reduce((s,x)=>s+(x[val]||0),0);
+  const DP=cmProps(D), fonteDe=k=>k==="pd"?DP:D;
+  const soma=(k,val)=>{const o={};fonteDe(k).forEach(x=>{if(x[k])o[x[k]]=(o[x[k]]||0)+(x[val]||0);});return cd.days.map(d=>o[d]||0);};
+  const tot=(k,val)=>fonteDe(k).filter(x=>cmIn(x[k],R)).reduce((s,x)=>s+(x[val]||0),0);
   const S=[{k:"pro",name:"Propostas",color:"#7c3aed",v:soma("pd","pv"),t:tot("pd","pv")},
            {k:"ven",name:"Vendas",color:"#16a34a",v:soma("won","o"),t:tot("won","o")}];
   const f=CMF.evol||"";
@@ -1994,7 +1997,7 @@ function renderCmOrigem(D,r){
   const arr=Object.entries(by).map(([k,o])=>({k,...o,conv:tpDiv(o.w*100,o.n),c:corF[k]})).sort((a,b)=>b.n-a.n);
   const vby={};ven.forEach(x=>{const o=vby[x.src]=vby[x.src]||{n:0,o:0};o.n++;o.o+=x.o;});
   const varr=Object.entries(vby).map(([k,o])=>({k,...o,c:corF[k]})).sort((a,b)=>b.o-a.o);
-  const pby={};D.filter(x=>cmIn(x.pd,R)).forEach(x=>{const o=pby[x.src]=pby[x.src]||{n:0,o:0};o.n++;o.o+=x.pv;});
+  const pby={};cmProps(D).filter(x=>cmIn(x.pd,R)).forEach(x=>{const o=pby[x.src]=pby[x.src]||{n:0,o:0};o.n++;o.o+=x.pv;});
   const parr=Object.entries(pby).map(([k,o])=>({k,...o,c:corF[k]})).sort((a,b)=>b.o-a.o), topP=parr[0];
   const head=tpHead("radar","Origem dos negócios",`De onde vêm os negócios (campo “Fonte” do Bitrix) · ${tpPerTxt({p:CMF.p},r)}${filtroTxt?" · "+tpEsc(filtroTxt):""}`,"",TPC.orange);
   if(!neg.length&&!ven.length){el.innerHTML=head+`<div class="tp-panel"><div class="tp-empty">Nenhum negócio criado e nenhuma venda ${CMF.p==="hoje"?"hoje":"no período"}${filtroTxt?" para "+tpEsc(filtroTxt):""}. Tente um período maior ou tire o filtro de vendedor.</div></div>`;return;}
@@ -2072,7 +2075,7 @@ function renderCmVend(){
   document.getElementById("cm-vper").textContent=tpPerTxt({p:CMF.vp},r);
   const D=CM.deals.filter(x=>!CMF.c||x.c===CMF.c);
   const rows=Object.entries(CM.vend).map(([v,nome],i)=>{
-    const a=D.filter(x=>x.v===v), neg=a.filter(x=>cmIn(x.dc,R)), pro=a.filter(x=>cmIn(x.pd,R)), ven=a.filter(x=>cmIn(x.won,R));
+    const a=D.filter(x=>x.v===v), neg=a.filter(x=>cmIn(x.dc,R)), pro=cmProps(a).filter(x=>cmIn(x.pd,R)), ven=a.filter(x=>cmIn(x.won,R));
     const lg=CM.ligacoes.filter(x=>x.v===v&&cmIn(x.d,R)), n=lg.reduce((s,x)=>s+x.n,0), ok=lg.reduce((s,x)=>s+x.ok,0);
     const pw=pro.filter(x=>x.won).length;
     return {v,nome,cor:TP_DOTS[i%TP_DOTS.length],neg:neg.length,negO:neg.reduce((s,x)=>s+x.o,0),pro:pro.length,proO:pro.reduce((s,x)=>s+x.pv,0),
