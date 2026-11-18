@@ -84,9 +84,10 @@ OVERRIDE_VENDEDOR = {
 def _classifica_vendedor(nome):
     """nome do Tiny -> (rótulo curto, equipe). Os 5 nomeados; o resto fica com o nome real em 'Outros'."""
     n = _norm(nome)
+    if "dantas" in n: return "Vanessa Dantas", "Vendas Internas"   # antes de "vanessa"
     if "vanessa" in n: return "Vanessa", "Vendas Internas"
     if "thauany" in n: return "Thauany", "Vendas Internas"
-    if "ingrid" in n: return "Ingrid", "Vendas Internas"
+    if "michael" in n or "ingrid" in n: return "Michael", "Vendas Internas"  # assento antigo da Ingrid = Michael
     if "gualdiano" in n or "patricia" in n: return "Patrícia", "LightWall"
     if "luiz" in n or "gomes" in n: return "Luiz", "LightWall"
     return (nome or "—").strip(), "Outros"
@@ -255,7 +256,7 @@ def build():
                  "Enviado", "Entregue", "Não entregue", "Cancelado"]
     return {"gerado_em": datetime.datetime.now(SP).isoformat(timespec="minutes"),
             "hoje": hoje.isoformat(), "desde": DESDE,
-            "equipes": {"Vendas Internas": ["Vanessa", "Thauany", "Ingrid"],
+            "equipes": {"Vendas Internas": ["Vanessa", "Vanessa Dantas", "Thauany", "Michael"],
                         "LightWall": ["Patrícia", "Luiz"], "Outros": []},
             "ordem_situacoes": ordem_sit, "vendas": vendas,
             "itens": itens, "enriquecidos": enriq, "total_ped": len(vendas)}

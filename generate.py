@@ -100,7 +100,7 @@ def porte_bucket(raw_label):
     if "medio" in t or "médio" in t: return "Médio"
     if "grande" in t: return "Grande"
     return "Sem identificação"
-VEND_NOMES={"948":"Patrícia","890":"Thauany","376":"Douglas","16812":"Vanessa","16942":"Ingrid","38":"Luiz Gomes"}
+VEND_NOMES={"948":"Patrícia","890":"Thauany","376":"Vanessa Dantas","16812":"Vanessa","16942":"Michael","38":"Luiz Gomes"}
 
 def call(method, payload):
     last=None
@@ -352,7 +352,7 @@ def build_tiny():
             "peds":peds,"vendedores":vends}
 
 VEND_FUNIL={"948":("Patrícia","Sênior"),"890":("Thauany","Júnior"),
-            "376":("Douglas",""),"16812":("Vanessa",""),"16942":("Ingrid",""),"38":("Luiz","")}
+            "376":("Vanessa Dantas",""),"16812":("Vanessa",""),"16942":("Michael",""),"38":("Luiz","")}
 VEND_ORDER=["948","890","376","16812","16942","38"]
 FUNIL_CATS=["0","2"]                       # Vendas Internas + LightWall
 FUNIL_CAT_NAMES={"0":"Vendas Internas","2":"LightWall"}
@@ -371,9 +371,11 @@ def build_propostas():
         n=norm(s)
         if "gualdiano" in n or n=="patricia": return "948"
         if "thauany" in n: return "890"
+        if "dantas" in n: return "376"          # Vanessa Dantas (ex-assento Douglas) — antes de "vanessa"
         if "douglas" in n: return "376"
         if "vanessa" in n: return "16812"
-        if "ingrid" in n: return "16942"
+        if "michael" in n: return "16942"
+        if "ingrid" in n: return "16942"        # assento antigo da Ingrid = Michael
         if n.startswith("luiz") or n.startswith("luis"): return "38"
         return None
     out=[]

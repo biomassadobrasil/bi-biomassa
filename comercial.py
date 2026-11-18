@@ -10,7 +10,7 @@ OUT = os.path.join(HERE, "comercial.json")
 SP = ZoneInfo("America/Sao_Paulo")
 DESDE = "2026-01-01"                       # histórico considerado (negócios mexidos desde então)
 CATS = {"0": "Vendas Internas", "2": "LightWall"}
-VEND = {"948": "Patrícia", "38": "Luiz", "890": "Thauany", "16942": "Ingrid", "16812": "Vanessa", "376": "Douglas"}
+VEND = {"948": "Patrícia", "38": "Luiz", "890": "Thauany", "16942": "Michael", "16812": "Vanessa", "376": "Vanessa Dantas"}  # 18/11/26: assento da Ingrid virou Michael; o do Douglas virou Vanessa Dantas
 F_MOTIVO = "UF_CRM_67E591F01CB70"           # "Motivo da Desqualificação" (pedido ao mover p/ Perdido)
 F_OBS = "UF_CRM_67E591F02597A"              # "Observações Desqualificação" (texto livre, usado quando é "Outro")
 # temas do texto livre do "Outro" (ordem importa: o primeiro que bater vence). Só o tema vai pro painel.
