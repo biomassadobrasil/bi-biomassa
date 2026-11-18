@@ -1802,7 +1802,7 @@ function renderTpGoogleDyn(){
 // negócio = criação · proposta = última proposta do card · venda = entrada em Ganho.
 // Conversões usam a "safra": negócios criados no período e o que aconteceu com eles até hoje.
 let CM=null, CM_EM=0;
-const CMF={p:"mes",ini:"",fim:"",v:"",c:"",vp:"mes",vini:"",vfim:"",mode:"valor",fonte:"vendas"};
+const CMF={p:"mes",ini:"",fim:"",v:"",c:"",vp:"mes",vini:"",vfim:"",mode:"valor",fonte:"vendas",base:"criado"};
 const CM_G_OLD=[["negociacao","Em negociação","#2563eb"],["semretorno","Sem retorno","#f59e0b"],["renutricao","Renutrição","#7c3aed"],["ganho","Ganhos","#16a34a"],["perdido","Perdidos","#dc2626"],["outras","Outras etapas abertas","#9aa7bd"]];
 const CM_PER=[["hoje","Hoje"],["ontem","Ontem"],["7d","7 dias"],["mes","Este mês"],["mesant","Mês anterior"],["custom","Personalizado"]];
 function abrirComercial(){
@@ -1829,6 +1829,14 @@ function renderComercial(){
     heroPill("users","Vendedor",`<select id="cm-v"><option value="">Todos</option>${Object.entries(CM.vend).map(([k,n])=>`<option value="${k}" ${CMF.v===k?"selected":""}>${n}</option>`).join("")}</select>`)+
     heroPill("build","Equipe",`<select id="cm-c"><option value="">Todas</option>${Object.entries(CM.pipes).map(([k,n])=>`<option value="${k}" ${CMF.c===k?"selected":""}>${n}</option>`).join("")}</select>`))}
   <div style="margin:0 2px 10px">${cmDates("cm",CMF.p==="custom",CMF.ini,CMF.fim)}</div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 2px 10px">
+    <span style="font-size:13px;font-weight:700;color:var(--muted)">Visão dos negócios em aberto:</span>
+    <span class="ol-seg" id="cm-base">
+      <button data-b="criado" class="${CMF.base==="criado"?"on":""}" title="Só os negócios que foram CRIADOS dentro do período escolhido">📅 Data de criação</button>
+      <button data-b="geral" class="${CMF.base==="geral"?"on":""}" title="Toda a base ativa hoje, não importa quando o negócio entrou">⚡ Geral (ativos)</button>
+    </span>
+    <span class="tp-note" style="margin:0">${CMF.base==="geral"?"Mostrando <b>tudo que está ativo hoje</b> nas etapas em aberto (qualquer data de criação).":"Mostrando só o que <b>entrou no período</b>. Troque para “Geral” para ver toda a base ativa."}</span>
+  </div>
   <div class="tp-note" id="cm-per" style="margin:0 4px 8px"></div>
   <div id="cm-dyn"></div>
   <div id="sec-vend"></div>
@@ -1842,6 +1850,7 @@ function renderComercial(){
   [["cm-ini","ini"],["cm-fim","fim"],["cm-v-ini","vini"],["cm-v-fim","vfim"]].forEach(([id,k])=>{const i=document.getElementById(id);if(i)i.onchange=e=>{CMF[k]=e.target.value;renderComercial();};});
   document.getElementById("cm-v").onchange=e=>{CMF.v=e.target.value;renderCmDyn();};
   document.getElementById("cm-c").onchange=e=>{CMF.c=e.target.value;renderCmDyn();renderCmVend();};
+  {const bs=document.getElementById("cm-base");if(bs)bs.onclick=e=>{const b=e.target.closest("button");if(!b)return;CMF.base=b.dataset.b;renderComercial();};}
   renderCmDyn(); renderCmVend();
 }
 
@@ -1891,9 +1900,12 @@ function renderCmDyn(){
     t.includes("novo")?"#64748b":t.includes("tentativa")?"#0ea5e9":t.includes("apresenta")?"#6366f1":t.includes("proposta")?"#3b82f6":t.includes("obra")?"#14b8a6":"#9aa7bd";};
   // Em aberto = pipeline de hoje (qualquer data de criação) · Ganho/Perdido = o que foi ganho/perdido NO período (mesma regra de Vendas e Motivos)
   // só as etapas que importam p/ a negociação; Ganho/Perdido = fechados no período (iguais aos cards Vendas/Perdidos)
-  const ETAPAS_SIT=["em negociação","sem retorno","obra futura","renutrição","ganho","perdido"];
+  const GERAL=CMF.base==="geral";
+  const ETAPAS_ABERTAS=["em negociação","sem retorno","obra futura","renutrição"];
+  const ETAPAS_SIT=GERAL?ETAPAS_ABERTAS:ETAPAS_ABERTAS.concat(["ganho","perdido"]);
   const sit=ETAPAS_SIT.map(k=>{const e=ordE.find(x=>x.toLowerCase()===k)||k;
-    const a=k==="ganho"?D.filter(x=>cmIn(x.won,R)):k==="perdido"?D.filter(x=>cmIn(x.lost,R)):neg.filter(x=>x.g!=="ganho"&&x.g!=="perdido"&&nomeE(x).toLowerCase()===k);
+    const a=GERAL?D.filter(x=>x.g!=="ganho"&&x.g!=="perdido"&&nomeE(x).toLowerCase()===k)
+      :(k==="ganho"?D.filter(x=>cmIn(x.won,R)):k==="perdido"?D.filter(x=>cmIn(x.lost,R)):neg.filter(x=>x.g!=="ganho"&&x.g!=="perdido"&&nomeE(x).toLowerCase()===k));
     return {l:k==="ganho"?"Ganho":k==="perdido"?"Perdido":e,c:corE(e),n:a.length,o:sum(a,"o")};});
   // motivos de perda (perdidos no período)
   const mot={};per.forEach(x=>{const k=x.mot||"Sem motivo informado";mot[k]=(mot[k]||0)+1;});
@@ -1911,7 +1923,7 @@ function renderCmDyn(){
     ${big({cls:"gr",ic:"check",l:"Vendas",v:tpBRL(sum(ven,"o"),0),sub:`<b>${tpN(ven.length)}</b> venda${ven.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(ven.length,venP.length)} · ticket médio ${tpBRL(tpDiv(sum(ven,"o"),ven.length),0)}`,cur:sum(ven,"o"),prev:sum(venP,"o"),spark:tpSpark(conta(D,"won"),"rgba(255,255,255,.85)")})}
     ${big({cls:"rd",ic:"tool",l:"Perdidos",v:tpBRL(sum(per,"o"),0),sub:`<b>${tpN(per.length)}</b> negócio${per.length===1?"":"s"} ${TP_NOCMP?"":tpDelta(per.length,perP.length,true)} · motivos mais abaixo`,cur:sum(per,"o"),prev:sum(perP,"o"),lb:1,spark:tpSpark(conta(D,"lost"),"rgba(255,255,255,.85)")})}
   </div>
-  <div class="tp-panel" style="margin-top:22px">${tpHead("bars","O que está sendo negociado",`Etapas em aberto: negócios criados no período · Ganho e Perdido: fechados no período · barra proporcional ${CMF.mode==="pedidos"?"ao nº de negócios":"ao valor"}`,`<span class="ol-seg" id="cm-mode"><button data-m="valor" class="${CMF.mode==="valor"?"on":""}">Valor (R$)</button><button data-m="pedidos" class="${CMF.mode==="pedidos"?"on":""}">Negócios</button></span>`,TPC.blue)}
+  <div class="tp-panel" style="margin-top:22px">${tpHead("bars",GERAL?"O que está ativo na base":"O que está sendo negociado",`${GERAL?"<b>Geral:</b> toda a base ativa hoje por etapa (qualquer data de criação) — não filtra por período":"<b>Data de criação:</b> etapas em aberto = criados no período · Ganho/Perdido = fechados no período"} · barra proporcional ${CMF.mode==="pedidos"?"ao nº de negócios":"ao valor"}`,`<span class="ol-seg" id="cm-mode"><button data-m="valor" class="${CMF.mode==="valor"?"on":""}">Valor (R$)</button><button data-m="pedidos" class="${CMF.mode==="pedidos"?"on":""}">Negócios</button></span>`,TPC.blue)}
     ${(()=>{const cmMet=x=>CMF.mode==="pedidos"?x.n:x.o, totM=sit.reduce((a,x)=>a+cmMet(x),0)||1;
       const ic=l=>{const t=l.toLowerCase();return t.includes("negocia")?"trend":t.includes("retorno")?"pause":t.includes("obra")?"build":t.includes("renutri")?"refresh":t.includes("ganho")?"check":t.includes("perdido")?"tool":"tag";};
       return `<div class="ol-pbar">${sit.filter(x=>cmMet(x)).map(x=>`<i title="${x.l}: ${CMF.mode==="pedidos"?tpN(x.n)+" neg":tpBRL(x.o,0)}" style="width:${cmMet(x)/totM*100}%;background:${x.c}"></i>`).join("")}</div>
