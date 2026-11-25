@@ -1897,11 +1897,12 @@ function renderCmDyn(){
   const ordE=[];Object.values(CM.etapas).forEach(l=>l.forEach(st=>{const n=canE(st);if(!ordE.some(e=>e.toLowerCase()===n.toLowerCase()))ordE.push(n);}));
   const nomeE=x=>{const st=(CM.etapas[x.c]||[]).find(st=>st.id===x.st);return st?canE(st):x.st;};
   const corE=n=>{const t=n.toLowerCase();return t.includes("ganho")?"#16a34a":t.includes("perdido")?"#dc2626":t.includes("negocia")?"#2563eb":t.includes("sem retorno")?"#f59e0b":t.includes("renutri")?"#7c3aed":
-    t.includes("novo")?"#64748b":t.includes("tentativa")?"#0ea5e9":t.includes("apresenta")?"#6366f1":t.includes("proposta")?"#3b82f6":t.includes("obra")?"#14b8a6":"#9aa7bd";};
+    t.includes("novo")?"#64748b":t.includes("carteira")?"#9333ea":t.includes("tentativa")?"#0ea5e9":t.includes("apresenta")?"#6366f1":t.includes("proposta")?"#3b82f6":t.includes("obra")?"#14b8a6":t.includes("consulta")?"#0d9488":t.includes("planilha")?"#94a3b8":"#9aa7bd";};
   // Em aberto = pipeline de hoje (qualquer data de criação) · Ganho/Perdido = o que foi ganho/perdido NO período (mesma regra de Vendas e Motivos)
   // só as etapas que importam p/ a negociação; Ganho/Perdido = fechados no período (iguais aos cards Vendas/Perdidos)
   const GERAL=CMF.base==="geral";
-  const ETAPAS_ABERTAS=["em negociação","sem retorno","obra futura","renutrição"];
+  // etapas em aberto = TODAS as etapas das 2 pipelines menos Ganho/Perdido (dinâmico: etapa nova no Bitrix entra sozinha)
+  const ETAPAS_ABERTAS=ordE.filter(e=>{const t=e.toLowerCase();return t!=="ganho"&&t!=="perdido";}).map(e=>e.toLowerCase());
   const ETAPAS_SIT=GERAL?ETAPAS_ABERTAS:ETAPAS_ABERTAS.concat(["ganho","perdido"]);
   const sit=ETAPAS_SIT.map(k=>{const e=ordE.find(x=>x.toLowerCase()===k)||k;
     const a=GERAL?D.filter(x=>x.g!=="ganho"&&x.g!=="perdido"&&nomeE(x).toLowerCase()===k)
