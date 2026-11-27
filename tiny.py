@@ -89,7 +89,7 @@ def _classifica_vendedor(nome):
     if "thauany" in n: return "Thauany", "Vendas Internas"
     if "michael" in n or "ingrid" in n: return "Michael", "Vendas Internas"  # assento antigo da Ingrid = Michael
     if "gualdiano" in n or "patricia" in n: return "Patrícia", "LightWall"
-    if "luiz" in n or "gomes" in n: return "Luiz", "LightWall"
+    if "gomes" in n: return "Luiz", "LightWall"   # Luiz Fernando Lopes Gomes. NÃO casar só por "luiz": existe "Luiz Fernando da Silva Imediato" (outra pessoa) que deve ficar em Outros
     return (nome or "—").strip(), "Outros"
 
 def _grupo_situacao(sit):
