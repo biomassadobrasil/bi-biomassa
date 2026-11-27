@@ -10,7 +10,9 @@ OUT = os.path.join(HERE, "comercial.json")
 SP = ZoneInfo("America/Sao_Paulo")
 DESDE = "2026-01-01"                       # histórico considerado (negócios mexidos desde então)
 CATS = {"0": "Vendas Internas", "2": "LightWall"}
-VEND = {"948": "Patrícia", "38": "Luiz", "890": "Thauany", "16942": "Michael", "16812": "Vanessa", "376": "Vanessa Dantas"}  # 18/11/26: assento da Ingrid virou Michael; o do Douglas virou Vanessa Dantas
+VEND = {"948": "Patrícia", "38": "Luiz", "890": "Thauany", "16942": "Michael", "16812": "Vanessa Souza", "376": "Vanessa Dantas"}  # 18/11/26: assento da Ingrid virou Michael; o do Douglas virou Vanessa Dantas. 27/11: Vanessa (16812) = "Vanessa Souza" p/ diferenciar da Dantas
+# Equipe de cada vendedor (p/ o filtro Vendedor depender da Equipe no front): "0"=Vendas Internas, "2"=LightWall
+VEND_EQUIPE = {"16812": "0", "376": "0", "890": "0", "16942": "0", "948": "2", "38": "2"}
 F_MOTIVO = "UF_CRM_67E591F01CB70"           # "Motivo da Desqualificação" (pedido ao mover p/ Perdido)
 F_OBS = "UF_CRM_67E591F02597A"              # "Observações Desqualificação" (texto livre, usado quando é "Outro")
 # temas do texto livre do "Outro" (ordem importa: o primeiro que bater vence). Só o tema vai pro painel.
@@ -208,7 +210,7 @@ def build():
 
     return {"gerado_em": datetime.datetime.now(SP).isoformat(timespec="minutes"),
             "hoje": datetime.datetime.now(SP).date().isoformat(), "desde": DESDE,
-            "vend": VEND, "pipes": CATS, "etapas": etapas, "deals": out, "ligacoes": list(lig.values())}
+            "vend": VEND, "vend_eq": VEND_EQUIPE, "pipes": CATS, "etapas": etapas, "deals": out, "ligacoes": list(lig.values())}
 
 def atualizar():
     if not _LOCK.acquire(blocking=False):

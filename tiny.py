@@ -85,7 +85,7 @@ def _classifica_vendedor(nome):
     """nome do Tiny -> (rótulo curto, equipe). Os 5 nomeados; o resto fica com o nome real em 'Outros'."""
     n = _norm(nome)
     if "dantas" in n or "douglas" in n: return "Vanessa Dantas", "Vendas Internas"   # antes de "vanessa"; a conta antiga do Douglas no Tiny é a Vanessa Dantas (assento renomeado)
-    if "vanessa" in n: return "Vanessa", "Vendas Internas"
+    if "vanessa" in n: return "Vanessa Souza", "Vendas Internas"
     if "thauany" in n: return "Thauany", "Vendas Internas"
     if "michael" in n or "ingrid" in n: return "Michael", "Vendas Internas"  # assento antigo da Ingrid = Michael
     if "gualdiano" in n or "patricia" in n: return "Patrícia", "LightWall"
@@ -256,7 +256,7 @@ def build():
                  "Enviado", "Entregue", "Não entregue", "Cancelado"]
     return {"gerado_em": datetime.datetime.now(SP).isoformat(timespec="minutes"),
             "hoje": hoje.isoformat(), "desde": DESDE,
-            "equipes": {"Vendas Internas": ["Vanessa", "Vanessa Dantas", "Thauany", "Michael"],
+            "equipes": {"Vendas Internas": ["Vanessa Souza", "Vanessa Dantas", "Thauany", "Michael"],
                         "LightWall": ["Patrícia", "Luiz"], "Outros": []},
             "ordem_situacoes": ordem_sit, "vendas": vendas,
             "itens": itens, "enriquecidos": enriq, "total_ped": len(vendas)}
