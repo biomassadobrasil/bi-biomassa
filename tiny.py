@@ -84,7 +84,7 @@ OVERRIDE_VENDEDOR = {
 def _classifica_vendedor(nome):
     """nome do Tiny -> (rótulo curto, equipe). Os 5 nomeados; o resto fica com o nome real em 'Outros'."""
     n = _norm(nome)
-    if "dantas" in n: return "Vanessa Dantas", "Vendas Internas"   # antes de "vanessa"
+    if "dantas" in n or "douglas" in n: return "Vanessa Dantas", "Vendas Internas"   # antes de "vanessa"; a conta antiga do Douglas no Tiny é a Vanessa Dantas (assento renomeado)
     if "vanessa" in n: return "Vanessa", "Vendas Internas"
     if "thauany" in n: return "Thauany", "Vendas Internas"
     if "michael" in n or "ingrid" in n: return "Michael", "Vendas Internas"  # assento antigo da Ingrid = Michael
