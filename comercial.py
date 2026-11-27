@@ -10,7 +10,7 @@ OUT = os.path.join(HERE, "comercial.json")
 SP = ZoneInfo("America/Sao_Paulo")
 DESDE = "2026-01-01"                       # histórico considerado (negócios mexidos desde então)
 CATS = {"0": "Vendas Internas", "2": "LightWall"}
-VEND = {"948": "Patrícia", "38": "Luiz", "890": "Thauany", "16942": "Michael", "16812": "Vanessa Souza", "376": "Vanessa Dantas"}  # 18/11/26: assento da Ingrid virou Michael; o do Douglas virou Vanessa Dantas. 27/11: Vanessa (16812) = "Vanessa Souza" p/ diferenciar da Dantas
+VEND = {"948": "Patrícia", "38": "Luiz Gomes", "890": "Thauany", "16942": "Michael Siqueira", "16812": "Vanessa Souza", "376": "Vanessa Dantas"}  # nomes completos (27/11). LightWall=Luiz Gomes/Patrícia; Vendas Internas=Thauany/Vanessa Dantas/Vanessa Souza/Michael Siqueira
 # Equipe de cada vendedor (p/ o filtro Vendedor depender da Equipe no front): "0"=Vendas Internas, "2"=LightWall
 VEND_EQUIPE = {"16812": "0", "376": "0", "890": "0", "16942": "0", "948": "2", "38": "2"}
 F_MOTIVO = "UF_CRM_67E591F01CB70"           # "Motivo da Desqualificação" (pedido ao mover p/ Perdido)

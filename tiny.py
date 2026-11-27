@@ -87,9 +87,9 @@ def _classifica_vendedor(nome):
     if "dantas" in n or "douglas" in n: return "Vanessa Dantas", "Vendas Internas"   # antes de "vanessa"; a conta antiga do Douglas no Tiny é a Vanessa Dantas (assento renomeado)
     if "vanessa" in n: return "Vanessa Souza", "Vendas Internas"
     if "thauany" in n: return "Thauany", "Vendas Internas"
-    if "michael" in n or "ingrid" in n: return "Michael", "Vendas Internas"  # assento antigo da Ingrid = Michael
+    if "michael" in n or "ingrid" in n: return "Michael Siqueira", "Vendas Internas"  # assento antigo da Ingrid = Michael Siqueira
     if "gualdiano" in n or "patricia" in n: return "Patrícia", "LightWall"
-    if "gomes" in n: return "Luiz", "LightWall"   # Luiz Fernando Lopes Gomes. NÃO casar só por "luiz": existe "Luiz Fernando da Silva Imediato" (outra pessoa) que deve ficar em Outros
+    if "gomes" in n: return "Luiz Gomes", "LightWall"   # Luiz Fernando Lopes Gomes. NÃO casar só por "luiz": existe "Luiz Fernando da Silva Imediato" (outra pessoa) que deve ficar em Outros
     return (nome or "—").strip(), "Outros"
 
 def _grupo_situacao(sit):
@@ -256,8 +256,8 @@ def build():
                  "Enviado", "Entregue", "Não entregue", "Cancelado"]
     return {"gerado_em": datetime.datetime.now(SP).isoformat(timespec="minutes"),
             "hoje": hoje.isoformat(), "desde": DESDE,
-            "equipes": {"Vendas Internas": ["Vanessa Souza", "Vanessa Dantas", "Thauany", "Michael"],
-                        "LightWall": ["Patrícia", "Luiz"], "Outros": []},
+            "equipes": {"Vendas Internas": ["Thauany", "Vanessa Dantas", "Vanessa Souza", "Michael Siqueira"],
+                        "LightWall": ["Luiz Gomes", "Patrícia"], "Outros": []},
             "ordem_situacoes": ordem_sit, "vendas": vendas,
             "itens": itens, "enriquecidos": enriq, "total_ped": len(vendas)}
 
